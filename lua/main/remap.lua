@@ -13,6 +13,10 @@ vim.api.nvim_create_user_command('OpenConfig', function()
     vim.cmd('tabe ' .. vim.fn.stdpath('config')) 
 end, {})
 
+vim.api.nvim_create_user_command('UP' , "call search('[A-Z][A-Z]', 'besW')", {})
+vim.api.nvim_create_user_command('UPN', "call search('[A-Z][A-Z]', 'esW')", {})
+
+nm('Q', '<Nop>')
 nm('ZZ', '<Nop>')
 nm(']]', '<Nop>')
 nm('[[', '<Nop>')
@@ -58,15 +62,15 @@ xm('<C-s>', ':%s//gc<left><left><left>')
 nm('>>', 'i<C-t><Esc>`^') --tabs keep cursor in the same place
 nm('<<', 'i<C-d><Esc>`^')
 
-nm(')', '<C-y>')
+nm(')', '<C-y>') -- move screen immediately without cursor
 nm('(', '<C-e>')
 
-nm('{', '_')
+nm('{', '_') -- move to start/end of line without leading spaces
 xm('{', '_')
 nm('}', 'g_')
 xm('}', 'g_')
 
-im('<C-k>', '<up>')
+im('<C-k>', '<up>') -- navigation in insert/command mode (instead of arrows)
 im('<C-h>', '<left>')
 im('<C-j>', '<down>')
 im('<C-l>', '<right>')
@@ -77,9 +81,36 @@ cm('<C-l>', '<right>')
 
 vim.keymap.set('n', 'J', "winheight(0)/4.'jzz'", { expr = true })
 vim.keymap.set('n', 'K', "winheight(0)/4.'kzz'", { expr = true }) 
-vim.keymap.set('x', 'J', "winheight(0)/4.'jzz'", { expr = true })
-vim.keymap.set('x', 'K', "winheight(0)/4.'kzz'", { expr = true })
+--vim.keymap.set('x', 'J', "winheight(0)/4.'jzz'", { expr = true })
+--vim.keymap.set('x', 'K', "winheight(0)/4.'kzz'", { expr = true })
+vim.keymap.set('n', 'H', '10h', { remap = true })
+vim.keymap.set('n', 'L', '10l', { remap = true })
+vim.keymap.set('x', 'H', '10h', { remap = true })
+vim.keymap.set('x', 'L', '10l', { remap = true })
 
+-- join lines
+nm('gj', 'J')
+nm('gJ', 'kJ')
+
+nm('<leader>u', ":UndotreeShow<cr>")
+
+xm('<S-j>', ":m '>+1<cr>gv=gv") --move secection up/down
+xm('<S-k>', ":m '<-2<cr>gv=gv")
+
+xm('gp', "\"_dP")
+
+-- work with system clipboard without mentioning the register
+nm('<leader>y', "\"+y")
+nm('<leader>Y', "\"+Y")
+xm('<leader>y', "\"+y")
+
+nm('<leader>p', "\"+p")
+nm('<leader>P', "\"+P")
+xm('<leader>p', "\"+p")
+
+nm('<leader>d', "\"+d")
+nm('<leader>D', "\"+D")
+xm('<leader>d', "\"+d")
 
 -- some old vim remappings that I have no idea how to replace
 require('main.oldVim')

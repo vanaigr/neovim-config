@@ -1,6 +1,25 @@
 local lsp = require('lsp-zero')
 
-lsp.preset('recommended')
+local cmp = require('cmp')
+local cmp_action = lsp.cmp_action()
+cmp.setup{ mapping = cmp.mapping.preset.insert{
+    ['<C-k>'] = cmp.mapping.select_prev_item({ bahavior = 'select' }),
+    ['<C-j>'] = cmp.mapping.select_next_item({ bahavior = 'select' }),
+    ['<tab>'] = cmp.mapping.confirm({ select = true }),
+    ['<cr>'] = cmp.mapping.confirm({ select = true }),
+} }
+
+lsp.on_attach(function(client, bufnr)
+    lsp.default_keymaps({buffer = bufnr})
+end)
+
+require('mason').setup({})
+require('mason-lspconfig').setup({
+  ensure_installed = {},
+  handlers = { lsp.default_setup },
+})
+
+--[[
 
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -14,7 +33,6 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
 lsp.set_preferences({ sign_icons = {} })
 
 lsp.on_attach(function(client, bufnr)
-  -- lsp.default_keymaps({buffer = bufnr})
   local opts = { buffer = bufnr, remap = false }
 
   vim.keymap.set('n', 'gd', function() vim.lsp.buf.defenition() end, opts)
@@ -27,6 +45,5 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set('n', '<leader>vrr', function() vim.lsp.buf.references() end, opts)
   vim.keymap.set('n', '<leader>vrn', function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set('n', '<C-h>', function() vim.lsp.buf.signature_help() end, opts)
-end)
+end) ]]
 
-lsp.setup()
