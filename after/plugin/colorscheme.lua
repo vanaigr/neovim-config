@@ -7,7 +7,6 @@ require('rose-pine').setup({
     highlight_groups = {
         ColorColumn = { bg = 'rose' },
 
-        -- Blend colours against the "base" background
         CursorLine = { bg = 'foam', blend = 10 },
         StatusLine = { fg = 'love', bg = 'love', blend = 10 },
 
@@ -17,12 +16,9 @@ require('rose-pine').setup({
         VM_SelectionCursor = { bg = 'love', fg='#21202e', blend=100 },
         VM_InsertCursor    = { bg = '#ffffff', fg='#21202e', blend=100 },
 
-        -- By default each group adds to the existing config.
-        -- If you only want to set what is written in this config exactly,
-        -- you can set the inherit option:
+        YankHighlight      = { bg = 'pine', fg="#20202e", blend = 80 },
+
         Search = { bg = 'gold', inherit = false },
-
-
     }
 })
 

@@ -1,7 +1,6 @@
 require("Comment").setup{
-    padding = true,
+    padding = false,
     sticky = true,
-    ignore = nil,
     toggler = {
         line = 'gcc',
         block = 'gbc',

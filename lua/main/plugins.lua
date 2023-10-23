@@ -12,6 +12,7 @@ return require('packer').startup(function(use)
     use{'mbbill/undotree'}
     use{'numToStr/Comment.nvim'}
     use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
+    use{'bkad/CamelCaseMotion'}
 
     --[[ use {
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
