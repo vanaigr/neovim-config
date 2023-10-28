@@ -110,6 +110,9 @@ local vimBindingsLoaded = pcall(require, 'main.vim')
 if not vimBindingsLoaded then
     print "ERROR: vim bindings not loaded!"
 else
+    --change font size
+    nm('<C-=>', '<cmd>call AdjustFontSize(1)<cr>')
+    nm('<C-->', '<cmd>call AdjustFontSize(-1)<cr>')
     -- line without indentation and newline
     om('<leader>l', ":<C-u>normal! _vg_l<cr>")
     nm('d<leader>l', "_vg_d\"_dd")

@@ -168,4 +168,24 @@ function! CallSelection(delete, func)
     if a:delete | call feedkeys('"_d', 'n') | endif
     call a:func(str)
 endfunction
+
+" https://vi.stackexchange.com/a/5805/49277
+function! AdjustFontSize(amount)
+    let s:pattern = '\v^(.{-})([1-9][0-9]*)$'
+    let s:minfontsize = 4
+    let s:maxfontsize = 20
+
+    if has("gui_running")
+        let fontname = substitute(&guifont, s:pattern, '\1', '')
+        let cursize = substitute(&guifont, s:pattern, '\2', '')
+        let newsize = cursize + a:amount
+        if (newsize >= s:minfontsize) && (newsize <= s:maxfontsize)
+            let newfont = fontname . newsize
+            exec 'GuiFont!' newfont
+            return
+        endif
+    endif
+
+    call PrintError('Could not change font size')
+endfunction
 ]==]
