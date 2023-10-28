@@ -106,10 +106,9 @@ nm('<leader>D', "\"+D")
 xm('<leader>d', "\"+d")
 
 
--- some old vim remappings that I have no idea how to replace
-local oldBindingsLoaded = pcall(require, 'main.oldVim')
-if not oldBindingsLoaded then
-    print "ERROR: old bindings not loaded!"
+local vimBindingsLoaded = pcall(require, 'main.vim')
+if not vimBindingsLoaded then
+    print "ERROR: vim bindings not loaded!"
 else
     -- line without indentation and newline
     om('<leader>l', ":<C-u>normal! _vg_l<cr>")

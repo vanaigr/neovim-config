@@ -1,5 +1,7 @@
 vim.cmd [==[
 
+" silent! is added so that mappings do not abort
+
 function! PrintError(msg) abort
     execute 'normal! \<Esc>'
     echohl ErrorMsg
@@ -8,8 +10,11 @@ function! PrintError(msg) abort
 endfunction
 
 " https://gist.github.com/statox/5b79f7e72ca650ed0a26ae1bdfea35eb
-function! SetvisualSelect(start, end)
+function! SetVisualSelect(start, end)
     execute "norm! \v\<Esc>"
+    if &selection == 'exclusive'
+        let a:end[1] += 1
+    endif
     call setpos("'<", [ 0, a:start[0], a:start[1] ])
     call setpos("'>", [ 0, a:end[0], a:end[1] ])
     norm! gv
@@ -46,7 +51,7 @@ fun! SelectVariableValue(direction)
         if !curL | let [curL, curC] = [line('.'), strlen(getline('.'))] | break | endif
         let curChar = nr2char(strgetchar(getline(curL)[curC - 1:], 0))
         if curChar == '(' || curChar == '{' || curChar == '[' 
-            keepjumps normal! %
+            keepjumps silent! normal! %
             let skipCur = curL == line('.') && curC == col('.')
         else | let curC = curC-1 | break | endif
     endwhile
@@ -58,22 +63,19 @@ fun! ExecDelLines(dir)
     let saveView = winsaveview()
     call SelectVariableValue(a:dir)
     let endPos = [line('.'), col('.')]
-    norm! d
+    silent! normal! d
     call winrestview(saveView)
     call SetVisualLines(startPos, [line('.'), col('.')])
-    norm! "_dd
+    silent! normal! "_dd
 endfun
 
 fun! GoToFunctionDecl()
     let saveView = winsaveview()
-    normal! \<Esc>
     let startPos = getpos('.')
-    
-    "note: running   :normal! vabv   outside of any () leaves you in visual mode for some weird reason
 
     let i = 1
     while i <= 10
-        exec 'normal! v'.i.'abOvh'
+        exec 'silent! normal! v'.i.'abOvh'
         if mode() != 'n' | break | endif
         let pPos = getpos('.')[1:2]
         let namePos = searchpos('\M\w(', 'Wcn', pPos[0])
@@ -85,10 +87,6 @@ fun! GoToFunctionDecl()
         call setpos('.', startPos)
         let i += 1
     endwhile
-
-    if mode() != 'n' | normal! v 
-    endif
-    redraw
 
     call winrestview(saveView)
     call PrintError('Could not find function name') 
