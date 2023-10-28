@@ -10,3 +10,4 @@ tsj.setup({
 })
 
 qnoremap('n', '<leader>s', ":TSJToggle<cr>")
+qnoremap('n', '<leader>S', ":TSJSplit<cr>")

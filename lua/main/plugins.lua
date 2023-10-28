@@ -3,21 +3,22 @@ vim.cmd 'packadd packer.nvim'
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
-    use{ 'rose-pine/neovim', as = 'rose-pine' }
-    use({ 'Wansmer/treesj', requires = { 'nvim-treesitter/nvim-treesitter' } })
-    use{'mg979/vim-visual-multi'}
-    use{'chentoast/marks.nvim'}
-    use{'ggandor/lightspeed.nvim'}
-    use({ "kylechui/nvim-surround", tag = "*" })
-    use{'mbbill/undotree'}
-    use{'numToStr/Comment.nvim'}
-    use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
-    use{'bkad/CamelCaseMotion'}
+    use{ 'rose-pine/neovim', as = 'rose-pine' } -- theme
+    use{ 'Wansmer/treesj', requires = { 'nvim-treesitter/nvim-treesitter' } } -- split/join
+    use{ 'mg979/vim-visual-multi' } -- multicursor
+    use{ 'chentoast/marks.nvim' }
+    use{ 'ggandor/leap.nvim' } -- sneak
+    use{ 'tpope/vim-fugitive' } -- git 
+    use{ 'kylechui/nvim-surround', tag = "*" }
+    use{ 'mbbill/undotree' }
+    use{ 'numToStr/Comment.nvim' }
+    use{ 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+    use{ 'bkad/CamelCaseMotion' }
 
-    --[[ use {
+    use {
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
         requires = { {'nvim-lua/plenary.nvim'} }
-    } --]]
+    }
     use {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v3.x',
@@ -31,5 +32,6 @@ return require('packer').startup(function(use)
             {'L3MON4D3/LuaSnip'},
         }
     }
+    use{ 'hrsh7th/cmp-buffer' } -- autocomplete without lsp
 end)
 

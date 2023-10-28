@@ -2,11 +2,21 @@ local lsp = require('lsp-zero')
 
 local cmp = require('cmp')
 local cmp_action = lsp.cmp_action()
-cmp.setup{ mapping = cmp.mapping.preset.insert{
-    ['<C-k>'] = cmp.mapping.select_prev_item({ bahavior = 'select' }),
-    ['<C-j>'] = cmp.mapping.select_next_item({ bahavior = 'select' }),
-    ['<tab>'] = cmp.mapping.confirm({ select = true }),
-} }
+cmp.setup{ 
+    sources = {
+        { name = 'nvim_lsp' },
+        { name = 'buffer' },
+    },
+    mapping = cmp.mapping.preset.insert{
+        ['<C-k>'] = cmp.mapping.select_prev_item({ bahavior = 'select' }),
+        ['<C-j>'] = cmp.mapping.select_next_item({ bahavior = 'select' }),
+        ['<tab>'] = cmp.mapping.confirm({ select = true }),
+    },
+}
+cmp.setup({
+  --- (Optional) Show source name in completion menu
+  formatting = cmp_format,
+})
 
 lsp.on_attach(function(client, bufnr)
     lsp.default_keymaps({buffer = bufnr})
