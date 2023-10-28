@@ -9,5 +9,7 @@ tsj.setup({
   dot_repeat = false,
 })
 
-qnoremap('n', '<leader>s', ":TSJToggle<cr>")
-qnoremap('n', '<leader>S', ":TSJSplit<cr>")
+local m = require('mapping')
+
+m.n('<leader>s', ":TSJToggle<cr>")
+m.n('<leader>S', ":TSJSplit<cr>")

@@ -22,26 +22,18 @@ leap.opts.special_keys = {
 }]] -- doesn't work at all/errors
 
 
-vim.keymap.set('n', 's', function ()
-  leap.leap { target_windows = { vim.fn.win_getid() } }
+require('mapping').n('s', function ()
+    local focusable_windows_on_tabpage = vim.tbl_filter(
+        function (win) return vim.api.nvim_win_get_config(win).focusable end,
+        vim.api.nvim_tabpage_list_wins(0)
+    )
+    leap.leap { target_windows = focusable_windows_on_tabpage }
 end)
---vim.keymap.set('n', 'f', '<Plug>(leap-forward-to)', { silent = true, remap = true })
 
 leap.opts.highlight_unlabeled_phase_one_targets = true
-
-local _ = [=[ vim.keymap.set('n', 'S', function ()
-  leap.leap { target_windows = { vim.fn.win_getid() }, action = function(target)
-      print(vim.inspect(target))
-      vim.fn.setpos('.', { 0, target.pos[1], target.pos[2] })
-      vim.cmd[[silent! normal! hel]]
-    end }
-end)]=]
 
 vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'Comment', nocombine=true })
 vim.api.nvim_set_hl(0, 'LeapMatch', { fg='white', bg='black', bold=true, nocombine=true })
 vim.api.nvim_set_hl(0, 'LeapLabelPrimary', { fg='white', bg='magenta', bold=true, nocombine=true })
 vim.api.nvim_set_hl(0, 'LeapLabelSecondary', { fg='#99ccff', bg='black', bold=true, nocombine=true })
 vim.api.nvim_set_hl(0, 'LeapLabelSelected', { fg='magenta', bg='white' })
-
-
--- ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab 

@@ -4,7 +4,7 @@ LoadModule('main.remap')
 LoadModule('main.lua_explorer')
 
 vim.api.nvim_create_user_command('OpenConfig', function()
-    vim.cmd('tabe ' .. vim.fn.stdpath('config')) 
+    vim.cmd('tabe ' .. vim.fn.stdpath('config'))
 end, {})
 
 vim.api.nvim_create_user_command('UP' , "call search('[A-Z][A-Z]', 'besW')", {})
