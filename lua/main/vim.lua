@@ -11,7 +11,7 @@ endfunction
 
 " https://gist.github.com/statox/5b79f7e72ca650ed0a26ae1bdfea35eb
 function! SetVisualSelect(start, end)
-    execute "norm! \v\<Esc>"
+    execute "silent! normal! \v\<Esc>"
     if &selection == 'exclusive'
         let a:end[1] += 1
     endif
@@ -20,7 +20,7 @@ function! SetVisualSelect(start, end)
     norm! gv
 endfunction
 function! SetVisualLines(start, end)
-    execute "norm! \V\<Esc>"
+    execute "silent! normal! \V\<Esc>"
     call setpos("'<", [0, a:start[0], a:start[1]])
     call setpos("'>", [0, a:end[0], a:end[1]])
     norm! gv
@@ -133,12 +133,17 @@ function! MoveCapitalWord()
     endif
 endfunction
 
-
 " https://stackoverflow.com/a/6271254
 function! GetVisualSelection()
-    " Why is this not a built-in Vim script function?!
-    let [line_start, column_start] = getpos("'<")[1:2]
-    let [line_end, column_end] = getpos("'>")[1:2]
+    return GetBufferText(
+        getpos("'<")[1:2],
+        getpos("'>")[1:2]
+    )
+endfunction
+function! GetBufferText(startPos, endPos)
+    let [line_start, column_start] = a:startPos
+    let [line_end, column_end] = a:endPos
+
     let lines = getline(line_start, line_end)
     if len(lines) == 0
         return ''
@@ -146,27 +151,6 @@ function! GetVisualSelection()
     let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
     let lines[0] = lines[0][column_start - 1:]
     return join(lines, "\n")
-endfunction
-
-function! ExecKeys(str)
-    call feedkeys(a:str)
-endfunction
-function! ExecVim(str)
-    exec a:str
-endfunction
-function! ExecLua(str)
-    exec "lua" a:str
-endfunction
-
-function! CallLine(delete, func)
-    let str = getline(getpos('.')[1])
-    if a:delete | call feedkeys('"_dd', 'n') | endif
-    call a:func(str)
-endfunction
-function! CallSelection(delete, func)
-    let str = GetVisualSelection()
-    if a:delete | call feedkeys('"_d', 'n') | endif
-    call a:func(str)
 endfunction
 
 " https://vi.stackexchange.com/a/5805/49277

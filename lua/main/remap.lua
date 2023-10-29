@@ -1,3 +1,5 @@
+local vim = vim -- fix lsp warning
+
 local m = require('mapping')
 
 vim.g.mapleader = ' '
@@ -34,7 +36,7 @@ m.i('<esc>', '<esc>`^') -- prevent cursor from moving when exiting insert mode
 m.i('<C-c>', '<C-c>`^')
 
 m.n('$', '$l')
-m.n('a', 'ea')
+m.n('a', 'hela')
 
 local function fixEnd(e) return function() vim.cmd('silent! normal! h'..e..'l') end end
 m.n('e' , fixEnd('e'))
@@ -78,8 +80,8 @@ m.c('<C-l>', '<right>')
 
 vim.keymap.set('n', 'J', "winheight(0)/4.'j'", { expr = true })
 vim.keymap.set('n', 'K', "winheight(0)/4.'k'", { expr = true }) 
---vim.keymap.set('x', 'J', "winheight(0)/4.'jzz'", { expr = true })
---vim.keymap.set('x', 'K', "winheight(0)/4.'kzz'", { expr = true })
+vim.keymap.set('x', 'J', "winheight(0)/4.'j'", { expr = true })
+vim.keymap.set('x', 'K', "winheight(0)/4.'k'", { expr = true })
 vim.keymap.set('n', 'H', '10h', { remap = true })
 vim.keymap.set('n', 'L', '10l', { remap = true })
 vim.keymap.set('x', 'H', '10h', { remap = true })
@@ -119,6 +121,11 @@ m.n('<leader>d', "\"+d")
 m.n('<leader>D', "\"+D")
 m.x('<leader>d', "\"+d")
 
+m.n('<leader>H', 'K')
+
+if not pcall(require, 'main.runBuf') then
+    print "ERROR: runBuf not loaded!"
+end
 
 local vimBindingsLoaded = pcall(require, 'main.vim')
 if not vimBindingsLoaded then
@@ -127,22 +134,6 @@ else
     --change font size
     m.n('<C-=>', '<cmd>call AdjustFontSize(1)<cr>')
     m.n('<C-->', '<cmd>call AdjustFontSize(-1)<cr>')
-    --execute current line/selection
-    m.n('<leader>rdk', "<cmd>call CallLine(v:true, function('ExecKeys'))<cr>")
-    m.n('<leader>rdv', "<cmd>call CallLine(v:true, function('ExecVim'))<cr>")
-    m.n('<leader>rdl', "<cmd>call CallLine(v:true, function('ExecLua'))<cr>")
-
-    m.x('<leader>rdk', "<esc><cmd>call CallSelection(v:true, function('ExecKeys'))<cr>")
-    m.x('<leader>rdv', "<esc><cmd>call CallSelection(v:true, function('ExecVim'))<cr>")
-    m.x('<leader>rdl', "<esc><cmd>call CallSelection(v:true, function('ExecLua') )<cr>")
-
-    m.n('<leader>rk', "<cmd>call CallLine(v:false, function('ExecKeys'))<cr>")
-    m.n('<leader>rv', "<cmd>call CallLine(v:false, function('ExecVim'))<cr>")
-    m.n('<leader>rl', "<cmd>call CallLine(v:false, function('ExecLua'))<cr>")
-
-    m.x('<leader>rk', "<esc><cmd>call CallSelection(v:false, function('ExecKeys'))<cr>")
-    m.x('<leader>rv', "<esc><cmd>call CallSelection(v:false, function('ExecVim'))<cr>")
-    m.x('<leader>rl', "<esc><cmd>call CallSelection(v:false, function('ExecLua') )<cr>")
 
     -- some old vim remappings that I have no idea how to replace
     -- line without indentation and newline
