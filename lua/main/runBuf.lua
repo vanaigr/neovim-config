@@ -18,10 +18,13 @@ local function vimFunc(str)
 end
 
 local function keyFunc(str)
-    print('`'..str..'`')
     vim.fn.feedkeys(str)
 end
 
+local function printError(msg)
+    vim.cmd.redraw() -- https://stackoverflow.com/a/19206860/18704284
+    vim.api.nvim_echo({{ msg, 'ErrorMsg' }}, true, {})
+end
 
 local function runBufferCommand(func, delete, coords)
     local sl, sc, el, ec = destr(coords)
@@ -51,7 +54,7 @@ local function callOpfunc(args)
     _G.OpFunc = function(type)
         vim.fn.setpos('.', cursorPos)
 
-        if type ~= 'line' and type ~= 'char' then vim.cmd([=[call PrintError('type ]=] .. type .. [=[ is not supported')]=]) end
+        if type ~= 'line' and type ~= 'char' then printError('Opfunc type '..type..' is not supported'); return end
         local sl, sc = destr(vim.fn.getpos("'["), 2, 3)
         local el, ec = destr(vim.fn.getpos("']"), 2, 3)
 
@@ -66,19 +69,24 @@ end
 
 --run command with visual selection
 local function callVisual(args)
-    local type = vim.fn.visualmode()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'nx', true)
-    if type ~= 'v' and type ~= 'V' then vim.api.nvim_call_function('PrintError', { 'type `'..type..'` not supported' }) end -- visual block
+    local type = vim.fn.visualmode()
+    if type ~= 'v' and type ~= 'V' then printError('Visual mode '..type..' is not supported'); return end -- visual block
 
     local sl, sc = destr(vim.fn.getpos("'<"), 2, 3)
     local el, ec = destr(vim.fn.getpos("'>"), 2, 3)
 
     if vim.api.nvim_get_option('selection') == 'exclusive' then
-        ec = ec - vim.fn.len(vim.fn.strpart(vim.fn.getline(el-1), ec-1, 1, false))
+        sl = sl - 1
+        sc = sc - 1
+        el = el - 1
+        ec = ec - 1 -- end is already exclusive
+    else
+        sl, sc, el, ec = destr(fixMarkerCoords(sl, sc, el, ec))
     end
 
     local t = { destr(args) }
-    table.insert(t, fixMarkerCoords(sl, sc, el, ec))
+    table.insert(t, { sl, sc, el, ec })
 
     runBufferCommand(destr(t))
 end

@@ -36,7 +36,7 @@ m.i('<esc>', '<esc>`^') -- prevent cursor from moving when exiting insert mode
 m.i('<C-c>', '<C-c>`^')
 
 m.n('$', '$l')
-m.n('a', 'hela')
+m.n('a', 'hea')
 
 local function fixEnd(e) return function() vim.cmd('silent! normal! h'..e..'l') end end
 m.n('e' , fixEnd('e'))
