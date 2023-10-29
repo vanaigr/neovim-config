@@ -1,8 +1,9 @@
+local vim = vim -- fix lsp warning
+
 local lsp = require('lsp-zero')
 
 local cmp = require('cmp')
-local cmp_action = lsp.cmp_action()
-cmp.setup{ 
+cmp.setup{
     sources = {
         { name = 'nvim_lsp' },
         { name = 'buffer' },
@@ -12,26 +13,25 @@ cmp.setup{
         ['<C-j>'] = cmp.mapping.select_next_item({ bahavior = 'select' }),
         ['<tab>'] = cmp.mapping.confirm({ select = true }),
     },
+    formatting = lsp.cmp_format() -- show source name in completion menu
 }
-cmp.setup({
-  --- (Optional) Show source name in completion menu
-  formatting = cmp_format,
-})
+
+local m = require('mapping')
 
 lsp.on_attach(function(client, bufnr)
     lsp.default_keymaps({buffer = bufnr})
     local options = { buffer = bufnr }
 
-    qnoremap('n', '<C-l>a', function() vim.lsp.buf.code_action() end, options)
-    qnoremap('n', '<C-l>h', function() vim.lsp.buf.hover() end, options)
-    qnoremap('n', '<C-l>vr', function() vim.lsp.buf.rename() end, options)
-    qnoremap('n', '<C-l>vr', function() vim.lsp.buf.references() end, options)
-    qnoremap('n', '<C-l>p', function() vim.diagnostic.goto_prev() end, options)
-    qnoremap('n', '<C-l>n', function() vim.diagnostic.goto_next() end, options)
+    m.n('<C-l>a', function() vim.lsp.buf.code_action() end, options)
+    m.n('<C-l>h', function() vim.lsp.buf.hover() end, options)
+    m.n('<C-l>vr', function() vim.lsp.buf.rename() end, options)
+    m.n('<C-l>r', function() vim.lsp.buf.references() end, options)
+    m.n('<C-l>p', function() vim.diagnostic.goto_prev() end, options)
+    m.n('<C-l>n', function() vim.diagnostic.goto_next() end, options)
 end)
 
-require('mason').setup({})
-require('mason-lspconfig').setup({
+require('mason').setup{}
+require('mason-lspconfig').setup{
   ensure_installed = { 'clangd', 'pyre' },
   handlers = { lsp.default_setup },
-})
+}

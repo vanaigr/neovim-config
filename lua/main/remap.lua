@@ -123,14 +123,10 @@ m.x('<leader>d', "\"+d")
 
 m.n('<leader>H', 'K')
 
-if not pcall(require, 'main.runBuf') then
-    print "ERROR: runBuf not loaded!"
-end
 
-local vimBindingsLoaded = pcall(require, 'main.vim')
-if not vimBindingsLoaded then
-    print "ERROR: vim bindings not loaded!"
-else
+LoadModule('main.runBuf')
+
+if LoadModule('main.vim') then
     --change font size
     m.n('<C-=>', '<cmd>call AdjustFontSize(1)<cr>')
     m.n('<C-->', '<cmd>call AdjustFontSize(-1)<cr>')

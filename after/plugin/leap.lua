@@ -1,3 +1,5 @@
+local vim = vim -- fix lsp warning
+
 local leap = require('leap')
 
 leap.opts.case_sensitive = false
@@ -22,13 +24,13 @@ leap.opts.special_keys = {
 }]] -- doesn't work at all/errors
 
 
-require('mapping').n('s', function ()
+--[[require('mapping').n('s', function ()
     local focusable_windows_on_tabpage = vim.tbl_filter(
         function (win) return vim.api.nvim_win_get_config(win).focusable end,
         vim.api.nvim_tabpage_list_wins(0)
     )
     leap.leap { target_windows = focusable_windows_on_tabpage }
-end)
+end)]]
 
 leap.opts.highlight_unlabeled_phase_one_targets = true
 

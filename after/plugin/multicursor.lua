@@ -1,3 +1,5 @@
+local vim = vim -- fix lsp warning
+
 local opt = { remap = true, silent = true }
 
 vim.keymap.set('n', '<C-j>', '<C-down>', opt)

@@ -1,3 +1,5 @@
+local vim = vim -- fix lsp warning
+
 local map = {}
 
 function map.qnoremap(mode, lhs, rhs, opts)

@@ -1,4 +1,4 @@
-require'marks'.setup {
+require('marks').setup {
     default_mappings = true,
     builtin_marks = {},
     cyclic = true,

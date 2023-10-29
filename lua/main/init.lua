@@ -1,3 +1,5 @@
+local vim = vim -- fix lsp warning
+
 LoadModule('main.plugins')
 LoadModule('main.remap')
 
@@ -32,12 +34,12 @@ vim.opt.virtualedit = 'onemore,block'
 vim.opt.selection = 'exclusive'
 
 vim.opt.ignorecase = true
-vim.opt.smartcase = true                                                       
+vim.opt.smartcase = true
 
 
-vim.api.nvim_create_autocmd("BufEnter", { 
-    callback = function() 
-        vim.opt.formatoptions = vim.opt.formatoptions - { "c","r","o" } 
+vim.api.nvim_create_autocmd("BufEnter", {
+    callback = function()
+        vim.opt.formatoptions = vim.opt.formatoptions - { "c","r","o" }
     end
 })
 vim.api.nvim_create_autocmd("TextYankPost", {

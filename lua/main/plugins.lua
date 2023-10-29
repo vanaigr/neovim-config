@@ -1,3 +1,5 @@
+local vim = vim -- fix lsp warning
+
 vim.cmd 'packadd packer.nvim'
 
 return require('packer').startup(function(use)

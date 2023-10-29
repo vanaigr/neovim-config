@@ -1,3 +1,5 @@
+local vim = vim -- fix lsp warning
+
 vim.opt.cursorline = true
 
 require('rose-pine').setup({

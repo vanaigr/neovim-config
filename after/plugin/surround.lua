@@ -1,4 +1,4 @@
-require("nvim-surround").setup({
+require("nvim-surround").setup{
     aliases = {
         ["a"] = ">",
         ["c"] = ")",
@@ -7,4 +7,4 @@ require("nvim-surround").setup({
         ["q"] = { '"', "'", "`" },
         ["B"] = { "}", "]", ")", ">", '"', "'", "`" },
     },
-})
+}

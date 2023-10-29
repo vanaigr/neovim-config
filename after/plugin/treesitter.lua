@@ -1,4 +1,6 @@
-require'nvim-treesitter.configs'.setup {
+local vim = vim -- fix lsp warning
+
+require'nvim-treesitter.configs'.setup{
   ensure_installed = { 'javascript', 'c', 'python', 'lua', 'vim', 'vimdoc', 'query' },
   sync_install = false,
   auto_install = true,

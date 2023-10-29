@@ -1,22 +1,13 @@
-vim.api.nvim_exec2('language en_US', {})
+local vim = vim -- fix lsp warning
 
-function qnoremap(mode, lhs, rhs, opts)
-    local options = { noremap = true, silent = true }
-    if opts then
-        if opts.desc then
-            opts.desc = "keymaps.lua: " .. opts.desc
-        end
-        options = vim.tbl_extend('force', options, opts)
-    end
-    vim.keymap.set(mode, lhs, rhs, options)
-end
+vim.api.nvim_exec2('language en_US', {})
 
 function LoadModule(name)
     local loaded, result = pcall(require, name)
 
     if not loaded then
         print("ERROR. `" .. name .. "` not loaded: " .. result .. '\n')
-        return false, nil
+        return false, result
     else
         return true, result
     end
