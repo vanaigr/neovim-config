@@ -23,6 +23,11 @@ return require('packer').startup(function(use)
         requires = { 'nvim-tree/nvim-web-devicons', opt = true }
     }
 
+    use{ 'hrsh7th/cmp-buffer' } -- autocomplete without lsp
+    use{ 'hrsh7th/cmp-path' }
+    use{ 'hrsh7th/cmp-cmdline' }
+    use{ 'hrsh7th/cmp-nvim-lua' }
+
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
         requires = { {'nvim-lua/plenary.nvim'} }
@@ -37,9 +42,8 @@ return require('packer').startup(function(use)
             {'neovim/nvim-lspconfig'},
             {'hrsh7th/nvim-cmp'},
             {'hrsh7th/cmp-nvim-lsp'},
-            {'L3MON4D3/LuaSnip'},
+            --{'L3MON4D3/LuaSnip'},
         }
     }
-    use{ 'hrsh7th/cmp-buffer' } -- autocomplete without lsp
 end)
 
