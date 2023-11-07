@@ -17,6 +17,11 @@ return require('packer').startup(function(use)
     use{ 'numToStr/Comment.nvim' }
     use{ 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
     use{ 'bkad/CamelCaseMotion' }
+    use{ 'petertriho/nvim-scrollbar' }
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+    }
 
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
