@@ -38,11 +38,15 @@ m.i('<C-c>', '<C-c>`^')
 m.n('$', '$l')
 m.n('a', 'hea')
 
+m.n('<leader>t', "<cmd>tabe %<cr>")
+
 local function fixEnd(e) return function() vim.cmd('silent! normal! h'..e..'l') end end
 m.n('e' , fixEnd('e'))
 m.n('E' , fixEnd('E'))
 m.n('ge', fixEnd('ge'))
 m.n('gE', fixEnd('gE'))
+
+m.n('r', 'gr')
 
 --m.n('<space>', 'i <esc>`^') -- treated as <leader>, long delay
 m.n('<space>', '<Nop>') -- treated as <leader>, long delay
@@ -50,7 +54,6 @@ m.n('<C-space>', 'i <esc>`^')
 m.n('<bs>', 'i<bs><esc>`^')
 m.n('<enter>', 'i<enter><esc>`^')
 
-m.n('<C-u>', '<cmd>redo<cr>')
 m.n('<C-z>', '<cmd>undo<cr>')
 m.n('<C-S-z>', '<cmd>redo<cr>')
 
@@ -80,14 +83,25 @@ m.c('<C-h>', '<left>')
 m.c('<C-j>', '<down>')
 m.c('<C-l>', '<right>')
 
-vim.keymap.set('n', 'J', "winheight(0)/4.'j'", { expr = true })
+--[[vim.keymap.set('n', 'J', "winheight(0)/4.'j'", { expr = true })
 vim.keymap.set('n', 'K', "winheight(0)/4.'k'", { expr = true }) 
 vim.keymap.set('x', 'J', "winheight(0)/4.'j'", { expr = true })
-vim.keymap.set('x', 'K', "winheight(0)/4.'k'", { expr = true })
-vim.keymap.set('n', 'H', '10h', { remap = true })
-vim.keymap.set('n', 'L', '10l', { remap = true })
-vim.keymap.set('x', 'H', '10h', { remap = true })
-vim.keymap.set('x', 'L', '10l', { remap = true })
+vim.keymap.set('x', 'K', "winheight(0)/4.'k'", { expr = true })]]
+m.n('J', '5j')
+m.n('K', '5k')
+m.x('J', '5j')
+m.x('K', '5k')
+m.n('H', '5h')
+m.n('L', '5l')
+m.x('H', '5h')
+m.x('L', '5l')
+
+local expr = { expr = true, remap = false }
+m.n('<A-j>', 'winheight(0)/4."<C-d>"', expr)
+m.n('<A-k>', 'winheight(0)/4."<C-u>"', expr)
+m.x('<A-j>', 'winheight(0)/4."<C-d>"', expr)
+m.x('<A-k>', 'winheight(0)/4."<C-u>"', expr)
+
 
 -- join lines
 m.n('gj', 'J')
@@ -115,15 +129,25 @@ m.n('<leader>y', "\"+y")
 m.n('<leader>Y', "\"+Y")
 m.x('<leader>y', "\"+y")
 
-m.n('<leader>p', "\"+p")
-m.n('<leader>P', "\"+P")
-m.x('<leader>p', "\"+p")
+m.n('<leader>p', "\"+P")
+m.x('<leader>p', "\"+P")
 
 m.n('<leader>d', "\"+d")
 m.n('<leader>D', "\"+D")
 m.x('<leader>d', "\"+d")
 
 m.n('<leader>H', 'K')
+
+
+local quickfixGroup = vim.api.nvim_create_augroup('QuickfixListMappings', { clear = true })
+vim.api.nvim_create_autocmd('FileType', { 
+    pattern = 'qf',
+    callback = function()
+        m.n('<cr>', '<cmd>.cc<cr><C-w>p', { buffer = true })
+        m.n('o', '<cmd>.cc<cr>', { buffer = true })
+    end,
+    group = quickfixGroup
+})
 
 
 LoadModule('main.runBuf')
