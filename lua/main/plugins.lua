@@ -11,6 +11,7 @@ return require('packer').startup(function(use)
     use{ 'chentoast/marks.nvim' }
     use{ 'ggandor/leap.nvim' } -- sneak
     use{ 'tpope/vim-fugitive' } -- git 
+    --use{ 'wellle/targets.vim' } -- replaced with local bugfix
     use{ 'kylechui/nvim-surround', tag = "*" }
     use{ 'mbbill/undotree' }
     use{ 'numToStr/Comment.nvim' }
