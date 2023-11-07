@@ -68,6 +68,8 @@ m.x('{', '_')
 m.n('}', 'g_')
 m.x('}', 'g_')
 
+m.t('<C-q>', '<C-\\><C-n>')
+
 m.i('<C-bs>', '<C-w>')
 m.i('<C-k>', '<up>') -- navigation in insert/command mode (instead of arrows)
 m.i('<C-h>', '<left>')
