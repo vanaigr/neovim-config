@@ -12,6 +12,7 @@ end, {})
 vim.api.nvim_create_user_command('UP' , "call search('[A-Z][A-Z]', 'besW')", {})
 vim.api.nvim_create_user_command('UPN', "call search('[A-Z][A-Z]', 'esW')", {})
 
+vim.opt.fileformat = 'unix'
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -23,7 +24,7 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.wrap = true
 
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
