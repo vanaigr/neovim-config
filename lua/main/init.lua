@@ -50,3 +50,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
         require('vim.highlight').on_yank({ higroup = "YankHighlight", timeout = 1000 })
     end
 })
+
+--vim.opt.breakindent = true -- breakindent will forever be slow
