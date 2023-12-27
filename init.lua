@@ -13,4 +13,9 @@ function LoadModule(name)
     end
 end
 
+function P(v)
+    print(vim.inspect(v))
+    return v
+end
+
 require('main')
