@@ -7,16 +7,10 @@ require('rose-pine').setup{
 	disable_italics = true,
 
     highlight_groups = {
-        ColorColumn = { bg = 'rose' },
-
         CursorLine = { bg = 'foam', blend = 10 },
-        StatusLine = { fg = 'love', bg = 'love', blend = 10 },
 
-        -- visual-multi cursors
-        VM_Cursors         = { bg = 'love', fg='#ffffff', blend=100 },
-        VM_Selection       = { bg = 'pine', fg='#ffffff', blend=100 },
-        VM_SelectionCursor = { bg = 'iris', fg='#21202e', blend=100 },
-        VM_InsertCursor    = { bg = '#ffffff', fg='#21202e', blend=100 },
+        Search = { bg = 'highlight_high', blend = 100 },
+        IncSearch = { bg = 'rose', blend = 50 },
 
         YankHighlight      = { bg = 'pine', fg="#20202e", blend = 80 },
     }

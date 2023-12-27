@@ -36,8 +36,21 @@ end)
 
 leap.opts.highlight_unlabeled_phase_one_targets = true
 
-vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'Comment', nocombine=true })
-vim.api.nvim_set_hl(0, 'LeapMatch', { fg='black', bg='white', bold=true, nocombine=true })
-vim.api.nvim_set_hl(0, 'LeapLabelPrimary', { fg='white', bg='black', bold=true, nocombine=true })
-vim.api.nvim_set_hl(0, 'LeapLabelSecondary', { fg='#99ccff', bg='black', bold=true, nocombine=true })
-vim.api.nvim_set_hl(0, 'LeapLabelSelected', { fg='magenta', bg='white' })
+local function initColors()
+    vim.api.nvim_set_hl(0, 'LeapBackdrop',       { link = 'Comment', nocombine=true })
+    --vim.api.nvim_set_hl(0, 'LeapInputTyped',     { sp = 'magenta', underline = true, nocombine=true })
+    --vim.api.nvim_set_hl(0, 'LeapInputRemainder', { fg = 'magenta', bg = 'black', sp = 'magenta', underline = true, nocombine=true })
+    vim.api.nvim_set_hl(0, 'LeapMatch',          { fg='black', bg='white', bold=true, nocombine=true })
+    vim.api.nvim_set_hl(0, 'LeapLabelPrimary',   { fg='white', bg='black', bold=true, nocombine=true })
+    vim.api.nvim_set_hl(0, 'LeapLabelSecondary', { fg='#99ccff', bg='black', bold=true, nocombine=true })
+    vim.api.nvim_set_hl(0, 'LeapLabelSelected',  { fg='magenta', bg='white', bold = true, nocombine = true })
+end
+
+initColors()
+
+local group = vim.api.nvim_create_augroup('LeapHighlighting', { clear = true })
+vim.api.nvim_create_autocmd('ColorScheme', {
+    pattern = '*',
+    callback = initColors,
+    group = group
+})
