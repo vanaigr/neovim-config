@@ -2,8 +2,9 @@ local vim = vim -- fix lsp warning
 
 local leap = require('leap')
 
-leap.add_default_mappings()
-
+leap.opts.highlight_input = true
+leap.opts.equivalence_classes = { ' \t\r\n' }
+leap.opts.substitute_chars = { ['\r'] = '¬', ['\n'] = '¬', [' '] = '·' }
 leap.opts.case_sensitive = false
 leap.opts.special_keys = {
     next_target = '<tab>',
@@ -14,25 +15,48 @@ leap.opts.special_keys = {
     multi_revert = '<backspace>',
 }
 
---[[leap.opts.safe_labels = {
-    "s", "f", "n", "u", "t", "/", 'q', ',', '.', ';', "'",
-    "S", "F", "N", "J", "K", "L", "H", "M", "U", "G", "T", "?", "Z" 
-}]] -- also doesn't work
-
---[[leap.opts.equivalence_classes = {
-    'q{}()[]<>',
-    ' \t\r\n',
-    [=["'`]=]
-}]] -- doesn't work at all/errors
-
-
-require('mapping').n('s', function ()
+--[[require('mapping').n('s', function ()
     local focusable_windows_on_tabpage = vim.tbl_filter(
         function (win) return vim.api.nvim_win_get_config(win).focusable end,
         vim.api.nvim_tabpage_list_wins(0)
     )
     leap.leap { target_windows = focusable_windows_on_tabpage }
+end)]]
+
+local labels = {
+    's', 'j', 'k', 'd', 'l', 'f', 'c', 'n', 'i', 'e', 'w', 'r', 'o', "'",
+    "h", "m", "u", "y", "v", "g", "t", "a", "q", "p", "x", "z", "/",
+    'S', 'J', 'K', 'D', 'L', 'F', 'C', 'N', 'I', 'E', 'W', 'R', 'O', '"',
+    "H", "M", "U", "Y", "V", "G", "T", "A", "Q", "P", "X", "Z", "?",
+}
+
+--[[vim.keymap.set({ 'n', 'x', 'o' }, 's', function() require('leap-by-word').leap(
+    { test_function = 'split_identifiers' }, { opts = { labels = labels } }
+) end, {})]]
+
+vim.keymap.set('n', 'f', function()
+    vim.cmd('normal! v')
+    require'leap-ast'.leap({}, { opts = { safe_labels = labels, labels = labels } })
 end)
+
+vim.keymap.set({'x', 'o'}, 'f', function()
+    -- custom, original doesn't have opts
+    require'leap-ast'.leap({}, { opts = { safe_labels = labels, labels = labels } })
+    -- add this to have options
+    local _ = [==[
+        local function leap(opts, leap_override_opts)
+          require('leap').leap(vim.tbl_extend('force', {
+            targets = get_ast_nodes(),
+            action = api.nvim_get_mode().mode ~= 'n' and select_range,  -- or jump
+            backward = true
+          }, leap_override_opts or {}))
+        end
+
+        and
+
+        ts_utils.is_selecton_end_exclusive()
+    ]==]
+end, {})
 
 leap.opts.highlight_unlabeled_phase_one_targets = true
 

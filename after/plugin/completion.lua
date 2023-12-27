@@ -11,15 +11,20 @@ cmp.setup{
         { name = 'nvim-lua', max_item_count = 10 },
         --{ name = 'luasnip', max_item_count = 5 },
         { name = 'nvim_lsp', max_item_count = 5 },
-        { name = 'path', max_item_count = 5 },
+        --{ name = 'path', max_item_count = 5 }, -- deletes my // comments even if I typed other characters without undo :/
         { name = 'buffer', max_item_count = 5 },
     },
     mapping = {
         ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
         ['<C-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
         ['<tab>'] = cmp.mapping.confirm({ select = true }),
-        ['<C-f>'] = cmp_action.luasnip_jump_forward(),
-        ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+        --[[['<C-f>'] = cmp_action.luasnip_jump_forward(),
+        ['<C-b>'] = cmp_action.luasnip_jump_backward(),]]
+
+        ['<A-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+        ['<A-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+        ['<A-l>'] = cmp.mapping.confirm({ select = true }),
+        ['<A-h>'] = cmp.mapping.abort(),
     },
     window = {
         completion = cmp.config.window.bordered(),
@@ -35,6 +40,11 @@ cmp.setup.cmdline('/', {
         ['<C-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<C-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<tab>'] = { c = cmp.mapping.confirm({ select = true }) },
+
+        ['<A-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
+        ['<A-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
+        ['<A-l>'] = { c = cmp.mapping.confirm({ select = true }) },
+        ['<A-h>'] = { c = cmp.mapping.abort() },
     },
     sources = { { name = 'buffer', max_item_count = 3 } }
 })
@@ -44,6 +54,11 @@ cmp.setup.cmdline(':', {
         ['<C-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<C-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<tab>'] = { c = cmp.mapping.confirm({ select = true }) },
+
+        ['<A-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
+        ['<A-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
+        ['<A-l>'] = { c = cmp.mapping.confirm({ select = true }) },
+        ['<A-h>'] = { c = cmp.mapping.abort() },
     },
     sources = cmp.config.sources{
         {
