@@ -2,7 +2,11 @@ local vim = vim -- fix lsp warning
 
 vim.cmd 'packadd packer.nvim'
 
-return require('packer').startup(function(use)
+local packer = require('packer')
+
+packer.init{ max_jobs = 8 }
+
+return packer.startup(function(use)
     use 'wbthomason/packer.nvim'
 
     use{ 'rose-pine/neovim', as = 'rose-pine' } -- theme
