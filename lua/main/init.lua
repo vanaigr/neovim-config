@@ -37,6 +37,7 @@ vim.opt.selection = 'exclusive'
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
+vim.opt.cmdheight = 2 -- for remapping ; to open c_CTRL-f
 
 vim.api.nvim_create_autocmd("BufEnter", {
     callback = function()
