@@ -9,22 +9,7 @@ m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
 
 m.n('Q', '<Nop>')
 m.n('ZZ', '<Nop>')
-m.n('gg', '<Nop>') -- accidentally press gg insead of hh
-
-m.a('<left>', '<Nop>')
-m.a('<right>', '<Nop>')
-m.a('<up>', '<Nop>')
-m.a('<down>', '<Nop>')
-
-m.a('<S-left>', '<Nop>')
-m.a('<S-right>', '<Nop>')
-m.a('<S-up>', '<Nop>')
-m.a('<S-down>', '<Nop>')
-
-m.a('<C-left>', '<Nop>')
-m.a('<C-right>', '<Nop>')
-m.a('<C-up>', '<Nop>')
-m.a('<C-down>', '<Nop>')
+--m.n('gg', '<Nop>') -- accidentally press gg insead of hh
 
 m.i('<esc>', '<esc>`^') -- prevent cursor from moving when exiting insert mode
 m.i('<C-c>', '<C-c>`^')
@@ -33,12 +18,12 @@ m.i('<A-i>', '<esc>`^')
 m.c('<A-i>', '<C-c>')
 
 -- make move-to-end mapping move one past end
-m.n('$', '$l')
-local function fixEnd(e) return function() vim.cmd('silent! normal! h'..e..'l') end end
-m.n('e' , fixEnd('e'))
-m.n('E' , fixEnd('E'))
-m.n('ge', fixEnd('ge'))
-m.n('gE', fixEnd('gE'))
+m.n('$', 'g$') -- why does g$ already do 'l' with onemore ?? regular $ would be '$l'
+m.n('_', 'g^')
+
+for _, key in ipairs{ 'e', 'E', 'ge', 'gE' } do
+  m.n(key, '<cmd>silent! normal! h'..key..'l<cr>')
+end
 
 m.n('r', 'gr')
 m.n('a', 'A')
@@ -54,14 +39,17 @@ m.n('i', function() -- https://stackoverflow.com/a/3020022/18704284
     end
 end, { expr = true })
 
-
 m.n('<space>', '<Nop>') -- treated as <leader>, long delay
 m.n('<C-space>', 'i <esc>`^')
 m.n('<bs>', 'i<bs><esc>`^')
 m.n('<enter>', 'i<enter><esc>`^')
-m.n('<A-o>', 'o<Esc>`^')
-m.n('<A-cr>', 'o<Esc>`^')
+m.i('<A-o>', '<Esc>`^o')
+
+m.n('<A-t>', 'gt')
+m.n('<A-g>', 'gT')
+
 m.i('<C-bs>', '<C-w>')
+m.c('<C-bs>', '<C-w>')
 
 m.n('<C-z>', '<cmd>undo<cr>')
 m.n('<C-S-z>', '<cmd>redo<cr>')
@@ -74,9 +62,8 @@ m.n('>>', 'i<C-t><Esc>`^') --tabs keep cursor in the same place
 m.n('<<', 'i<C-d><Esc>`^')
 m.n('<A-.>', 'i<C-t><Esc>`^')
 m.n('<A-,>', 'i<C-d><Esc>`^')
-m.i('<A-.>', '<C-t>')
-m.i('<A-,>', '<C-d>')
-
+--m.i('<A-.>', '<C-t>')
+--m.i('<A-,>', '<C-d>')
 do -- keep visual selection when changing indentation
     local ns = vim.api.nvim_create_namespace('')
     local function keepSelection(command)
@@ -105,10 +92,11 @@ m.n(')', '<C-y>') -- move screen but not cursor
 m.n('(', '<C-e>')
 m.n('<A-0>', '<C-y>')
 m.n('<A-9>', '<C-e>')
-m.i('<A-0>', '<Esc><C-y>`^i')
-m.i('<A-9>', '<Esc><C-e>`^i')
+--m.i('<A-0>', '<Esc><C-y>`^i')
+--m.i('<A-9>', '<Esc><C-e>`^i')
 m.x('<A-0>', '<C-y>')
 m.x('<A-9>', '<C-e>')
+m.c('<A-o>', '<Enter>')
 
 m.n('{', '_') -- move to start/end of line without leading/trailing spaces
 m.n('}', 'g_l')
@@ -117,13 +105,12 @@ m.x('}', 'g_l')
 m.o('{', function() vim.cmd'keepjumps silent! normal! _' end)
 m.o('}', 'g_')
 
-m.n('[[', '{') -- move to start/end of line without leading/trailing spaces
+m.n('[[', '{')
 m.x('[[', '{')
 m.n(']]', '}')
 m.x(']]', '}')
 
--- add insert and normal modes to command mode
-m.n(';', function()
+local function command_mode()
     local openGroup = vim.api.nvim_create_augroup('CommandGoup', { clear = true })
     vim.api.nvim_create_autocmd('FileType', {
         pattern = 'vim',
@@ -158,6 +145,17 @@ m.n(';', function()
             m.n(';', function() vim.api.nvim_feedkeys(':', 'n', false) end, mapOpts)
             m.n('<Esc>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
             m.n('<C-c>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
+            m.n('<A-;>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
+            m.qnoremap({ 'i', 'n', }, '<A-;>', function()
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+              vim.api.nvim_win_close(winId, true)
+            end, mapOpts)
+            m.qnoremap({ 'i', 'n', }, '<A-e>', function()
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+              vim.api.nvim_win_close(winId, true)
+            end, mapOpts)
+            m.n('<A-o>', '<Enter>')
+            m.i('<A-o>', '<Esc><Enter>')
 
             vim.cmd.startinsert()
             --[[local pos = vim.fn.getpos('.')
@@ -169,15 +167,22 @@ m.n(';', function()
     local cf = vim.api.nvim_replace_termcodes('<C-f>', true, false, true)
     -- feedkeys is neccessary as otherwise display is not updated
     vim.api.nvim_feedkeys(':'..cf, 'n', false)
-end)
+end
+
+-- add insert and normal modes to command mode
+m.n(';', command_mode)
+m.n('<A-e>', command_mode)
 
 m.t('<C-q>', '<C-\\><C-n>') -- go to normal mode in terminal
 
-local expr = { expr = true, remap = false }
+local expr = { expr = true }
 m.n('<A-j>', 'winheight(0)/4."<C-d>"', expr)
 m.n('<A-k>', 'winheight(0)/4."<C-u>"', expr)
 m.x('<A-j>', 'winheight(0)/4."<C-d>"', expr)
 m.x('<A-k>', 'winheight(0)/4."<C-u>"', expr)
+
+m.n('<A-h>', '_')
+m.n('<A-l>', 'g_l')
 
 m.n('j', 'gj')
 m.n('k', 'gk')
@@ -214,8 +219,39 @@ m.n('y<leader>l', "_vg_y`^")
 m.o('<leader>l', "<cmd>normal! _vg_l<cr>")
 m.x('<leader>l', "<esc>_vg_")
 
+m.n('<leader><Esc>', '<Nop>')
+m.x('<leader><Esc>', '<Nop>')
 
---bibibibibibibibibi
+m.i('<A-9>', '(')
+m.i('<A-0>', ')')
+
+m.i('<A-[>', '{')
+m.i('<A-]>', '}')
+
+m.i('<A-,>', '<')
+m.i('<A-.>', '>')
+
+m.i('<A-->', '_')
+m.i('<A-=>', '+')
+
+m.c('<A-9>', '(')
+m.c('<A-0>', ')')
+
+m.c('<A-[>', '{')
+m.c('<A-]>', '}')
+
+m.c('<A-,>', '<')
+m.c('<A-.>', '>')
+
+m.c('<A-->', '_')
+m.c('<A-=>', '+')
+
+m.i('<A-u>', '<bs>')
+m.c('<A-u>', '<bs>')
+
+m.n('<A-y>', 'yy')
+m.n('<A-v>', 'V')
+m.n('<A-d>', '"_dd')
 
 m.o('gp', function()
     --local pos = vim.fn.getpos('.')
