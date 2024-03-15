@@ -4,7 +4,7 @@ local m = require('mapping')
 
 vim.g.mapleader = ' '
 
-m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help 
+m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
 m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
 
 m.n('Q', '<Nop>')
@@ -16,14 +16,54 @@ m.i('<C-c>', '<C-c>`^')
 m.a('<A-i>', '<esc>')
 m.i('<A-i>', '<esc>`^')
 m.c('<A-i>', '<C-c>')
+m.n('<A-w>', '<C-w>')
+m.n('<A-s>', '<cmd>w<cr>')
+m.n('<A-q>', '<cmd>q<cr>')
+m.n('<A-a>', '<cmd>so<cr>')
+
+local alphanumeric = vim.regex('[[:upper:][:lower:][:digit:]]\\C')
+local function doMotion(command)
+  local prev_pos = vim.api.nvim_win_get_cursor(0)
+  for i = 1, 100 do
+    for j = 1, 100 do
+      vim.api.nvim_feedkeys(command, 'nx', false)
+
+      local new_pos = vim.api.nvim_win_get_cursor(0)
+      local char = vim.api.nvim_buf_get_text(
+        0, new_pos[1] - 1, new_pos[2],
+        new_pos[1] - 1, new_pos[2] + 1, {}
+      )[1]
+      if alphanumeric:match_str(char) then break end
+    end
+
+    break
+    --local new_pos = vim.api.nvim_win_get_cursor(0)
+    --if new_pos[1] ~= prev_pos[1] or math.abs(new_pos[2] - prev_pos[2]) > 1 then
+    --  break
+    --end
+    --prev_pos = new_pos
+  end
+end
+
+m.n('w', function() doMotion('w') end)
+m.n('b', function() doMotion('b') end)
+m.n('e', function()
+  vim.cmd([=[silent! normal! h]=])
+  doMotion('e')
+  vim.cmd([=[silent! normal! l]=])
+end)
+m.n('ge', function()
+  vim.cmd([=[silent! normal! h]=])
+  doMotion('ge')
+  vim.cmd([=[silent! normal! l]=])
+end)
+for _, key in ipairs{ 'E', 'gE' } do
+  m.n(key, '<cmd>silent! normal! h'..key..'l<cr>')
+end
 
 -- make move-to-end mapping move one past end
 m.n('$', 'g$') -- why does g$ already do 'l' with onemore ?? regular $ would be '$l'
 m.n('_', 'g^')
-
-for _, key in ipairs{ 'e', 'E', 'ge', 'gE' } do
-  m.n(key, '<cmd>silent! normal! h'..key..'l<cr>')
-end
 
 m.n('r', 'gr')
 m.n('a', 'A')
@@ -43,7 +83,10 @@ m.n('<space>', '<Nop>') -- treated as <leader>, long delay
 m.n('<C-space>', 'i <esc>`^')
 m.n('<bs>', 'i<bs><esc>`^')
 m.n('<enter>', 'i<enter><esc>`^')
+
+m.n('<A-o>', 'o<Esc>')
 m.i('<A-o>', '<Esc>`^o')
+m.c('<A-o>', '<CR>')
 
 m.n('<A-t>', 'gt')
 m.n('<A-g>', 'gT')
@@ -62,31 +105,33 @@ m.n('>>', 'i<C-t><Esc>`^') --tabs keep cursor in the same place
 m.n('<<', 'i<C-d><Esc>`^')
 m.n('<A-.>', 'i<C-t><Esc>`^')
 m.n('<A-,>', 'i<C-d><Esc>`^')
+m.i('<Tab>', '<C-t>')
+m.i('<S-Tab>', '<C-d>')
 --m.i('<A-.>', '<C-t>')
 --m.i('<A-,>', '<C-d>')
-do -- keep visual selection when changing indentation
-    local ns = vim.api.nvim_create_namespace('')
-    local function keepSelection(command)
-        local startPos = vim.fn.getpos('v')
-        local endPos   = vim.fn.getpos('.')
-        local sMark = vim.api.nvim_buf_set_extmark(0, ns, startPos[2]-1, startPos[3]-1, {})
-        local eMark = vim.api.nvim_buf_set_extmark(0, ns, endPos  [2]-1, endPos  [3]-1, {})
 
-        vim.cmd(command)
+local ns = vim.api.nvim_create_namespace('')
+local function keepSelection(command)
+    local startPos = vim.fn.getpos('v')
+    local endPos   = vim.fn.getpos('.')
+    local sMark = vim.api.nvim_buf_set_extmark(0, ns, startPos[2]-1, startPos[3]-1, {})
+    local eMark = vim.api.nvim_buf_set_extmark(0, ns, endPos  [2]-1, endPos  [3]-1, {})
 
-        local sPos = vim.api.nvim_buf_get_extmark_by_id(0, ns, sMark, {})
-        local ePos = vim.api.nvim_buf_get_extmark_by_id(0, ns, eMark, {})
-        vim.api.nvim_buf_del_extmark(0, ns, sMark)
-        vim.api.nvim_buf_del_extmark(0, ns, eMark)
+    vim.cmd(command)
 
-        vim.fn.setpos(".", { 0, sPos[1]+1, sPos[2]+1, 0 })
-        vim.cmd('normal! '..vim.fn.visualmode())
-        vim.fn.setpos(".", { 0, ePos[1]+1, ePos[2]+1, 0 })
-    end
+    local sPos = vim.api.nvim_buf_get_extmark_by_id(0, ns, sMark, {})
+    local ePos = vim.api.nvim_buf_get_extmark_by_id(0, ns, eMark, {})
+    vim.api.nvim_buf_del_extmark(0, ns, sMark)
+    vim.api.nvim_buf_del_extmark(0, ns, eMark)
 
-    m.x('<A-.>', function() keepSelection('normal! >') end)
-    m.x('<A-,>', function() keepSelection('normal! <') end)
+    vim.fn.setpos(".", { 0, sPos[1]+1, sPos[2]+1, 0 })
+    vim.cmd('normal! '..vim.fn.visualmode())
+    vim.fn.setpos(".", { 0, ePos[1]+1, ePos[2]+1, 0 })
 end
+
+-- keep visual selection when changing indentation
+m.x('<A-.>', function() keepSelection('normal! >') end)
+m.x('<A-,>', function() keepSelection('normal! <') end)
 
 m.n(')', '<C-y>') -- move screen but not cursor
 m.n('(', '<C-e>')
@@ -146,6 +191,7 @@ local function command_mode()
             m.n('<Esc>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
             m.n('<C-c>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
             m.n('<A-;>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
+            m.n('<cr>', '<cr>', mapOpts) -- default cr behavior
             m.qnoremap({ 'i', 'n', }, '<A-;>', function()
               vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
               vim.api.nvim_win_close(winId, true)
@@ -154,8 +200,8 @@ local function command_mode()
               vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
               vim.api.nvim_win_close(winId, true)
             end, mapOpts)
-            m.n('<A-o>', '<Enter>')
-            m.i('<A-o>', '<Esc><Enter>')
+            m.n('<A-o>', '<Enter>', mapOpts)
+            m.i('<A-o>', '<Esc><Enter>', mapOpts)
 
             vim.cmd.startinsert()
             --[[local pos = vim.fn.getpos('.')
@@ -171,7 +217,14 @@ end
 
 -- add insert and normal modes to command mode
 m.n(';', command_mode)
+m.x(';', command_mode)
+m.n(':', '<Nop>')
 m.n('<A-e>', command_mode)
+m.x('<A-e>', command_mode)
+m.i('<A-e>', function()
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+  command_mode()
+end)
 
 m.t('<C-q>', '<C-\\><C-n>') -- go to normal mode in terminal
 
@@ -181,8 +234,16 @@ m.n('<A-k>', 'winheight(0)/4."<C-u>"', expr)
 m.x('<A-j>', 'winheight(0)/4."<C-d>"', expr)
 m.x('<A-k>', 'winheight(0)/4."<C-u>"', expr)
 
+-- <A-j> and <A-k> are remapped system-wide to these keys
+m.n('<Up>', 'winheight(0)/4."<C-u>"', expr)
+m.n('<Down>', 'winheight(0)/4."<C-d>"', expr)
+m.x('<Up>', 'winheight(0)/4."<C-u>"', expr)
+m.x('<Down>', 'winheight(0)/4."<C-d>"', expr)
+
 m.n('<A-h>', '_')
 m.n('<A-l>', 'g_l')
+m.x('<A-h>', '_')
+m.x('<A-l>', 'g_l')
 
 m.n('j', 'gj')
 m.n('k', 'gk')
@@ -252,6 +313,7 @@ m.c('<A-u>', '<bs>')
 m.n('<A-y>', 'yy')
 m.n('<A-v>', 'V')
 m.n('<A-d>', '"_dd')
+m.x('<A-d>', '"_dd')
 
 m.o('gp', function()
     --local pos = vim.fn.getpos('.')
@@ -300,19 +362,33 @@ m.x('<leader>p', function()
     vim.fn.setreg(register, regInfo)
 end)
 
+m.n('<A-p>', function()
+    local register = vim.api.nvim_get_vvar('register')
+    local regType = vim.fn.getregtype(register)
+    if regType == '' then --empty or unknown
+        return ''
+    else
+        local line = vim.fn.getline('.')
+        if line == '' then
+            vim.cmd('put! '..register)
+            vim.cmd([=[keepjumps normal! `]l]=])
+        else
+            vim.cmd('put '..register)
+            vim.cmd([=[keepjumps normal! `]l]=])
+        end
+    end
+end)
+
 m.n('p', function()
     local register = vim.api.nvim_get_vvar('register')
     local regType = vim.fn.getregtype(register)
     if regType == '' then --empty or unknown
         return ''
-    elseif regType == 'v' then -- charvise
-		vim.cmd([=[normal! m`]=])
+    elseif regType == 'v' then -- charwise
 		vim.cmd([=[keepjumps normal! "]=]..register..'P`]l')
 	elseif string.byte(regType, 1) == 0x16 then -- blockwise
-		vim.cmd([=[normal! m`]=])
         vim.cmd([=[keepjumps normal! "]=]..register..'P')
     else
-		vim.cmd([=[normal! m`]=])
 		vim.cmd([=[keepjumps normal! "]=]..register.."p`]l")
     end
 end)
@@ -322,10 +398,8 @@ m.n('P', function()
     if regType == '' then --empty or unknown
         return ''
 	elseif string.byte(regType, 1) == 0x16 then -- blockwise
-		vim.cmd([=[normal! m`]=])
         vim.cmd([=[keepjumps normal! "]=]..register..'P')
     else
-		vim.cmd([=[normal! m`]=])
 		vim.cmd([=[keepjumps normal! "]=]..register.."P`[")
     end
 end)
@@ -353,6 +427,15 @@ m.x('P', function()
     end
 end)
 
+m.o('f', '<cmd>norm! gg0vG$<cr>')
+m.x('f', '<esc>gg0vG$')
+
+local function cmp2(p1, p2) -- pos >= pos2
+    return p1[1] > p2[1] or (p1[1] == p2[1] and p1[2] >= p2[2])
+end
+
+m.n('<A-f>', '==')
+m.x('<A-f>', function() keepSelection('norm! =') end)
 
 local quickfixGroup = vim.api.nvim_create_augroup('QuickfixListMappings', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {

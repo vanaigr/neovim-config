@@ -20,9 +20,3 @@ lsp.on_attach(function(client, bufnr)
     m.n('gd', function() vim.lsp.buf.definition() end, options)
     m.n('gD', function() vim.lsp.buf.declaration() end, options)
 end)
-
-require('mason').setup{}
-require('mason-lspconfig').setup{
-  ensure_installed = { 'clangd', 'pyre' },
-  handlers = { lsp.default_setup },
-}

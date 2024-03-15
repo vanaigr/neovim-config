@@ -5,6 +5,8 @@ local lsp = require('lsp-zero')
 
 --local luasnip = require('luasnip')
 
+local win_config = { winhighlight = 'Normal:FloatBorder,FloatBorder:FloatBorder' }
+
 cmp.setup{
     --snippet = { expand = function(args) luasnip.lsp_expand(args.body) end },
     sources = cmp.config.sources{
@@ -15,32 +17,26 @@ cmp.setup{
         { name = 'buffer', max_item_count = 5 },
     },
     mapping = {
-        ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-        ['<C-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-        ['<tab>'] = cmp.mapping.confirm({ select = true }),
         --[[['<C-f>'] = cmp_action.luasnip_jump_forward(),
         ['<C-b>'] = cmp_action.luasnip_jump_backward(),]]
 
         ['<A-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
         ['<A-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+        ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+        ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
         ['<A-l>'] = cmp.mapping.confirm({ select = true }),
         ['<A-h>'] = cmp.mapping.abort(),
     },
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
+    --window = {
+    --    completion = cmp.config.window.bordered(win_config),
+    --    documentation = cmp.config.window.bordered(win_config),
+    --},
     formatting = lsp.cmp_format(),
-    experimental = {
-        ghost_text = true
-    }
+    --experimental = { ghost_text = true }
 }
+
 cmp.setup.cmdline('/', {
     mapping = {
-        ['<C-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
-        ['<C-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
-        ['<tab>'] = { c = cmp.mapping.confirm({ select = true }) },
-
         ['<A-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<A-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<A-l>'] = { c = cmp.mapping.confirm({ select = true }) },
@@ -51,10 +47,6 @@ cmp.setup.cmdline('/', {
 
 cmp.setup.cmdline(':', {
     mapping = {
-        ['<C-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
-        ['<C-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
-        ['<tab>'] = { c = cmp.mapping.confirm({ select = true }) },
-
         ['<A-k>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<A-j>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
         ['<A-l>'] = { c = cmp.mapping.confirm({ select = true }) },

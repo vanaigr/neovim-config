@@ -63,7 +63,7 @@ require('lualine').setup{
     lualine_a = {'mode'},
     lualine_b = {'branch', 'diff'},
     lualine_c = { {'diagnostics', symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'}} },
-    lualine_x = {''},
+    lualine_x = {},
     lualine_y = {'filename'},
     lualine_z = {'location', 'progress'}
   },

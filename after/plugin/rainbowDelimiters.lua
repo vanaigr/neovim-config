@@ -6,7 +6,7 @@ local function initColors()
     h('Yellow', '#cfc730')
     h('Green', '#53bb2a')
     h('Cyan', '#307f7f')
-    h('Blue', '#422cd6')
+    h('Blue', '#4621ff')
     h('Violet', '#f33e6a')
 end
 

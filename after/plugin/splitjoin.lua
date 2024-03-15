@@ -1,24 +1,34 @@
 local vim = vim
 
-local group = vim.api.nvim_create_augroup('TreesjLoad', { clear = true })
-vim.api.nvim_create_autocmd('VimEnter', {
-    pattern = '*',
-    callback = function()
-        local tsj = require('treesj')
+local load = true
+local function setup(fLoad)
+  if load then
+    load = fLoad
 
-        tsj.setup{
-            use_default_keymaps = false,
-            check_syntax_error = false,
-            max_join_length = 500, -- if called erroneously
-            cursor_behavior = 'hold',
-            notify = true,
-            dot_repeat = false,
-        }
+    vim.api.nvim_exec_autocmds('User', { pattern = 'LoadTreesj' })
 
-        local m = require('mapping')
+    local p = require('treesj')
+    p.setup{
+      use_default_keymaps = false,
+      check_syntax_error = false,
+      max_join_length = 500, -- if called erroneously
+      cursor_behavior = 'hold',
+      notify = true,
+      dot_repeat = false,
+    }
+    return p
+  else
+    load = fLoad
+    return require('treesj')
+  end
+end
 
-        m.n('<leader>s', ":TSJToggle<cr>")
-        m.n('<leader>S', ":TSJSplit<cr>")
-    end,
-    group = group,
-})
+local m = require('mapping')
+
+m.n('<leader>s', function()
+  setup().toggle()
+end)
+
+m.n('<leader>S', function()
+  setup().split()
+end)
