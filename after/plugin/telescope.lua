@@ -1,10 +1,12 @@
 local vim = vim
 
+-- I LOVE USING TEXT FOR NON-TEXT THINGS
 local function getProjectDir()
   local utils = require("telescope.utils")
 
   local bufDir = vim.fn.fnameescape(utils.buffer_dir())
-  local handle = io.popen('git -C '..bufDir..' rev-parse --show-toplevel 2>&1', 'r')
+  -- No idea how this works, couldn't find anything about rev-parse show-toplevel and '--'
+  local handle = io.popen('git rev-parse --show-toplevel -- '..bufDir..' 2>&1', 'r')
 
   if handle == nil then
     vim.api.nvim_echo({{ "Couldn't launch git rev-parse to get toplevel directory", 'ErrorMsg' }}, true, {})
@@ -17,12 +19,12 @@ local function getProjectDir()
     return bufDir
   end
 
-  out = out:gsub('^%s*(.-)%s*$', '%1') -- thanks to someone who put platworm-specific newline in there
-  if out == '' then
+  local line = out:match("[^\r\n]*")
+  if line == '' then
     vim.api.nvim_echo({{ 'empty git path', 'ErrorMsg' }}, true, {})
     return bufDir
   end
-  return out
+  return line
 end
 
 local m = require('mapping')
@@ -96,4 +98,8 @@ end)
 m.n('<leader>fr', function()
   setup()
   require('telescope.builtin').reloader{}
+end)
+m.n('<leader>fs', function()
+  setup()
+  require('telescope.builtin').lsp_workspace_symbols{}
 end)

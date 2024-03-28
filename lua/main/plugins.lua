@@ -13,7 +13,7 @@ return packer.startup(function(use)
 
     use{
         'Wansmer/treesj',
-        requires = { 'VanaIgr/nvim-treesitter' }, -- nvim-treesitter bugfix
+        requires = { 'nvim-treesitter/nvim-treesitter' },
         event = 'User LoadTreesj',
     } -- split/join
 
@@ -27,7 +27,7 @@ return packer.startup(function(use)
     use{ 'kylechui/nvim-surround' }
     use{ 'mbbill/undotree' }
     use{ 'numToStr/Comment.nvim' }
-    use{ 'VanaIgr/nvim-treesitter' } -- bugfix
+    use{ 'nvim-treesitter/nvim-treesitter' }
     use{ 'bkad/CamelCaseMotion' }
     use{ 'petertriho/nvim-scrollbar' }
     use{ 'nvim-lualine/lualine.nvim' }

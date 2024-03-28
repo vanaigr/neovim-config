@@ -218,7 +218,6 @@ end
 -- add insert and normal modes to command mode
 m.n(';', command_mode)
 m.x(';', command_mode)
-m.n(':', '<Nop>')
 m.n('<A-e>', command_mode)
 m.x('<A-e>', command_mode)
 m.i('<A-e>', function()
@@ -227,6 +226,9 @@ m.i('<A-e>', function()
 end)
 
 m.t('<C-q>', '<C-\\><C-n>') -- go to normal mode in terminal
+
+m.n('n', '<cmd>keepjumps normal! n<cr>')
+m.n('N', '<cmd>keepjumps normal! N<cr>')
 
 local expr = { expr = true }
 m.n('<A-j>', 'winheight(0)/4."<C-d>"', expr)

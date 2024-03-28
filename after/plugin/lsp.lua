@@ -7,6 +7,14 @@ local m = require('mapping')
 lsp.on_attach(function(client, bufnr)
     local options = { buffer = bufnr }
 
+    m.n('<A-l>a', function() vim.lsp.buf.code_action() end, options)
+    m.n('<A-l>h', function() vim.lsp.buf.hover() end, options)
+    m.n('<A-l>s', function() vim.lsp.buf.signature_help() end, options)
+    m.n('<A-l>v', function() vim.lsp.buf.rename() end, options)
+    m.n('<A-l>r', function() vim.lsp.buf.references() end, options)
+
+    m.n('<A-l>d', function() vim.diagnostic.open_float() end, options)
+
     m.n('<C-l>a', function() vim.lsp.buf.code_action() end, options)
     m.n('<C-l>h', function() vim.lsp.buf.hover() end, options)
     m.n('<C-l>s', function() vim.lsp.buf.signature_help() end, options)

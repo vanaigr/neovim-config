@@ -40,11 +40,12 @@ if true then return end
 local isSetup = false
 local norm
 
-function setup(easyword)
-    local labels = { -- qwerty
-      's', 'j', 'k', 'd', 'l', 'f', 'c', 'n', 'i', 'e', 'w', 'r', 'o',
-      'm', 'u', 'v', 'a', 'q', 'p', 'x', 'z', '/',
-    }
+local labels = { -- qwerty
+    's', 'j', 'k', 'd', 'l', 'f', 'c', 'n', 'i', 'e', 'w', 'r', 'o',
+    'm', 'u', 'v', 'a', 'q', 'p', 'x', 'z', '/',
+}
+
+local function setup(easyword)
 
     local normRegex, normCache = {}, {}
 
