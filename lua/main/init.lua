@@ -44,11 +44,13 @@ vim.opt.scrolloff = 4
 
 vim.opt.virtualedit = 'onemore,block'
 vim.opt.selection = 'exclusive'
+vim.opt.mouse = '' -- don't move cursor when focusing nvim-qt window
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 vim.opt.cmdheight = 2 -- for remapping ; to open c_CTRL-f
+--vim.opt.breakindent = true -- breakindent will forever be slow :(
 
 vim.api.nvim_create_autocmd("BufEnter", {
     callback = function()
@@ -82,5 +84,3 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
         end)
     end,
 })
-
---vim.opt.breakindent = true -- breakindent will forever be slow :(

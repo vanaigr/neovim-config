@@ -87,6 +87,7 @@ m.n('<enter>', 'i<enter><esc>`^')
 m.n('<A-o>', 'o<Esc>')
 m.i('<A-o>', '<Esc>`^o')
 m.c('<A-o>', '<CR>')
+m.n('<A-n>', '<cmd>noh<cr>')
 
 m.n('<A-t>', 'gt')
 m.n('<A-g>', 'gT')

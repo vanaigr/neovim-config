@@ -78,7 +78,7 @@ m.n('<leader>ff', function()
     hidden = false,
   }
 end)
-m.n('<leader>fO', function()
+m.n('<leader>fo', function()
   setup()
   require('telescope.builtin').find_files{
     cwd = vim.fn.stdpath('config'),
@@ -87,7 +87,7 @@ m.n('<leader>fO', function()
   }
   --require('telescope.builtin').oldfiles{}
 end)
-m.n('<leader>fo', function()
+m.n('<leader>fO', function()
   setup()
   require('telescope.builtin').oldfiles{}
 end)

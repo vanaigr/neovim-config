@@ -21,7 +21,7 @@ return packer.startup(function(use)
 
     use{ 'chentoast/marks.nvim' }
     use{ 'tpope/vim-fugitive' } -- git
-    use{ 'VanaIgr/targets.vim' } -- replaced with unmerged bugfix
+    use{ 'vanaigr/targets.vim' } -- replaced with unmerged bugfix
     use{ 'kylechui/nvim-surround' }
     use{ 'mbbill/undotree' }
     use{ 'numToStr/Comment.nvim' }
@@ -44,7 +44,7 @@ return packer.startup(function(use)
     use{ 'hrsh7th/cmp-nvim-lsp' }
 
     use{
-        'nvim-telescope/telescope.nvim', tag = '0.1.4',
+        'nvim-telescope/telescope.nvim',
         requires = { {'nvim-lua/plenary.nvim'} },
         event = 'User LoadTelescope', -- somehow LazyLoadTelescope doesn't work...
     }
