@@ -41,6 +41,7 @@ return packer.startup(function(use)
     use{ 'hrsh7th/cmp-buffer' } -- autocomplete without lsp
     use{ 'hrsh7th/cmp-cmdline' }
     use{ 'hrsh7th/cmp-nvim-lua' }
+    use{ 'hrsh7th/cmp-nvim-lsp' }
 
     use{
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
@@ -51,25 +52,25 @@ return packer.startup(function(use)
     use{
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v3.x',
-        requires = {
-            {
-                'williamboman/mason.nvim',
-                -- super slow...
-                cmd = { 'Mason', 'MasonUpdate', 'MasonInstall', 'MasonUninstall', 'MasonLog' },
-                config = function()
-                    require('mason').setup{}
-                    require('mason-lspconfig').setup{
-                        ensure_installed = { 'clangd', 'pyre' },
-                        handlers = { require('lsp-zero').default_setup },
-                    }
-                end,
-            },
-            { 'williamboman/mason-lspconfig.nvim' },
-
-            {'neovim/nvim-lspconfig'},
-            {'hrsh7th/nvim-cmp'},
-            {'hrsh7th/cmp-nvim-lsp'},
-            --{ 'L3MON4D3/LuaSnip' },
-        }
+        requires = { { 'neovim/nvim-lspconfig' } }
     }
+
+    use{ -- super slow (half the startup time)
+        'williamboman/mason.nvim',
+        cmd = {
+            'Mason', 'MasonUpdate', 'MasonInstall',
+            'MasonUninstall', 'MasonLog',
+        },
+        config = function()
+            require('mason').setup{}
+            --require('mason-lspconfig').setup{
+            --    ensure_installed = { 'clangd' },
+            --    handlers = { require('lsp-zero').default_setup },
+            --}
+        end,
+    }
+    --{
+    --    event = 'User LoadMasonLspconfig',
+    --    'williamboman/mason-lspconfig.nvim',
+    --},
 end)

@@ -1,8 +1,16 @@
 local vim = vim -- fix lsp warning
 
-local lsp = require('lsp-zero')
+local separator
+if vim.fn.has('win32') or vim.fn.has('win64') then separator = ';'
+else separator = ':' end
+
+-- use mason path
+local mason_path = vim.fn.stdpath('data') .. '/mason/bin'
+vim.env.PATH = mason_path .. separator .. vim.env.PATH
 
 local m = require('mapping')
+
+local lsp = require('lsp-zero')
 
 lsp.on_attach(function(client, bufnr)
     local options = { buffer = bufnr }
@@ -28,3 +36,7 @@ lsp.on_attach(function(client, bufnr)
     m.n('gd', function() vim.lsp.buf.definition() end, options)
     m.n('gD', function() vim.lsp.buf.declaration() end, options)
 end)
+
+-- Do this manually since Mason is slow
+lsp.default_setup('lua_ls')
+lsp.default_setup('clangd')
