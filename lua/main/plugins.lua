@@ -37,7 +37,6 @@ return packer.startup(function(use)
     use{ 'VanaIgr/easyword.nvim' }
 
     use{ 'hrsh7th/nvim-cmp' }
-    use{ 'hrsh7th/cmp-path' }
     use{ 'hrsh7th/cmp-buffer' } -- autocomplete without lsp
     use{ 'hrsh7th/cmp-cmdline' }
     use{ 'hrsh7th/cmp-nvim-lua' }

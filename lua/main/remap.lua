@@ -179,6 +179,8 @@ local function command_mode()
                 group = closeGroup
             })
 
+            vim.api.nvim_exec_autocmds('User', { pattern = 'SetupCommandCMP' })
+
             -- nvim buf set opt backspace - eol
 
             vim.api.nvim_win_set_height(winId, 1)
