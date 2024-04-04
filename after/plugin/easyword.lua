@@ -2,12 +2,13 @@ local vim = vim
 
 local _ = [==[
 vim.keymap.set('n', 's', function ()
-  require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
+    require('leap')
+    require('leap-by-word').leap() --.leap { target_windows = { vim.api.nvim_get_current_win() } }
 end)
 
 local function setColors()
   vim.api.nvim_set_hl(0, 'Cursor', { bg = 'white', fg = 'black' })
-  vim.api.nvim_set_hl(0, 'LeapBackdrop', { bg = 'yellow' })
+  vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'Comment' })
 end
 
 local group = vim.api.nvim_create_augroup('LeapHighlighting', { clear = true })
@@ -42,69 +43,66 @@ local norm
 
 local labels = { -- qwerty
     's', 'j', 'k', 'd', 'l', 'f', 'c', 'n', 'i', 'e', 'w', 'r', 'o',
-    'm', 'u', 'v', 'a', 'q', 'p', 'x', 'z', '/',
+    'm', 'u', 'v', 'a', 'q', 'x', 'z',
 }
 
+--local left = vim.fn.split([==[123456!@#$%^qwertQWERTasdfgASDFGzxcvbZXCVB`~]==], '\\zs')
+--local right = vim.fn.split([==[7890-=&*()_+yuiop[]YUIOP{}hjkl;'HJKL:"nm,./NM<>?\|]==], '\\zs')
+local left = vim.fn.split([==[12345!@#$%qwertQWERTasdfgASDFGzxcvZXCV`~]==], '\\zs')
+local right = vim.fn.split([==[7890-=&*()_+uiop[]UIOP{}hjkl;'HJKL:"nm,./NM<>?\|]==], '\\zs')
+local key_hands = {}
+for _, key in ipairs(left) do key_hands[key] = 0 end
+for _, key in ipairs(right) do key_hands[key] = 1 end
+
 local function setup(easyword)
+    local normList = {}
+    local charRegex = {}
 
-    local normRegex, normCache = {}, {}
-
-    for i = 1, 8 do
-        local ch = string.char(i)
-        normCache[ch] = ch
-    end
-    normCache['\t'] = ' '
-    normCache['\n'] = ' '
-    for i = 11, 31 do
-        local ch = string.char(i)
-        normCache[ch] = ch
-    end
+    normList['\t'] = ' '
+    normList['\n'] = ' '
+    normList['\r'] = ' '
     for i = 32, 64 do
         local ch = string.char(i)
-        normRegex[ch] =  vim.regex('^[[='..ch..'=]]\\c$')
-        normCache[ch] = ch
+        charRegex[ch] = vim.regex('^[[='..ch..'=]]$\\c')
+        normList[ch] = ch
     end
     for i = 1, 26 do -- A-Z => a-z
-        normCache[string.char(64 + i)] = string.char(96 + i)
+        normList[string.char(64 + i)] = string.char(96 + i)
     end
     for i = 91, 126 do
         local ch = string.char(i)
-        normRegex[ch] = vim.regex('^[[='..ch..'=]]\\c$')
-        normCache[ch] = ch
-    end
-    do
-        local ch = string.char(127)
-        normCache[ch] = ch
+        charRegex[ch] = vim.regex('^[[='..ch..'=]]$\\c')
+        normList[ch] = ch
     end
 
     -- note: langmap doesn't work on getcharstr()
-    local qwerty    = vim.fn.split([==[qwertyuiop[]asdfghjkl;'zxcvbnm,.]==], '\\zs')
-    local cyrillic  = vim.fn.split([==[йцукенгшщзхъфывапролджэячсмитьбю]==], '\\zs')
-    local cyrillicU = vim.fn.split([==[ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ]==], '\\zs')
+    local qwerty    = vim.fn.split([==[qwertyuiop[]asdfghjkl;'zxcvbnm,.`]==], '\\zs')
+    local cyrillic  = vim.fn.split([==[йцукенгшщзхъфывапролджэячсмитьбюё]==], '\\zs')
+    local cyrillicU = vim.fn.split([==[ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ]==], '\\zs')
 
     -- no regex since vim doesn't support equivalence classes for cyrillic
-    for i, ch in ipairs(cyrillic) do normCache[ch] = qwerty[i] end
-    for i, ch in ipairs(cyrillicU) do normCache[ch] = qwerty[i] end
-    normCache['ё'] = '`'
-    normCache['Ё'] = '`'
+    for i = 1, #cyrillic do
+        normList[cyrillic [i]] = qwerty[i]
+        normList[cyrillicU[i]] = qwerty[i]
+    end
+    normList['№'] = '#'
 
     norm = function(char)
-        local v = normCache[char]
+        local v = normList[char]
         if v then return v end
 
-        for k, pattern in pairs(normRegex) do
+        for k, pattern in pairs(charRegex) do
             if pattern:match_str(char) then
-                normCache[char] = k
+                normList[char] = k
                 return k
             end
         end
 
-        return nil
+        return ' '
     end
 
     easyword.apply_default_highlight()
 end
-
 
 local function jump(recover_key)
   local easyword = require('easyword')
@@ -117,6 +115,7 @@ local function jump(recover_key)
     labels = labels,
     char_normalize = norm,
     recover_key = recover_key,
+    key_groups = key_hands,
   })
 end
 

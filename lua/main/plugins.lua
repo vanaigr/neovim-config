@@ -19,8 +19,6 @@ return packer.startup(function(use)
 
     use{ 'mg979/vim-visual-multi' } -- multicursor
 
-    use{ 'ggandor/leap.nvim' }
-
     use{ 'chentoast/marks.nvim' }
     use{ 'tpope/vim-fugitive' } -- git
     use{ 'VanaIgr/targets.vim' } -- replaced with unmerged bugfix
@@ -34,7 +32,10 @@ return packer.startup(function(use)
     use{ 'HiPhish/rainbow-delimiters.nvim' }
     use{ 'echasnovski/mini.nvim' }
 
-    use{ 'VanaIgr/easyword.nvim' }
+    use{ 'vanaigr/easyword.nvim' }
+
+    use{ 'ggandor/leap.nvim' }
+    use{ 'Sleepful/leap-by-word.nvim' }
 
     use{ 'hrsh7th/nvim-cmp' }
     use{ 'hrsh7th/cmp-buffer' } -- autocomplete without lsp
