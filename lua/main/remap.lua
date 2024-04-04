@@ -156,77 +156,67 @@ m.x('[[', '{')
 m.n(']]', '}')
 m.x(']]', '}')
 
-local function command_mode()
-    local openGroup = vim.api.nvim_create_augroup('CommandGoup', { clear = true })
-    vim.api.nvim_create_autocmd('FileType', {
-        pattern = 'vim',
+local commandGoup = vim.api.nvim_create_augroup('CommandGoup', { clear = true })
+
+local function setup_cmd()
+    local winId = vim.api.nvim_get_current_win()
+    local bufId = vim.api.nvim_win_get_buf(winId)
+
+    local cmdOpt = { scope = 'local' }
+    local height = vim.api.nvim_get_option_value('cmdheight', cmdOpt)
+    local newHeight = math.max(height-2, 0)
+    vim.api.nvim_set_option_value('cmdheight', newHeight, cmdOpt)
+
+    vim.api.nvim_create_autocmd('CmdwinLeave', {
+        group = commandGoup, once = true,
         callback = function()
-            vim.api.nvim_del_augroup_by_id(openGroup)
-
-            local winId = vim.api.nvim_get_current_win()
-            local bufId = vim.api.nvim_win_get_buf(winId)
-
-            local cmdOpt = { scope = 'local' }
-            local oldHeight = vim.api.nvim_get_option_value('cmdheight', cmdOpt)
-            local height = vim.api.nvim_get_option_value('cmdheight', {})
-            vim.api.nvim_set_option_value('cmdheight', math.max(height-2, 0), cmdOpt)
-
-            local closeGroup = vim.api.nvim_create_augroup('CommandGoup', { clear = true })
-            vim.api.nvim_create_autocmd('WinClosed', {
-                pattern = ''..winId,
-                callback = function()
-                    vim.api.nvim_set_option_value('cmdheight', oldHeight, cmdOpt)
-                end,
-                group = closeGroup
-            })
-
-            vim.api.nvim_exec_autocmds('User', { pattern = 'SetupCommandCMP' })
-
-            -- nvim buf set opt backspace - eol
-
-            vim.api.nvim_win_set_height(winId, 1)
-            vim.api.nvim_win_set_option(winId, 'number', false)
-            vim.api.nvim_win_set_option(winId, 'relativenumber', false)
-
-            local mapOpts = { buffer = bufId }
-
-            m.n(';', function() vim.api.nvim_feedkeys(':', 'n', false) end, mapOpts)
-            m.n('<Esc>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
-            m.n('<C-c>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
-            m.n('<A-;>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
-            m.n('<cr>', '<cr>', mapOpts) -- default cr behavior
-            m.qnoremap({ 'i', 'n', }, '<A-;>', function()
-              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-              vim.api.nvim_win_close(winId, true)
-            end, mapOpts)
-            m.qnoremap({ 'i', 'n', }, '<A-e>', function()
-              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-              vim.api.nvim_win_close(winId, true)
-            end, mapOpts)
-            m.n('<A-o>', '<Enter>', mapOpts)
-            m.i('<A-o>', '<Esc><Enter>', mapOpts)
-
-            vim.cmd.startinsert()
-            --[[local pos = vim.fn.getpos('.')
-            pos[5] = 2147483647
-            vim.fn.setpos('.', pos)]]
+            if vim.api.nvim_get_option_value('cmdheight', cmdOpt) == newHeight then
+                vim.api.nvim_set_option_value('cmdheight', height, cmdOpt)
+            end
         end,
-        group = openGroup
     })
-    local cf = vim.api.nvim_replace_termcodes('<C-f>', true, false, true)
-    -- feedkeys is neccessary as otherwise display is not updated
-    vim.api.nvim_feedkeys(':'..cf, 'n', false)
+
+    vim.api.nvim_exec_autocmds('User', { pattern = 'SetupCommandCMP' })
+
+    -- nvim buf set opt backspace - eol
+
+    vim.api.nvim_win_set_height(winId, 1)
+    vim.api.nvim_win_set_option(winId, 'number', false)
+    vim.api.nvim_win_set_option(winId, 'relativenumber', false)
+
+    local mapOpts = { buffer = bufId }
+
+    m.n(';', function() vim.api.nvim_feedkeys(':', 'n', false) end, mapOpts)
+    m.n('<Esc>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
+    m.n('<C-c>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
+    m.n('<A-;>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
+    m.n('<cr>', '<cr>', mapOpts) -- default cr behavior
+    m.qnoremap({ 'i', 'n', }, '<A-;>', function()
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+      vim.api.nvim_win_close(winId, true)
+    end, mapOpts)
+    m.qnoremap({ 'i', 'n', }, '<A-e>', function()
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+      vim.api.nvim_win_close(winId, true)
+    end, mapOpts)
+    m.n('<A-o>', '<Enter>', mapOpts)
+    m.i('<A-o>', '<Esc><Enter>', mapOpts)
+
+    vim.cmd.startinsert()
 end
 
+local function command_mode()
+    vim.api.nvim_create_autocmd('CmdwinEnter', { group = commandGoup, once = true, callback = setup_cmd })
+    return 'q:'
+end
+local cmd_opts = { expr = true }
+
 -- add insert and normal modes to command mode
-m.n(';', command_mode)
-m.x(';', command_mode)
-m.n('<A-e>', command_mode)
-m.x('<A-e>', command_mode)
-m.i('<A-e>', function()
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-  command_mode()
-end)
+m.n(';', command_mode, cmd_opts)
+m.x(';', command_mode, cmd_opts)
+m.n('<A-e>', command_mode, cmd_opts)
+m.x('<A-e>', command_mode, cmd_opts)
+m.i('<A-e>', function() return '<Esc>' .. command_mode() end, cmd_opts)
 
 m.t('<C-q>', '<C-\\><C-n>') -- go to normal mode in terminal
 
