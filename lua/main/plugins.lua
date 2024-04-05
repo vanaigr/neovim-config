@@ -49,11 +49,7 @@ return packer.startup(function(use)
         event = 'User LoadTelescope', -- somehow LazyLoadTelescope doesn't work...
     }
 
-    use{
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v3.x',
-        requires = { { 'neovim/nvim-lspconfig' } }
-    }
+    use{ 'neovim/nvim-lspconfig' }
 
     use{ -- super slow (half the startup time)
         'williamboman/mason.nvim',
@@ -63,14 +59,6 @@ return packer.startup(function(use)
         },
         config = function()
             require('mason').setup{}
-            --require('mason-lspconfig').setup{
-            --    ensure_installed = { 'clangd' },
-            --    handlers = { require('lsp-zero').default_setup },
-            --}
         end,
     }
-    --{
-    --    event = 'User LoadMasonLspconfig',
-    --    'williamboman/mason-lspconfig.nvim',
-    --},
 end)

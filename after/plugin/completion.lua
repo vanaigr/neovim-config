@@ -2,10 +2,6 @@ local vim = vim
 
 local cmp = require('cmp')
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = false
-
-
 local menus = {
     ['buffer'] = 'buf',
     ['nvim_lua'] = 'vim',
@@ -27,7 +23,9 @@ local mapping = {
     -- <a-j> are remapped system-wide
     ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-    ['<A-l>'] = cmp.mapping.confirm({ select = true }),
+    --['<A-l>'] = cmp.mapping.confirm({ select = true }), -- no snipped engine configured ... (who uses snippets anyway?)
+    ['<A-h>'] = cmp.mapping.abort(),
+}
     ['<A-h>'] = cmp.mapping.abort(),
 }
 
