@@ -1,64 +1,67 @@
 local vim = vim -- fix lsp warning
 
-vim.cmd 'packadd packer.nvim'
-
-local packer = require('packer')
-
-packer.init{ max_jobs = 8 }
-
-return packer.startup(function(use)
-    use 'wbthomason/packer.nvim'
-
-    use{ 'rose-pine/neovim', as = 'rose-pine' } -- theme
-
-    use{
+require('lazy').setup({
+    { 'rose-pine/neovim', name = 'rose-pine' },
+    {
         'Wansmer/treesj',
-        requires = { 'nvim-treesitter/nvim-treesitter' },
-        event = 'User LoadTreesj',
-    } -- split/join
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        event = 'User LoadTreesj'
+    },
+    { 'mg979/vim-visual-multi' }, -- multicursor
 
-    use{ 'mg979/vim-visual-multi' } -- multicursor
+    { 'chentoast/marks.nvim' },
+    { 'tpope/vim-fugitive' }, -- git
+    { 'vanaigr/targets.vim' }, -- replaced with unmerged bugfix
+    { 'kylechui/nvim-surround' },
+    { 'mbbill/undotree' },
+    { 'numToStr/Comment.nvim' },
+    { 'nvim-treesitter/nvim-treesitter' },
+    { 'bkad/CamelCaseMotion' },
+    { 'petertriho/nvim-scrollbar' },
+    { 'nvim-lualine/lualine.nvim' },
+    { 'HiPhish/rainbow-delimiters.nvim' },
+    { 'echasnovski/mini.nvim' },
 
-    use{ 'chentoast/marks.nvim' }
-    use{ 'tpope/vim-fugitive' } -- git
-    use{ 'vanaigr/targets.vim' } -- replaced with unmerged bugfix
-    use{ 'kylechui/nvim-surround' }
-    use{ 'mbbill/undotree' }
-    use{ 'numToStr/Comment.nvim' }
-    use{ 'nvim-treesitter/nvim-treesitter' }
-    use{ 'bkad/CamelCaseMotion' }
-    use{ 'petertriho/nvim-scrollbar' }
-    use{ 'nvim-lualine/lualine.nvim' }
-    use{ 'HiPhish/rainbow-delimiters.nvim' }
-    use{ 'echasnovski/mini.nvim' }
+    { 'vanaigr/easyword.nvim' },
 
-    use{ 'vanaigr/easyword.nvim' }
+    { 'ggandor/leap.nvim', enabled = false, },
+    { 'Sleepful/leap-by-word.nvim', enabled = false, },
 
-    use{ 'ggandor/leap.nvim' }
-    use{ 'Sleepful/leap-by-word.nvim' }
+    { 'hrsh7th/nvim-cmp' },
+    { 'hrsh7th/cmp-buffer' }, -- autocomplete without lsp
+    { 'hrsh7th/cmp-cmdline' },
+    { 'hrsh7th/cmp-nvim-lua' },
+    { 'hrsh7th/cmp-nvim-lsp' },
 
-    use{ 'hrsh7th/nvim-cmp' }
-    use{ 'hrsh7th/cmp-buffer' } -- autocomplete without lsp
-    use{ 'hrsh7th/cmp-cmdline' }
-    use{ 'hrsh7th/cmp-nvim-lua' }
-    use{ 'hrsh7th/cmp-nvim-lsp' }
-
-    use{
+    {
         'nvim-telescope/telescope.nvim',
-        requires = { {'nvim-lua/plenary.nvim'} },
+        dependencies = { 'nvim-lua/plenary.nvim', },
         event = 'User LoadTelescope', -- somehow LazyLoadTelescope doesn't work...
-    }
+    },
 
-    use{ 'neovim/nvim-lspconfig' }
+    { 'neovim/nvim-lspconfig' },
 
-    use{ -- super slow (half the startup time)
+    { -- super slow (half the startup time)
         'williamboman/mason.nvim',
         cmd = {
             'Mason', 'MasonUpdate', 'MasonInstall',
             'MasonUninstall', 'MasonLog',
         },
-        config = function()
-            require('mason').setup{}
-        end,
-    }
-end)
+        config = function() require('mason').setup{} end,
+    },
+}, {
+    install = {
+        missing = false,
+        colorscheme = { "habamax" },
+    },
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                'gzip', 'matchit', 'matchparen',
+                'tarPlugin', 'tohtml', 'tutor',
+                'zipPlugin',
+            },
+        },
+    },
+    change_detection = { enabled = false },
+})

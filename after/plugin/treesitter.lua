@@ -1,7 +1,7 @@
 local vim = vim -- fix lsp warning
 
 require'nvim-treesitter.configs'.setup{
-    ensure_installed = { 'javascript', 'c', 'python', 'lua', 'vim', 'vimdoc', 'query' },
+    ensure_installed = {},
     sync_install = false,
     auto_install = true,
     highlight = {

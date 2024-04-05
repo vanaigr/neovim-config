@@ -2,8 +2,6 @@ local vim = vim -- fix lsp warning
 
 local m = require('mapping')
 
-vim.g.mapleader = ' '
-
 m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
 m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
 

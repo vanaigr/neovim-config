@@ -4,30 +4,29 @@ local vim = vim -- fix lsp warning
 vim.opt.cursorline = true
 
 require('rose-pine').setup{
-	variant = 'auto',
+	variant = 'main',
 
-  styles = {
-    bold = false,
-    italic = false,
-    transparency = false,
-  },
+    styles = {
+        bold = false,
+        italic = false,
+        transparency = false,
+    },
 
-  enable = {
-    terminal = false,
-    --legacy_highlights = true, -- Improve compatibility for previous versions of Neovim
-    legacy_highlights = false,
-    migrations = false, -- Handle deprecated options automatically
-  },
+    enable = {
+        terminal = false,
+        legacy_highlights = false,
+        migrations = false, -- Handle deprecated options automatically
+    },
 
-  highlight_groups = {
-    --CursorLine = { bg = 'foam', blend = 10 },
-    CursorLine = { bg = 'highlight_low' },
+    highlight_groups = {
+        --CursorLine = { bg = 'foam', blend = 10 },
+        CursorLine = { bg = 'highlight_low' },
 
-    YankHighlight = { bg = 'pine', fg="#20202e", blend = 80 },
+        YankHighlight = { bg = 'pine', fg="#20202e", blend = 80 },
 
-    Pmenu = { bg = 'overlay' },
-    PmenuSel = { reverse = true },
-  }
+        Pmenu = { bg = 'overlay' },
+        PmenuSel = { reverse = true },
+    }
 }
 
 vim.cmd('colorscheme rose-pine')

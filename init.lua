@@ -1,21 +1,15 @@
 local vim = vim -- fix lsp warning
 
-vim.api.nvim_exec2('language en_US', {})
-
-function LoadModule(name)
-    local loaded, result = pcall(require, name)
-
-    if not loaded then
-        print("ERROR. `" .. name .. "` not loaded: " .. result .. '\n')
-        return false, result
-    else
-        return true, result
-    end
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    print('Downloading Lazy.nvim')
+    vim.fn.system({
+        "git", "clone", "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable",
+        lazypath,
+    })
 end
-
-function P(v)
-    print(vim.inspect(v))
-    return v
-end
+vim.opt.rtp:prepend(lazypath)
 
 require('main')

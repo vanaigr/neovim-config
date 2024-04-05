@@ -1,9 +1,23 @@
 local vim = vim -- fix lsp warning
 
-LoadModule('main.plugins')
-LoadModule('main.remap')
+vim.api.nvim_exec2('language en_US', {})
 
-LoadModule('main.lua_explorer')
+function LoadModule(name)
+    local loaded, result = pcall(require, name)
+
+    if not loaded then
+        print("ERROR. `" .. name .. "` not loaded: " .. result .. '\n')
+        return false, result
+    else
+        return true, result
+    end
+end
+
+function P(v)
+    print(vim.inspect(v))
+    return v
+end
+
 
 vim.api.nvim_create_user_command('OpenConfig', function()
     vim.cmd('tabe ' .. vim.fn.stdpath('config'))
@@ -12,8 +26,10 @@ end, {})
 vim.api.nvim_create_user_command('UP' , "call search('[A-Z][A-Z]', 'besW')", {})
 vim.api.nvim_create_user_command('UPN', "call search('[A-Z][A-Z]', 'esW')", {})
 
-vim.opt.fileformat = 'unix'
+vim.opt.syntax = 'off'
+vim.g.mapleader = ' '
 
+vim.opt.fileformat = 'unix'
 
 vim.opt.langmap = "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
 vim.opt.langremap = false
@@ -84,3 +100,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
         end)
     end,
 })
+
+LoadModule('main.remap')
+LoadModule('main.plugins')
