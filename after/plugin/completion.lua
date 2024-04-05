@@ -26,6 +26,12 @@ local mapping = {
     --['<A-l>'] = cmp.mapping.confirm({ select = true }), -- no snipped engine configured ... (who uses snippets anyway?)
     ['<A-h>'] = cmp.mapping.abort(),
 }
+
+local cmd_mapping = {
+    ['<A-k>'] = cmp.mapping.select_prev_item(),
+    ['<A-j>'] = cmp.mapping.select_next_item(),
+    ['<Up>'] = cmp.mapping.select_prev_item(),
+    ['<Down>'] = cmp.mapping.select_next_item(),
     ['<A-h>'] = cmp.mapping.abort(),
 }
 
@@ -37,9 +43,7 @@ cmp.setup{
         {
             name = 'nvim_lsp',
             max_item_count = 3,
-            entry_filter = function(entry)
-                return entry:get_kind() ~= snippetKind
-            end,
+            entry_filter = function(entry) return entry:get_kind() ~= snippetKind end,
         },
         { name = 'buffer', max_item_count = 3 },
     },
@@ -47,9 +51,9 @@ cmp.setup{
     formatting = format,
 }
 
-cmp.setup.cmdline('/', {
-    mapping = mapping,
-    sources = { { name = 'buffer' } },
+cmp.setup.cmdline({ '/', '?' }, {
+    sources = cmp.config.sources{ { name = 'buffer', max_item_count = 5 } },
+    mapping = cmd_mapping,
     formatting = {
         fields = { 'abbr' },
         format = function(_, item)
