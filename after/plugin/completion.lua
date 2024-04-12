@@ -28,11 +28,11 @@ local mapping = {
 }
 
 local cmd_mapping = {
-    ['<A-k>'] = cmp.mapping.select_prev_item(),
-    ['<A-j>'] = cmp.mapping.select_next_item(),
-    ['<Up>'] = cmp.mapping.select_prev_item(),
-    ['<Down>'] = cmp.mapping.select_next_item(),
-    ['<A-h>'] = cmp.mapping.abort(),
+    ['<A-k>']  = cmp.mapping(cmp.mapping.select_prev_item(), { 'c' }),
+    ['<A-j>']  = cmp.mapping(cmp.mapping.select_next_item(), { 'c' }),
+    ['<Up>']   = cmp.mapping(cmp.mapping.select_prev_item(), { 'c' }),
+    ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c' }),
+    ['<A-h>']  = cmp.mapping(cmp.mapping.abort(), { 'c' }),
 }
 
 local snippetKind = cmp.lsp.CompletionItemKind.Snippet
