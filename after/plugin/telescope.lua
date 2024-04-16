@@ -1,30 +1,35 @@
 local vim = vim
 
+-- and this is multiple hundred lines across several files in Neogit...
+local function git_root(dir)
+    local stdout
+
+    local job = vim.fn.jobstart(
+        { 'git', 'rev-parse', '--show-toplevel' },
+        {
+            clear_env = true,
+            cwd = dir,
+            on_stdout = function(_, lines, _) stdout = lines end,
+            stdout_buffered = true,
+        }
+    )
+
+    local status = unpack(vim.fn.jobwait({ job }, 500))
+    if status ~= 0 or #stdout < 1 then return end
+    return stdout[1]
+end
+
+local function buffer_dir()
+    return vim.fn.expand("%:p:h")
+end
+
 -- I LOVE USING TEXT FOR NON-TEXT THINGS
 local function getProjectDir()
-  local utils = require("telescope.utils")
-
-  local bufDir = vim.fn.fnameescape(utils.buffer_dir())
-  -- No idea how this works, couldn't find anything about rev-parse show-toplevel and '--'
-  local handle = io.popen('git rev-parse --show-toplevel -- '..bufDir..' 2>&1', 'r')
-
-  if handle == nil then
-    vim.api.nvim_echo({{ "Couldn't launch git rev-parse to get toplevel directory", 'ErrorMsg' }}, true, {})
-    return bufDir
-  end -- portable ?handle:close()
-
-  local out = handle:read('*a')
-  if not handle:close() then
-    vim.api.nvim_echo({{ out, 'ErrorMsg' }}, true, {})
-    return bufDir
-  end
-
-  local line = out:match("[^\r\n]*")
-  if line == '' then
-    vim.api.nvim_echo({{ 'empty git path', 'ErrorMsg' }}, true, {})
-    return bufDir
-  end
-  return line
+  local buf_dir = buffer_dir()
+  local root = git_root(buf_dir)
+  print(buf_dir, root)
+  if root then return root
+  else return buf_dir end
 end
 
 local m = require('mapping')
@@ -72,8 +77,9 @@ end
 
 m.n('<leader>ff', function()
   setup()
+  local dir = getProjectDir()
   require('telescope.builtin').find_files{
-    cwd = getProjectDir(),
+    cwd = dir,
     no_ignore = false,
     hidden = false,
   }
