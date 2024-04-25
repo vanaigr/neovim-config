@@ -23,7 +23,6 @@ local function buffer_dir()
     return vim.fn.expand("%:p:h")
 end
 
--- I LOVE USING TEXT FOR NON-TEXT THINGS
 local function getProjectDir()
   local buf_dir = buffer_dir()
   local root = git_root(buf_dir)
@@ -55,6 +54,7 @@ local function setup(fLoad)
             ['<A-e>'] = actions.close,
             ['<A-h>'] = actions.close,
             ['<A-i>'] = actions.close,
+            ['<A-q>'] = actions.close,
           },
           n = {
             ['<A-k>'] = actions.move_selection_previous,
@@ -66,6 +66,7 @@ local function setup(fLoad)
             ['<A-e>'] = actions.close,
             ['<A-h>'] = actions.close,
             ['<A-i>'] = actions.close,
+            ['<A-q>'] = actions.close,
           },
         }
       }
@@ -75,13 +76,32 @@ local function setup(fLoad)
   end
 end
 
+local slash_num = ('/'):byte(1)
+local backslash_num = ('\\'):byte(1)
+
 m.n('<leader>ff', function()
   setup()
   local dir = getProjectDir()
   require('telescope.builtin').find_files{
     cwd = dir,
-    no_ignore = false,
-    hidden = false,
+    -- currently (04/2024) a bug in transform_path()
+    -- that plenary Path doesn't make_relative() if
+    -- if slashes are different
+    path_display = function(opts, path) -- expects utf8
+        local cwd = opts.cwd
+        local last_pos = 0
+        for i = 1, math.min(#cwd + 1, #path) do
+            local cb = cwd:byte(i) or slash_num
+            local pb = path:byte(i)
+            if (cb == slash_num or cb == backslash_num)
+                and (pb == slash_num or pb == backslash_num) then
+                last_pos = i
+            elseif cb ~= pb then break end -- don't bother w/ windows case folding
+        end
+        return path:sub(last_pos + 1)
+    end,
+    --no_ignore = false,
+    --hidden = false,
   }
 end)
 m.n('<leader>fo', function()
