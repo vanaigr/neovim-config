@@ -79,27 +79,29 @@ end
 local slash_num = ('/'):byte(1)
 local backslash_num = ('\\'):byte(1)
 
+-- currently (04/2024) a bug in transform_path()
+-- that plenary Path doesn't make_relative() if
+-- if slashes are different
+local function fix_path_display(opts, path) -- expects utf8
+    local cwd = opts.cwd
+    local last_pos = 0
+    for i = 1, math.min(#cwd + 1, #path) do
+        local cb = cwd:byte(i) or slash_num
+        local pb = path:byte(i)
+        if (cb == slash_num or cb == backslash_num)
+            and (pb == slash_num or pb == backslash_num) then
+            last_pos = i
+        elseif cb ~= pb then break end -- don't bother w/ windows case folding
+    end
+    return path:sub(last_pos + 1)
+end
+
 m.n('<leader>ff', function()
   setup()
   local dir = getProjectDir()
   require('telescope.builtin').find_files{
     cwd = dir,
-    -- currently (04/2024) a bug in transform_path()
-    -- that plenary Path doesn't make_relative() if
-    -- if slashes are different
-    path_display = function(opts, path) -- expects utf8
-        local cwd = opts.cwd
-        local last_pos = 0
-        for i = 1, math.min(#cwd + 1, #path) do
-            local cb = cwd:byte(i) or slash_num
-            local pb = path:byte(i)
-            if (cb == slash_num or cb == backslash_num)
-                and (pb == slash_num or pb == backslash_num) then
-                last_pos = i
-            elseif cb ~= pb then break end -- don't bother w/ windows case folding
-        end
-        return path:sub(last_pos + 1)
-    end,
+    path_display = fix_path_display,
     --no_ignore = false,
     --hidden = false,
   }
@@ -125,7 +127,15 @@ m.n('<leader>fr', function()
   setup()
   require('telescope.builtin').reloader{}
 end)
-m.n('<leader>fs', function()
+m.n('<leader>fw', function()
   setup()
   require('telescope.builtin').lsp_workspace_symbols{}
+end)
+m.n('<leader>fs', function()
+  setup()
+  local dir = getProjectDir()
+  require('telescope.builtin').live_grep{
+      cwd = dir,
+      path_display = fix_path_display,
+  }
 end)
