@@ -5,8 +5,7 @@ local m = require('mapping')
 m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
 m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
 
-m.n('Q', '<Nop>')
-m.n('ZZ', '<Nop>')
+--m.n('Q', '<Nop>')
 --m.n('gg', '<Nop>') -- accidentally press gg insead of hh
 
 m.i('<esc>', '<esc>`^') -- prevent cursor from moving when exiting insert mode
@@ -141,6 +140,8 @@ m.n('<A-9>', '<C-e>')
 m.x('<A-0>', '<C-y>')
 m.x('<A-9>', '<C-e>')
 m.c('<A-o>', '<Enter>')
+m.n('<A-3>', '#')
+m.n('<A-8>', '*')
 
 m.n('{', '_') -- move to start/end of line without leading/trailing spaces
 m.n('}', 'g_l')
@@ -211,6 +212,7 @@ local cmd_opts = { expr = true }
 
 -- add insert and normal modes to command mode
 m.n(';', command_mode, cmd_opts)
+m.i('<A-;>', ';')
 m.x(';', command_mode, cmd_opts)
 m.n('<A-e>', command_mode, cmd_opts)
 m.x('<A-e>', command_mode, cmd_opts)
@@ -306,7 +308,7 @@ m.c('<A-u>', '<bs>')
 m.n('<A-y>', 'yy')
 m.n('<A-v>', 'V')
 m.n('<A-d>', '"_dd')
-m.x('<A-d>', '"_dd')
+m.x('<A-d>', '"_d')
 
 m.o('gp', function()
     --local pos = vim.fn.getpos('.')
@@ -317,7 +319,6 @@ m.o('gp', function()
     --vim.api.nvim_win_set_cursor(0, { s[1], s[2] })
     --vim.cmd('normal! v')
 end)
-
 
 m.n('gp', function() -- select last changed area
     local pos = vim.fn.getpos('.')
@@ -338,12 +339,6 @@ m.n('<leader>p', function()
     vim.cmd([=[normal! m`]=])
     vim.cmd([=[keepjumps normal! "]=]..register.."p`]l")
     --vim.fn.setreg(register, regInfo) -- doesn't work work for some reason, regtype stays V, even though regInfo.type is 'v'
-end)
-m.n('<leader>P', function()
-    local register = '+'
-    local regValue = vim.fn.getreg(register)
-    vim.cmd([=[normal! m`]=])
-    vim.cmd([=[keepjumps normal! "]=]..register.."p`]l")
 end)
 m.x('<leader>p', function()
     local visualMode = vim.fn.mode():sub(1, 1)
@@ -385,17 +380,6 @@ m.n('p', function()
 		vim.cmd([=[keepjumps normal! "]=]..register.."p`]l")
     end
 end)
-m.n('P', function()
-    local register = vim.api.nvim_get_vvar('register')
-    local regType = vim.fn.getregtype(register)
-    if regType == '' then --empty or unknown
-        return ''
-	elseif string.byte(regType, 1) == 0x16 then -- blockwise
-        vim.cmd([=[keepjumps normal! "]=]..register..'P')
-    else
-		vim.cmd([=[keepjumps normal! "]=]..register.."P`[")
-    end
-end)
 
 m.x('p', function()
     local register = vim.api.nvim_get_vvar('register')
@@ -408,27 +392,31 @@ m.x('p', function()
         vim.fn.setreg(register, regContent, regType)
     end
 end)
-m.x('P', function()
-    local register = vim.api.nvim_get_vvar('register')
-    local regType = vim.fn.getregtype(register)
-    if regType == '' then --empty or unknown
-        return ''
-	else
-        local regContent = vim.fn.getreg(register)
-		vim.cmd([=[keepjumps normal! "]=]..register..'P`[')
-        vim.fn.setreg(register, regContent, regType)
-    end
-end)
 
 m.o('f', '<cmd>norm! gg0vG$<cr>')
 m.x('f', '<esc>gg0vG$')
 
-local function cmp2(p1, p2) -- pos >= pos2
-    return p1[1] > p2[1] or (p1[1] == p2[1] and p1[2] >= p2[2])
-end
-
 m.n('<A-f>', '==')
 m.x('<A-f>', function() keepSelection('norm! =') end)
+
+
+local function adjustFontSize(amount)
+    if not vim.fn.has('gui_running') then return end
+
+    local orig_font = vim.api.nvim_get_option_value('guifont', {})
+    local parts = vim.split(orig_font, ':h')
+    assert(#parts == 2)
+
+    local font_size = tonumber(parts[2])
+    local new_size = font_size + amount
+    if new_size < 4 then new_size = 4
+    elseif new_size > 40 then new_size = 40 end
+
+    vim.opt.guifont = parts[1] .. ':h' .. new_size
+end
+
+m.n('<C-=>', function() adjustFontSize( 1) end)
+m.n('<C-->', function() adjustFontSize(-1) end)
 
 local quickfixGroup = vim.api.nvim_create_augroup('QuickfixListMappings', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
@@ -458,19 +446,11 @@ end
 LoadModule('main.runBuf')
 
 if LoadModule('main.vim') then
-    --change font size
-    m.n('<C-=>', '<cmd>call AdjustFontSize(1)<cr>')
-    m.n('<C-->', '<cmd>call AdjustFontSize(-1)<cr>')
-
     -- some old vim remappings
     -- TODO: redo with treesitter
-
     --variable/property left hand size
     m.n('d<leader>v', "<cmd>call ExecDelLines(0)<cr>")
     m.n('y<leader>v', "<cmd>call SelectVariableValue(0)<cr>y`^")
     m.x('<leader>v', "<esc><cmd>call SelectVariableValue(0)<cr>")
     m.o('<leader>v', "<cmd>call SelectVariableValue(0)<cr>")
-
-    --go to function declaration from where it is called
-    m.n('g<leader>f', "<cmd>call GoToFunctionDecl()<cr>")
 end
