@@ -9,8 +9,14 @@ require('lazy').setup({
     },
     { 'mg979/vim-visual-multi' }, -- multicursor
 
-    { 'tpope/vim-fugitive' }, -- git
     { 'vanaigr/mark-signs.nvim' },
+    { 'tpope/vim-fugitive', enabled = true }, -- git
+    {
+        "NeogitOrg/neogit",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        }
+    },
     { 'vanaigr/targets.vim' }, -- replaced with unmerged bugfix
     { 'kylechui/nvim-surround' },
     { 'mbbill/undotree' },
