@@ -39,13 +39,13 @@ local snippetKind = cmp.lsp.CompletionItemKind.Snippet
 
 cmp.setup{
     sources = cmp.config.sources{
-        { name = 'nvim_lua', max_item_count = 3 },
+        { name = 'nvim_lua', max_item_count = 5 },
         {
             name = 'nvim_lsp',
-            max_item_count = 3,
+            max_item_count = 5,
             entry_filter = function(entry) return entry:get_kind() ~= snippetKind end,
         },
-        { name = 'buffer', max_item_count = 3 },
+        { name = 'buffer', max_item_count = 5 },
     },
     mapping = mapping,
     formatting = format,
