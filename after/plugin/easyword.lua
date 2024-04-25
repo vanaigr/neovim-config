@@ -119,8 +119,9 @@ local function jump(recover_key)
   })
 end
 
-vim.keymap.set({ 'n' }, 's', function() jump('s') end)
-vim.keymap.set({ 'x', 'o' }, 'x', function() jump('x') end)
+local m = require('mapping')
+m.n('s', function() jump('s') end)
+m.xo('x', function() jump('x') end)
 
 local group = vim.api.nvim_create_augroup('EasywordHighlighting', { clear = true })
 vim.api.nvim_create_autocmd('ColorScheme', {

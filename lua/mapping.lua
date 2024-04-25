@@ -143,12 +143,21 @@ function map.qnoremap(mode, lhs, rhs, opts)
     end
 end
 
-function map.a(a, b, o) map.qnoremap('' , a, b, o) end
-function map.i(a, b, o) map.qnoremap('i', a, b, o) end
-function map.c(a, b, o) map.qnoremap('c', a, b, o) end
-function map.n(a, b, o) map.qnoremap('n', a, b, o) end
-function map.x(a, b, o) map.qnoremap('x', a, b, o) end
-function map.o(a, b, o) map.qnoremap('o', a, b, o) end
-function map.t(a, b, o) map.qnoremap('t', a, b, o) end
+--function map.a(a, b, o) map.qnoremap('' , a, b, o) end
+--function map.i(a, b, o) map.qnoremap('i', a, b, o) end
+--function map.c(a, b, o) map.qnoremap('c', a, b, o) end
+--function map.n(a, b, o) map.qnoremap('n', a, b, o) end
+--function map.x(a, b, o) map.qnoremap('x', a, b, o) end
+--function map.o(a, b, o) map.qnoremap('o', a, b, o) end
+--function map.t(a, b, o) map.qnoremap('t', a, b, o) end
+
+setmetatable(map, {
+    __index = function(tab, key)
+        local modes = vim.split(key, '')
+        local func = function(...) map.qnoremap(modes, ...) end
+        rawset(tab, key, func)
+        return func
+    end
+})
 
 return map

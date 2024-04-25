@@ -7,7 +7,7 @@ local function buffer_dir()
     return vim.fn.expand("%:p:h")
 end
 
-vim.keymap.set('n', '<leader>gg', function()
+require('mapping').n('<leader>gg', function()
     local dir = buffer_dir()
     g.open{ cwd = dir, no_expand = true, kind = 'split_above' }
 end)

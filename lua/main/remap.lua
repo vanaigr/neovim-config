@@ -4,16 +4,17 @@ local m = require('mapping')
 
 m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
 m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
-
---m.n('Q', '<Nop>')
---m.n('gg', '<Nop>') -- accidentally press gg insead of hh
+m.n('Q', '')
 
 m.i('<esc>', '<esc>`^') -- prevent cursor from moving when exiting insert mode
 m.i('<C-c>', '<C-c>`^')
-m.a('<A-i>', '<esc>')
+
+m.nx('<A-i>', '<esc>')
 m.i('<A-i>', '<esc>`^')
 m.c('<A-i>', '<C-c>')
+
 m.n('<A-w>', '<C-w>')
+
 m.n('<A-s>', '<cmd>w<cr>')
 m.n('<A-q>', '<cmd>q<cr>')
 m.n('<A-a>', '<cmd>so<cr>')
@@ -76,25 +77,20 @@ m.n('i', function() -- https://stackoverflow.com/a/3020022/18704284
     end
 end, { expr = true })
 
-m.n('<space>', '<Nop>') -- treated as <leader>, long delay
-m.n('<C-space>', 'i <esc>`^')
+m.n('<space>', '')
 m.n('<bs>', 'i<bs><esc>`^')
 m.n('<enter>', 'i<enter><esc>`^')
 
 m.n('<A-o>', 'o<Esc>')
 m.i('<A-o>', '<Esc>`^o')
 m.c('<A-o>', '<CR>')
+
 m.n('<A-n>', '<cmd>noh<cr>')
 
 m.n('<A-t>', 'gt')
 m.n('<A-g>', 'gT')
 
-m.i('<C-bs>', '<C-w>')
-m.c('<C-bs>', '<C-w>')
-
-m.n('<C-z>', '<cmd>undo<cr>')
-m.n('<C-S-z>', '<cmd>redo<cr>')
-m.n('<A-u>', '<cmd>redo<cr>')
+m.ic('<C-bs>', '<C-w>')
 
 m.n('<C-s>', ':%s//gc<left><left><left>') --replace on C-s
 m.x('<C-s>', ':s//gc<left><left><left>')
@@ -105,8 +101,6 @@ m.n('<A-.>', 'i<C-t><Esc>`^')
 m.n('<A-,>', 'i<C-d><Esc>`^')
 m.i('<Tab>', '<C-t>')
 m.i('<S-Tab>', '<C-d>')
---m.i('<A-.>', '<C-t>')
---m.i('<A-,>', '<C-d>')
 
 local ns = vim.api.nvim_create_namespace('')
 local function keepSelection(command)
@@ -131,30 +125,21 @@ end
 m.x('<A-.>', function() keepSelection('normal! >') end)
 m.x('<A-,>', function() keepSelection('normal! <') end)
 
-m.n(')', '<C-y>') -- move screen but not cursor
-m.n('(', '<C-e>')
-m.n('<A-0>', '<C-y>')
-m.n('<A-9>', '<C-e>')
---m.i('<A-0>', '<Esc><C-y>`^i')
---m.i('<A-9>', '<Esc><C-e>`^i')
-m.x('<A-0>', '<C-y>')
-m.x('<A-9>', '<C-e>')
-m.c('<A-o>', '<Enter>')
-m.n('<A-3>', '#')
-m.n('<A-8>', '*')
+m.nx(')', '<C-y>') -- move screen but not cursor
+m.nx('(', '<C-e>')
+m.nx('<A-0>', '<C-y>')
+m.nx('<A-9>', '<C-e>')
 
-m.n('{', '_') -- move to start/end of line without leading/trailing spaces
-m.n('}', 'g_l')
-m.x('{', '_')
-m.x('}', 'g_l')
-m.o('{', function() vim.cmd'keepjumps silent! normal! _' end)
-m.o('}', 'g_')
+m.nx('{', '_') -- move to start/end of line without leading/trailing spaces
+m.nx('}', 'g_l')
 
-m.n('[[', '{')
-m.x('[[', '{')
-m.n(']]', '}')
-m.x(']]', '}')
+m.t('<C-q>', '<C-\\><C-n>') -- go to normal mode in terminal
 
+m.n('n', '<cmd>keepjumps normal! n<cr>')
+m.n('N', '<cmd>keepjumps normal! N<cr>')
+
+
+-- add insert and normal modes to command mode
 local commandGoup = vim.api.nvim_create_augroup('CommandGoup', { clear = true })
 
 local function setup_cmd()
@@ -210,18 +195,10 @@ local function command_mode()
 end
 local cmd_opts = { expr = true }
 
--- add insert and normal modes to command mode
-m.n(';', command_mode, cmd_opts)
-m.i('<A-;>', ';')
-m.x(';', command_mode, cmd_opts)
-m.n('<A-e>', command_mode, cmd_opts)
-m.x('<A-e>', command_mode, cmd_opts)
+m.nx('<A-e>', command_mode, cmd_opts)
 m.i('<A-e>', function() return '<Esc>' .. command_mode() end, cmd_opts)
 
-m.t('<C-q>', '<C-\\><C-n>') -- go to normal mode in terminal
 
-m.n('n', '<cmd>keepjumps normal! n<cr>')
-m.n('N', '<cmd>keepjumps normal! N<cr>')
 
 local expr = { expr = true }
 m.n('<A-j>', 'winheight(0)/4."<C-d>"', expr)
@@ -234,40 +211,28 @@ m.n('<Up>', 'winheight(0)/4."<C-u>"', expr)
 m.n('<Down>', 'winheight(0)/4."<C-d>"', expr)
 m.x('<Up>', 'winheight(0)/4."<C-u>"', expr)
 m.x('<Down>', 'winheight(0)/4."<C-d>"', expr)
+m.nx('<Up>', scroll('gk'))
+m.nx('<Down>', scroll('gj'))
 
-m.n('<A-h>', '_')
-m.n('<A-l>', 'g_l')
-m.x('<A-h>', '_')
-m.x('<A-l>', 'g_l')
 
-m.n('j', 'gj')
-m.n('k', 'gk')
-m.x('j', 'gj')
-m.x('k', 'gk')
+m.nx('<A-h>', '_')
+m.nx('<A-l>', 'g_l')
 
-m.n('J', '5j')
-m.n('K', '5k')
-m.x('J', '5j')
-m.x('K', '5k')
-m.o('J', '5j')
-m.o('K', '5k')
+m.nx('j', 'gj')
+m.nx('k', 'gk')
 
--- join lines
+m.nxo('J', '5j')
+m.nxo('K', '5k')
+
 m.n('gj', 'J')
-m.n('gJ', 'kJ')
 
 m.n('<leader>u', "<cmd>UndotreeShow<cr>")
 
 m.o('_', function() vim.cmd'keepjumps silent! normal! _' end)
 
 -- work with system clipboard without mentioning the register
-m.n('<leader>y', "\"+y")
-m.n('<leader>Y', "\"+Y")
-m.x('<leader>y', "\"+y")
-
-m.n('<leader>d', "\"+d")
-m.n('<leader>D', "\"+D")
-m.x('<leader>d', "\"+d")
+m.nx('<leader>y', "\"+y")
+m.nx('<leader>d', "\"+d")
 
 -- line without indentation and newline
 m.n('d<leader>l', "_vg_d\"_dd")
@@ -275,41 +240,15 @@ m.n('y<leader>l', "_vg_y`^")
 m.o('<leader>l', "<cmd>normal! _vg_l<cr>")
 m.x('<leader>l', "<esc>_vg_")
 
-m.n('<leader><Esc>', '<Nop>')
-m.x('<leader><Esc>', '<Nop>')
-
-m.i('<A-9>', '(')
-m.i('<A-0>', ')')
-
-m.i('<A-[>', '{')
-m.i('<A-]>', '}')
-
-m.i('<A-,>', '<')
-m.i('<A-.>', '>')
-
-m.i('<A-->', '_')
-m.i('<A-=>', '+')
-
-m.c('<A-9>', '(')
-m.c('<A-0>', ')')
-
-m.c('<A-[>', '{')
-m.c('<A-]>', '}')
-
-m.c('<A-,>', '<')
-m.c('<A-.>', '>')
-
-m.c('<A-->', '_')
-m.c('<A-=>', '+')
-
-m.i('<A-u>', '<bs>')
-m.c('<A-u>', '<bs>')
+m.ic('<A-u>', '<bs>')
+m.n('<A-u>', 'i<bs><esc>`^')
 
 m.n('<A-y>', 'yy')
-m.n('<A-v>', 'V')
 m.n('<A-d>', '"_dd')
 m.x('<A-d>', '"_d')
 
+
+-- paste
 m.o('gp', function()
     --local pos = vim.fn.getpos('.')
     --vim.api.nvim_buf_set_mark(0, '`', pos[2], pos[3], {})
@@ -418,6 +357,7 @@ end
 m.n('<C-=>', function() adjustFontSize( 1) end)
 m.n('<C-->', function() adjustFontSize(-1) end)
 
+
 local quickfixGroup = vim.api.nvim_create_augroup('QuickfixListMappings', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
     pattern = 'qf',
@@ -429,7 +369,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 
-do
+do -- help
     local selection = require('main.getSelection')
 
     local function getHelp(args, s)
@@ -443,6 +383,7 @@ do
     m.n('<leader>hh', function() return selection.callOpfunc(getHelp, nil)..'iw' end, { expr = true })
 end
 
+
 LoadModule('main.runBuf')
 
 if LoadModule('main.vim') then
@@ -454,3 +395,21 @@ if LoadModule('main.vim') then
     m.x('<leader>v', "<esc><cmd>call SelectVariableValue(0)<cr>")
     m.o('<leader>v', "<cmd>call SelectVariableValue(0)<cr>")
 end
+
+
+-- alt is now shift
+
+m.ic('<A-9>', '(')
+m.ic('<A-0>', ')')
+
+m.ic('<A-[>', '{')
+m.ic('<A-]>', '}')
+
+m.ic('<A-,>', '<')
+m.ic('<A-.>', '>')
+
+m.ic('<A-->', '_')
+m.ic('<A-=>', '+')
+
+m.n('<A-3>', '#')
+m.n('<A-8>', '*')

@@ -2,10 +2,11 @@ local vim = vim -- fix lsp warning
 
 local opt = { remap = true, silent = true }
 
-vim.keymap.set('n', '<C-j>', '<C-down>', opt)
-vim.keymap.set('n', '<C-k>', '<C-up>', opt)
-vim.keymap.set('n', '<C-h>', '<S-left>', opt)
-vim.keymap.set('n', '<C-l>', '<S-right>', opt)
+local m = require('mapping')
+m.n('<C-j>', '<C-down>', opt)
+m.n('<C-k>', '<C-up>', opt)
+m.n('<C-h>', '<S-left>', opt)
+m.n('<C-l>', '<S-right>', opt)
 
 vim.g.VM_Mono_hl   = 'VM_Cursors'
 vim.g.VM_Extend_hl = 'VM_Selection'
