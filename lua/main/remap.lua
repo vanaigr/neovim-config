@@ -199,18 +199,35 @@ m.nx('<A-e>', command_mode, cmd_opts)
 m.i('<A-e>', function() return '<Esc>' .. command_mode() end, cmd_opts)
 
 
+-- scroll
+local ctrlY = vim.api.nvim_replace_termcodes('<C-y>', true, false, true)
+local ctrlE = vim.api.nvim_replace_termcodes('<C-e>', true, false, true)
 
-local expr = { expr = true }
-m.n('<A-j>', 'winheight(0)/4."<C-d>"', expr)
-m.n('<A-k>', 'winheight(0)/4."<C-u>"', expr)
-m.x('<A-j>', 'winheight(0)/4."<C-d>"', expr)
-m.x('<A-k>', 'winheight(0)/4."<C-u>"', expr)
+local function scroll(m1)
+    return function()
+        local start_row = vim.fn.winline()
+
+        local distance = math.floor(vim.fn.winheight(0) * 0.25)
+        vim.api.nvim_feedkeys(distance .. m1, 'nx', false)
+
+        local seen = { [start_row] = true }
+        while true do
+            local cur_row = vim.fn.winline()
+            if seen[cur_row] then break end
+            seen[cur_row] = true
+            if cur_row < start_row then
+                vim.api.nvim_feedkeys(ctrlY, 'nx', false)
+            else
+                vim.api.nvim_feedkeys(ctrlE, 'nx', false)
+            end
+        end
+    end
+end
+
+m.nx('<A-k>', scroll('gk'))
+m.nx('<A-j>', scroll('gj'))
 
 -- <A-j> and <A-k> are remapped system-wide to these keys
-m.n('<Up>', 'winheight(0)/4."<C-u>"', expr)
-m.n('<Down>', 'winheight(0)/4."<C-d>"', expr)
-m.x('<Up>', 'winheight(0)/4."<C-u>"', expr)
-m.x('<Down>', 'winheight(0)/4."<C-d>"', expr)
 m.nx('<Up>', scroll('gk'))
 m.nx('<Down>', scroll('gj'))
 
