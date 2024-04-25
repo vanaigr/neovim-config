@@ -9,8 +9,8 @@ require('lazy').setup({
     },
     { 'mg979/vim-visual-multi' }, -- multicursor
 
-    { 'chentoast/marks.nvim' },
     { 'tpope/vim-fugitive' }, -- git
+    { 'vanaigr/mark-signs.nvim' },
     { 'vanaigr/targets.vim' }, -- replaced with unmerged bugfix
     { 'kylechui/nvim-surround' },
     { 'mbbill/undotree' },
