@@ -2,14 +2,6 @@ local vim = vim -- fix lsp warning
 
 -- see lsp-zero
 
-local separator
-if vim.fn.has('win32') or vim.fn.has('win64') then separator = ';'
-else separator = ':' end
-
--- use mason path
-local mason_path = vim.fn.stdpath('data') .. '/mason/bin'
-vim.env.PATH = mason_path .. separator .. vim.env.PATH
-
 local m = require('mapping')
 
 local g = vim.api.nvim_create_augroup('LSPGroup', { clear = true })
@@ -18,16 +10,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(event)
         local options = { buffer = event.buf }
 
-        m.n('<A-l>a', function() vim.lsp.buf.code_action() end, options)
-        m.n('<A-l>h', function() vim.lsp.buf.hover() end, options)
-        m.n('<A-l>s', function() vim.lsp.buf.signature_help() end, options)
-        m.n('<A-l>v', function() vim.lsp.buf.rename() end, options)
-        m.n('<A-l>r', function() vim.lsp.buf.references() end, options)
-        m.n('<A-l>d', function() vim.diagnostic.open_float() end, options)
+        m.n('<A-;>a', function() vim.lsp.buf.code_action() end, options)
+        m.n('<A-;>h', function() vim.lsp.buf.hover() end, options)
+        m.n('<A-;>s', function() vim.lsp.buf.signature_help() end, options)
+        m.n('<A-;>v', function() vim.lsp.buf.rename() end, options)
+        m.n('<A-;>r', function() vim.lsp.buf.references() end, options)
+        m.n('<A-;>d', function() vim.diagnostic.open_float() end, options)
 
-        m.i('<A-l>h', function() vim.lsp.buf.hover() end, options)
-        m.i('<A-l>s', function() vim.lsp.buf.signature_help() end, options)
-        m.i('<A-l>d', function() vim.diagnostic.open_float() end, options)
+        m.i('<A-;>h', function() vim.lsp.buf.hover() end, options)
+        m.i('<A-;>s', function() vim.lsp.buf.signature_help() end, options)
+        m.i('<A-;>d', function() vim.diagnostic.open_float() end, options)
 
         m.n('[d', function() vim.diagnostic.goto_prev() end, options)
         m.n(']d', function() vim.diagnostic.goto_next() end, options)
@@ -50,7 +42,16 @@ vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
 )
 -- TODO: add for hover and float
 
+-- use mason path for lsps
+local mason_path = vim.fn.stdpath('data') .. '/mason/bin'
+
 -- Do this manually since Mason is slow
 local lspconfig = require('lspconfig')
-lspconfig.lua_ls.setup{ capabilities = capabilities }
-lspconfig.clangd.setup{ capabilities = capabilities }
+lspconfig.lua_ls.setup{
+    cmd = { mason_path .. '/lua-language-server' },
+    capabilities = capabilities,
+}
+lspconfig.clangd.setup{
+    cmd = { mason_path .. '/clangd' },
+    capabilities = capabilities,
+}
