@@ -13,3 +13,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('main')
+
+--local redraw = 0
+--local ns = vim.api.nvim_create_namespace('NamespaceName123')
+--vim.api.nvim_set_decoration_provider(ns, {
+--    on_start = function() print(redraw); redraw = redraw + 1 end
+--})

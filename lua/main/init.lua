@@ -1,6 +1,6 @@
 local vim = vim -- fix lsp warning
 
-vim.api.nvim_exec2('language en_US', {})
+pcall(vim.api.nvim_exec2, 'language en_US', {})
 
 function LoadModule(name)
     local loaded, result = pcall(require, name)
@@ -26,7 +26,6 @@ end, {})
 vim.api.nvim_create_user_command('UP' , "call search('[A-Z][A-Z]', 'besW')", {})
 vim.api.nvim_create_user_command('UPN', "call search('[A-Z][A-Z]', 'esW')", {})
 
-vim.opt.syntax = 'off'
 vim.g.mapleader = ' '
 
 vim.opt.fileformat = 'unix'
@@ -35,7 +34,7 @@ vim.opt.langmap = "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGH
 vim.opt.langremap = false
 
 vim.opt.nu = true
-vim.opt.relativenumber = true
+--vim.opt.relativenumber = true -- supposedly faster (some nvim issue)
 
 if true then
   vim.opt.tabstop = 4
@@ -68,21 +67,40 @@ vim.opt.smartcase = true
 vim.opt.cmdheight = 2 -- for remapping ; to open c_CTRL-f
 --vim.opt.breakindent = true -- breakindent will forever be slow :(
 
+local group = vim.api.nvim_create_augroup('MainInigAutocmds', { clear = true })
+
 vim.api.nvim_create_autocmd("BufEnter", {
+    group = group,
     callback = function()
         vim.opt.formatoptions = vim.opt.formatoptions - { "c","r","o" }
+        -- 4 should be tabstop
+        vim.opt.cinoptions = 'L0(4m1'
     end
 })
 vim.api.nvim_create_autocmd("TextYankPost", {
-    pattern = { '*' },
+    pattern = { '*' }, group = group,
     callback = function()
-        require('vim.highlight').on_yank({ higroup = "YankHighlight", timeout = 1000 })
+        local hi_group = 'YankHighlight'
+
+        local ok, op, name = pcall(function()
+            return vim.v.event.operator, vim.v.event.regname
+        end)
+        if ok and op ~= 'y' then return end
+
+        if ok then
+            if (name == '+' or name == '*') then
+                hi_group = 'ClipYankHighlight'
+            elseif name ~= '' then
+                hi_group = 'RegYankHighlight'
+            end
+        end
+
+        require('vim.highlight').on_yank({ higroup = hi_group, timeout = 400 })
     end
 })
 
 -- remove trailing whitespace
 local cursorNs = vim.api.nvim_create_namespace("Cursor@init.lua")
-local group = vim.api.nvim_create_augroup('FormatOnWrite', { clear = true })
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     group = group, pattern = { "*" },
     callback = function(ev)
