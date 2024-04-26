@@ -40,34 +40,34 @@ local function setup()
 
     local actions = require('telescope.actions')
     require('telescope').setup{
-      defaults = {
-        mappings = {
-          i = {
-            ['<A-k>'] = actions.move_selection_previous,
-            ['<A-j>'] = actions.move_selection_next,
+        defaults = {
+            mappings = {
+                i = {
+                    ['<A-k>'] = actions.move_selection_previous,
+                    ['<A-j>'] = actions.move_selection_next,
 
-            ['<A-l>'] = actions.select_tab,
-            ['<A-o>'] = actions.select_default,
+                    ['<A-l>'] = actions.select_tab,
+                    ['<A-o>'] = actions.select_default,
 
-            ['<A-e>'] = actions.close,
-            ['<A-h>'] = actions.close,
-            ['<A-i>'] = actions.close,
-            ['<A-q>'] = actions.close,
-          },
-          n = {
-            ['<A-k>'] = actions.move_selection_previous,
-            ['<A-j>'] = actions.move_selection_next,
+                    ['<A-e>'] = actions.close,
+                    ['<A-h>'] = actions.close,
+                    ['<A-i>'] = actions.close,
+                    ['<A-q>'] = actions.close,
+                },
+                n = {
+                    ['<A-k>'] = actions.move_selection_previous,
+                    ['<A-j>'] = actions.move_selection_next,
 
-            ['<A-l>'] = actions.select_tab,
-            ['<A-o>'] = actions.select_default,
+                    ['<A-l>'] = actions.select_tab,
+                    ['<A-o>'] = actions.select_default,
 
-            ['<A-e>'] = actions.close,
-            ['<A-h>'] = actions.close,
-            ['<A-i>'] = actions.close,
-            ['<A-q>'] = actions.close,
-          },
-        }
-      }
+                    ['<A-e>'] = actions.close,
+                    ['<A-h>'] = actions.close,
+                    ['<A-i>'] = actions.close,
+                    ['<A-q>'] = actions.close,
+                },
+            }
+        },
     }
     builtin = require('telescope.builtin')
 end
@@ -99,6 +99,7 @@ m.n('<leader>ff', function()
     path_display = fix_path_display,
     --no_ignore = false,
     --hidden = false,
+    results_title = 'project files',
   }
 end)
 m.n('<leader>fo', function()
@@ -107,28 +108,30 @@ m.n('<leader>fo', function()
     cwd = vim.fn.stdpath('config'),
     no_ignore = false,
     hidden = false,
+    results_title = 'config files',
   }
 end)
 m.n('<leader>fO', function()
   setup()
-  builtin.oldfiles{}
+  builtin.oldfiles{ results_title = 'old files', }
 end)
 m.n('<leader>fh', function()
   setup()
-  builtin.help_tags{}
+  builtin.help_tags{ results_title = 'help', }
 end)
 m.n('<leader>fr', function()
   setup()
-  builtin.reloader{}
+  builtin.reloader{ results_title = 'reload', }
 end)
 m.n('<leader>fw', function()
   setup()
-  builtin.lsp_workspace_symbols{}
+  builtin.lsp_workspace_symbols{ results_title = 'symbols', }
 end)
 m.n('<leader>fs', function()
   setup()
   builtin.live_grep{
       cwd = getProjectDir(),
       path_display = fix_path_display,
+      results_title = 'grep',
   }
 end)
