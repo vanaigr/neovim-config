@@ -8,17 +8,13 @@ m.n('<C-k>', '<C-up>', opt)
 m.n('<C-h>', '<S-left>', opt)
 m.n('<C-l>', '<S-right>', opt)
 
-vim.g.VM_Mono_hl   = 'VM_Cursors'
-vim.g.VM_Extend_hl = 'VM_Selection'
-vim.g.VM_Cursor_hl = 'VM_SelectionCursor'
-vim.g.VM_Insert_hl = 'VM_InsertCursor'
 
 local function initColors()
     local p = require('rose-pine.palette')
-    vim.api.nvim_set_hl(0, 'VM_Cursors'        , { bg = p.love, fg='#ffffff', blend=100 })
-    vim.api.nvim_set_hl(0, 'VM_Selection'      , { bg = p.pine, fg='#ffffff', blend=100 })
-    vim.api.nvim_set_hl(0, 'VM_SelectionCursor', { bg = p.iris, fg='#21202e', blend=100 })
-    vim.api.nvim_set_hl(0, 'VM_InsertCursor'   , { bg = '#ffffff', fg='#21202e', blend=100 })
+    vim.api.nvim_set_hl(0, 'VM_Mono'  , { bg = p.love, fg='#ffffff' })
+    vim.api.nvim_set_hl(0, 'VM_Extend', { bg = p.pine, fg='#ffffff' })
+    vim.api.nvim_set_hl(0, 'VM_Cursor', { bg = p.iris, fg='#21202e' })
+    vim.api.nvim_set_hl(0, 'VM_Insert', { bg = '#ffffff', fg='#21202e' })
 end
 
 initColors()
