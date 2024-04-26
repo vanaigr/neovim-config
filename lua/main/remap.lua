@@ -19,42 +19,6 @@ m.n('<A-s>', '<cmd>w<cr>')
 m.n('<A-q>', '<cmd>q<cr>')
 m.n('<A-a>', '<cmd>so<cr>')
 
-local alphanumeric = vim.regex('[[:upper:][:lower:][:digit:]]\\C')
-local function doMotion(command)
-  local prev_pos = vim.api.nvim_win_get_cursor(0)
-  for i = 1, 100 do
-    for j = 1, 100 do
-      vim.api.nvim_feedkeys(command, 'nx', false)
-
-      local new_pos = vim.api.nvim_win_get_cursor(0)
-      local char = vim.api.nvim_buf_get_text(
-        0, new_pos[1] - 1, new_pos[2],
-        new_pos[1] - 1, new_pos[2] + 1, {}
-      )[1]
-      if alphanumeric:match_str(char) then break end
-    end
-
-    break
-    --local new_pos = vim.api.nvim_win_get_cursor(0)
-    --if new_pos[1] ~= prev_pos[1] or math.abs(new_pos[2] - prev_pos[2]) > 1 then
-    --  break
-    --end
-    --prev_pos = new_pos
-  end
-end
-
-m.n('w', function() doMotion('w') end)
-m.n('b', function() doMotion('b') end)
-m.n('e', function()
-  vim.cmd([=[silent! normal! h]=])
-  doMotion('e')
-  vim.cmd([=[silent! normal! l]=])
-end)
-m.n('ge', function()
-  vim.cmd([=[silent! normal! h]=])
-  doMotion('ge')
-  vim.cmd([=[silent! normal! l]=])
-end)
 for _, key in ipairs{ 'E', 'gE' } do
   m.n(key, '<cmd>silent! normal! h'..key..'l<cr>')
 end
