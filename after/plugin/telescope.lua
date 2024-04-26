@@ -33,12 +33,10 @@ end
 
 local m = require('mapping')
 
-local load = true
-local function setup(fLoad)
-  if load then
-    load = fLoad
-
-    vim.api.nvim_exec_autocmds('User', { pattern = 'LoadTelescope' })
+local builtin
+local function setup()
+    if builtin then return end
+    vim.api.nvim_exec_autocmds('User', { pattern = 'load-telescope' })
 
     local actions = require('telescope.actions')
     require('telescope').setup{
@@ -71,9 +69,7 @@ local function setup(fLoad)
         }
       }
     }
-  else
-    load = fLoad
-  end
+    builtin = require('telescope.builtin')
 end
 
 local slash_num = ('/'):byte(1)
@@ -98,9 +94,8 @@ end
 
 m.n('<leader>ff', function()
   setup()
-  local dir = getProjectDir()
-  require('telescope.builtin').find_files{
-    cwd = dir,
+  builtin.find_files{
+    cwd = getProjectDir(),
     path_display = fix_path_display,
     --no_ignore = false,
     --hidden = false,
@@ -108,34 +103,32 @@ m.n('<leader>ff', function()
 end)
 m.n('<leader>fo', function()
   setup()
-  require('telescope.builtin').find_files{
+  builtin.find_files{
     cwd = vim.fn.stdpath('config'),
     no_ignore = false,
     hidden = false,
   }
-  --require('telescope.builtin').oldfiles{}
 end)
 m.n('<leader>fO', function()
   setup()
-  require('telescope.builtin').oldfiles{}
+  builtin.oldfiles{}
 end)
 m.n('<leader>fh', function()
   setup()
-  require('telescope.builtin').help_tags{}
+  builtin.help_tags{}
 end)
 m.n('<leader>fr', function()
   setup()
-  require('telescope.builtin').reloader{}
+  builtin.reloader{}
 end)
 m.n('<leader>fw', function()
   setup()
-  require('telescope.builtin').lsp_workspace_symbols{}
+  builtin.lsp_workspace_symbols{}
 end)
 m.n('<leader>fs', function()
   setup()
-  local dir = getProjectDir()
-  require('telescope.builtin').live_grep{
-      cwd = dir,
+  builtin.live_grep{
+      cwd = getProjectDir(),
       path_display = fix_path_display,
   }
 end)

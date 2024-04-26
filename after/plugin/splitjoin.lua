@@ -5,7 +5,7 @@ local function setup(fLoad)
   if load then
     load = fLoad
 
-    vim.api.nvim_exec_autocmds('User', { pattern = 'LoadTreesj' })
+    vim.api.nvim_exec_autocmds('User', { pattern = 'load-treesj' })
 
     local p = require('treesj')
     p.setup{

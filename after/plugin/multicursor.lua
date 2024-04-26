@@ -1,13 +1,30 @@
 local vim = vim -- fix lsp warning
 
-local opt = { remap = true, silent = true }
+local done = false
+local function setup()
+    if done then return end
+    done = true
+
+    vim.api.nvim_exec_autocmds('User', { pattern = 'load-multicursor' })
+end
+local function map(keys) return function() setup(); return keys end end
 
 local m = require('mapping')
-m.n('<C-j>', '<C-down>', opt)
-m.n('<C-k>', '<C-up>', opt)
-m.n('<C-h>', '<S-left>', opt)
-m.n('<C-l>', '<S-right>', opt)
 
+local opt = { remap = true, silent = true, expr = true }
+m.n('<C-j>', map('<C-down>'), opt)
+m.n('<C-k>', map('<C-up>'), opt)
+m.n('<C-h>', map('<S-left>'), opt)
+m.n('<C-l>', map('<S-right>'), opt)
+m.n('<C-n>', map('<Plug>I_LOVE_HACKS_3'), opt)
+
+vim.api.nvim_exec2(
+    [==[
+    let g:VM_maps = {}
+    let g:VM_maps['Find Under'] = '<Plug>I_LOVE_HACKS_3'
+    ]==],
+    { output = false }
+)
 
 local function initColors()
     local p = require('rose-pine.palette')

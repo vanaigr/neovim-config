@@ -5,22 +5,19 @@ require('lazy').setup({
     {
         'Wansmer/treesj',
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
-        event = 'User LoadTreesj'
+        event = 'User load-treesj'
     },
-    { 'mg979/vim-visual-multi' }, -- multicursor
+    { 'mg979/vim-visual-multi', event = 'User load-multicursor' }, -- multicursor
 
     { 'vanaigr/mark-signs.nvim' },
-    { 'tpope/vim-fugitive', enabled = true }, -- git
-    {
-        "NeogitOrg/neogit",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        }
-    },
+
+    -- better than neogit...
+    { 'tpope/vim-fugitive', command = 'Git', event = 'User load-fugitive' }, -- git
+
     { 'vanaigr/targets.vim' }, -- replaced with unmerged bugfix
     { 'kylechui/nvim-surround' },
     { 'mbbill/undotree' },
-    { 'numToStr/Comment.nvim' },
+    { 'numToStr/Comment.nvim', event = 'User load-comment' },
     { 'nvim-treesitter/nvim-treesitter' },
     { 'bkad/CamelCaseMotion' },
     { 'petertriho/nvim-scrollbar' },
@@ -42,7 +39,7 @@ require('lazy').setup({
     {
         'nvim-telescope/telescope.nvim',
         dependencies = { 'nvim-lua/plenary.nvim', },
-        event = 'User LoadTelescope', -- somehow LazyLoadTelescope doesn't work...
+        event = 'User load-telescope',
     },
 
     { 'neovim/nvim-lspconfig' },
