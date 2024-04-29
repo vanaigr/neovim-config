@@ -116,6 +116,11 @@ local function jump(recover_key)
     char_normalize = norm,
     recover_key = recover_key,
     key_groups = key_hands,
+    cancel_key = {
+        [vim.api.nvim_replace_termcodes('<Esc>', true, false, true)] = true,
+        [vim.api.nvim_replace_termcodes('<A-i>', true, false, true)] = true,
+        [vim.api.nvim_replace_termcodes('<A-e>', true, false, true)] = true,
+    },
   })
 end
 
