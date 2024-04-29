@@ -17,6 +17,7 @@ m.n('<C-k>', map('<C-up>'), opt)
 m.n('<C-h>', map('<S-left>'), opt)
 m.n('<C-l>', map('<S-right>'), opt)
 m.n('<C-n>', map('<Plug>I_LOVE_HACKS_3'), opt)
+m.x('<C-n>', map('<Plug>I_LOVE_HACKS_3'), opt)
 
 vim.api.nvim_exec2(
     [==[
