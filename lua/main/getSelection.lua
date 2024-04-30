@@ -20,11 +20,20 @@ function M.fixMarkerCoords(sl, sc, el, ec) -- pray that this will work
     return { sl, sc, el, ec }
 end
 
+-- https://github.com/neovim/neovim/issues/14157#issuecomment-1320787927
+local set_opfunc = vim.fn[vim.api.nvim_exec([[
+  func s:set_opfunc(val)
+    let &opfunc = a:val
+  endfunc
+  echon get(function('s:set_opfunc'), 'name')
+]], true)]
+
 -- we need to do expr + return 'g@' instead of feedkeys because ?
 --run command with text object
 function M.callOpfunc(func, args)
     local cursorPos = vim.fn.getpos('.')
-    _G.OpFunc = function(type)
+
+    local function opfunc(type)
         vim.fn.setpos('.', cursorPos)
 
         if type ~= 'line' and type ~= 'char' then M.printError('Opfunc type '..type..' is not supported'); return end
@@ -38,7 +47,8 @@ function M.callOpfunc(func, args)
 
         func(args, M.fixMarkerCoords(sl, sc, el, ec))
     end
-    vim.cmd[=[set opfunc=v:lua.OpFunc]=]
+
+    set_opfunc(opfunc)
     return 'g@'
 end
 
