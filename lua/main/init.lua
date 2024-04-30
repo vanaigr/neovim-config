@@ -30,7 +30,6 @@ vim.g.mapleader = ' '
 
 vim.opt.fileformat = 'unix'
 
-vim.opt.langmap = "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
 vim.opt.langremap = false
 
 vim.opt.nu = true
