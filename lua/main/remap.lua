@@ -2,9 +2,19 @@ local vim = vim -- fix lsp warning
 
 local m = require('mapping')
 
+-- like in the good old days with arrow keys
+m.c('<cr>', '')
+m.cin('<bs>', '')
+m.ci('_', '')
+
+--this is <A-space> but remapped to this bc of Windows shortcut nonsence...
+-- as if it is not enough that windows key is not remappable
+m.ci('<F22>', '_')
+
+
 m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
 m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
-m.n('Q', '')
+m.n('Q', '<cmd>mes clear<cr>')
 
 m.i('<esc>', '<esc>`^') -- prevent cursor from moving when exiting insert mode
 m.i('<C-c>', '<C-c>`^')
@@ -56,7 +66,7 @@ m.n('<A-g>', 'gT')
 
 m.ic('<C-bs>', '<C-w>')
 
-m.n('<C-s>', ':%s//gc<left><left><left>') --replace on C-s
+m.n('<C-s>', ':%s//gc<left><left><left>')
 m.x('<C-s>', ':s//gc<left><left><left>')
 
 m.n('>>', 'i<C-t><Esc>`^') --tabs keep cursor in the same place
@@ -228,6 +238,7 @@ m.n('<A-y>', 'yy')
 m.n('<A-d>', '"_dd')
 m.x('<A-d>', '"_d')
 
+m.o('gv', '<cmd>normal! `<v`><cr>')
 
 -- paste
 m.o('gp', function()
@@ -389,8 +400,18 @@ m.ic('<A-]>', '}')
 m.ic('<A-,>', '<')
 m.ic('<A-.>', '>')
 
-m.ic('<A-->', '_')
+--m.ic('<A-->', '_')
+m.ic('<A-->', '')
 m.ic('<A-=>', '+')
 
 m.n('<A-3>', '#')
 m.n('<A-8>', '*')
+
+m.ic("<A-'>", '"')
+
+
+
+m.n('<leader>tt', function()
+    local path = vim.fn.stdpath('data') .. '/nodes.txt'
+    vim.cmd.tabe(path)
+end)

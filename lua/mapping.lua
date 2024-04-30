@@ -68,8 +68,6 @@ local function write(force)
     f:seek("set")
     f:write(vim.json.encode(prev_stats))
     f:close()
-
-    print("Written!")
 end
 
 pcall(function()
