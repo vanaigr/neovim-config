@@ -5,7 +5,7 @@ local M = {}
 
 function M.printError(msg)
     vim.cmd.redraw() -- https://stackoverflow.com/a/19206860/18704284
-    vim.api.nvim_echo({{ msg, 'ErrorMsg' }}, true, {})
+    vim.notify(msg, vim.log.levels.ERROR, {})
 end
 
 function M.fixMarkerCoords(sl, sc, el, ec) -- pray that this will work

@@ -6,9 +6,7 @@ local destr = table.unpack or unpack
 local function luaFunc(str)
     local func, err = load(str)
     if func then func()
-    else
-        vim.api.nvim_echo({{ 'Cannot execute Lua chunk: ' .. err, 'ErrorMsg' }}, true, {})
-    end
+    else vim.notify('Cannot execute Lua chunk: ' .. err, vim.log.levels.ERROR, {}) end
 end
 local function vimFunc(str) vim.cmd(str) end
 local function keyFunc(str) vim.fn.feedkeys(str) end

@@ -92,7 +92,7 @@ pcall(function()
         local ok, msg = pcall(function() write() end)
         if not ok then
             KeymapsTimer:stop()
-            vim.api.nvim_echo({{ 'keymap stats error: ' .. msg, 'ErrorMsg' }}, true, {})
+            vim.notify('keymap stats error: '..msg, vim.log.levels.ERROR, {})
         end
     end))
 end)
