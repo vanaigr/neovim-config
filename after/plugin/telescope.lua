@@ -49,9 +49,7 @@ local function setup()
                     ['<A-l>'] = actions.select_tab,
                     ['<A-o>'] = actions.select_default,
 
-                    ['<A-e>'] = actions.close,
-                    ['<A-h>'] = actions.close,
-                    ['<A-i>'] = actions.close,
+                    ['<A-i>'] = { '<esc>', type = 'command' },
                     ['<A-q>'] = actions.close,
                 },
                 n = {
@@ -61,9 +59,7 @@ local function setup()
                     ['<A-l>'] = actions.select_tab,
                     ['<A-o>'] = actions.select_default,
 
-                    ['<A-e>'] = actions.close,
-                    ['<A-h>'] = actions.close,
-                    ['<A-i>'] = actions.close,
+                    ['<esc>'] = { '', type = 'command' },
                     ['<A-q>'] = actions.close,
                 },
             }
@@ -102,6 +98,16 @@ m.n('<leader>ff', function()
     results_title = 'project files',
   }
 end)
+m.n('<leader>fa', function()
+  setup()
+  builtin.find_files{
+    cwd = getProjectDir(),
+    path_display = fix_path_display,
+    no_ignore = true,
+    hidden = true,
+    results_title = 'project files',
+  }
+end)
 m.n('<leader>fo', function()
   setup()
   builtin.find_files{
@@ -135,3 +141,27 @@ m.n('<leader>fs', function()
       results_title = 'grep',
   }
 end)
+m.x('<leader>fs', function()
+    setup()
+    local p1 = vim.fn.getpos('v')
+    local p2 = vim.fn.getpos('.')
+    local text = table.concat(vim.api.nvim_buf_get_text(
+        0,
+        p1[2] - 1,
+        p1[3] - 1,
+        p2[2] - 1,
+        p2[3] - 1,
+        {}
+    ), '\n') -- does telescope accept \n ?
+    builtin.live_grep{
+        cwd = getProjectDir(),
+        default_text = text,
+        path_display = fix_path_display,
+        results_title = 'grep',
+        -- additional args to show all ignored files + vcs ignore
+        -- todo add .git to exclude
+    }
+end)
+
+--require('telescope.builtin').find_files{ default_text = {} }
+--require('telescope.builtin').find_files{ results_title = {1} }

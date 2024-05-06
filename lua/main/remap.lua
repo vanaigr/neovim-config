@@ -145,18 +145,7 @@ local function setup_cmd()
     local mapOpts = { buffer = bufId }
 
     m.n(';', function() vim.api.nvim_feedkeys(':', 'n', false) end, mapOpts)
-    m.n('<Esc>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
-    m.n('<C-c>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
-    m.n('<A-;>', function() vim.api.nvim_win_close(winId, true) end, mapOpts)
     m.n('<cr>', '<cr>', mapOpts) -- default cr behavior
-    m.qnoremap({ 'i', 'n', }, '<A-;>', function()
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-      vim.api.nvim_win_close(winId, true)
-    end, mapOpts)
-    m.qnoremap({ 'i', 'n', }, '<A-e>', function()
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-      vim.api.nvim_win_close(winId, true)
-    end, mapOpts)
     m.n('<A-o>', '<Enter>', mapOpts)
     m.i('<A-o>', '<Esc><Enter>', mapOpts)
 
@@ -410,8 +399,12 @@ m.n('<A-8>', '*')
 m.ic("<A-'>", '"')
 
 
-
 m.n('<leader>tt', function()
+    local path = vim.fn.stdpath('data') .. '/tests/'
+    vim.cmd.tabe(path)
+end)
+
+m.n('<leader>nn', function()
     local path = vim.fn.stdpath('data') .. '/nodes.txt'
     vim.cmd.tabe(path)
 end)
