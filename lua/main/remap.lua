@@ -251,67 +251,36 @@ m.n('gp', function() -- select last changed area
     vim.api.nvim_win_set_cursor(0, { e[1], e[2] })
 end)
 
-m.n('<leader>p', function()
-    local register = '+'
-    --local regInfo = vim.fn.getreginfo(register)
-    local regValue = vim.fn.getreg(register)
-    vim.fn.setreg(register, regValue, 'V')
-    vim.cmd([=[normal! m`]=])
-    vim.cmd([=[keepjumps normal! "]=]..register.."p`]l")
-    --vim.fn.setreg(register, regInfo) -- doesn't work work for some reason, regtype stays V, even though regInfo.type is 'v'
-end)
-m.x('<leader>p', function()
-    local visualMode = vim.fn.mode():sub(1, 1)
-    local register = '+'
+local function linewise_paste(register)
+    local nonempty = vim.fn.getline('.'):match('%S')
+    if nonempty then
+        vim.cmd('put '..register)
+    else
+        vim.cmd('put! '..register)
+    end
+    vim.cmd([=[keepjumps normal! `]l]=])
+end
+local function charwise_paste(register)
     local regInfo = vim.fn.getreginfo(register)
-    vim.fn.setreg(register, regInfo.regcontents, visualMode)
-    vim.cmd([=[normal! m`]=])
-    vim.cmd([=[keepjumps normal! "]=]..register.."p`]l")
-    vim.fn.setreg(register, regInfo)
-end)
+    local regValue = vim.fn.getreg(register)
+    vim.fn.setreg(register, regValue, 'v')
+    vim.cmd('normal! "'..register .. 'gP')
+    vim.fn.setreg(register, regInfo) -- may not work, but I don't know
+end
 
-m.n('<A-p>', function()
-    local register = vim.api.nvim_get_vvar('register')
-    local regType = vim.fn.getregtype(register)
-    if regType == '' then --empty or unknown
-        return ''
-    else
-        local line = vim.fn.getline('.')
-        if line == '' then
-            vim.cmd('put! '..register)
-            vim.cmd([=[keepjumps normal! `]l]=])
-        else
-            vim.cmd('put '..register)
-            vim.cmd([=[keepjumps normal! `]l]=])
-        end
-    end
-end)
+m.n('<leader>p', function() linewise_paste('+') end)
+m.n('<leader><A-p>', function() charwise_paste('+') end)
+m.x('<leader>p', function() vim.cmd([=[keepjumps normal! "+gp]=]) end)
 
-m.n('p', function()
-    local register = vim.api.nvim_get_vvar('register')
-    local regType = vim.fn.getregtype(register)
-    if regType == '' then --empty or unknown
-        return ''
-    elseif regType == 'v' then -- charwise
-		vim.cmd([=[keepjumps normal! "]=]..register..'P`]l')
-	elseif string.byte(regType, 1) == 0x16 then -- blockwise
-        vim.cmd([=[keepjumps normal! "]=]..register..'P')
-    else
-		vim.cmd([=[keepjumps normal! "]=]..register.."p`]l")
-    end
-end)
+m.n('p', function() linewise_paste(vim.api.nvim_get_vvar('register')) end)
+m.n('<A-p>', function() charwise_paste(vim.api.nvim_get_vvar('register')) end)
 
-m.x('p', function()
-    local register = vim.api.nvim_get_vvar('register')
-    local regType = vim.fn.getregtype(register)
-    if regType == '' then --empty or unknown
-        return ''
-	else
-        local regContent = vim.fn.getreg(register)
-		vim.cmd([=[normal! "]=]..register..'p`]l')
-        vim.fn.setreg(register, regContent, regType)
-    end
-end)
+m.x('v', function()
+    local mode = vim.fn.mode():sub(1,1)
+    if mode == 'v' then return 'V'
+    elseif mode == 'V' then return 'v'
+    else return mode end
+end, { expr = true })
 
 m.o('f', '<cmd>norm! gg0vG$<cr>')
 m.x('f', '<esc>gg0vG$')
