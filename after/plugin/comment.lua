@@ -13,9 +13,21 @@ local function setup()
 end
 
 local m = require('mapping')
-m.n('gcc', function() setup(); return '<Plug>I_LOVE_HACKS_1' end, { expr = true, remap = true }) -- not recursive!
-m.n('gc', '<Plug>(comment_toggle_linewise)', { remap = true })
-m.ox('gc' , function() setup(); return '<Plug>I_LOVE_HACKS_2' end, { expr = true, remap = true })
+m.n(
+    'gcc',
+    function() setup(); return '<Plug>I_LOVE_HACKS_1' end,
+    { expr = true, remap = true }
+) -- not recursive!
+m.n(
+    'gc',
+    function() setup(); return '<Plug>(comment_toggle_linewise)' end,
+    { expr = true, remap = true }
+)
+m.ox(
+    'gc',
+    function() setup(); return '<Plug>I_LOVE_HACKS_2' end,
+    { expr = true, remap = true }
+)
 
 local this_doesnt_work = [==[
 function! Test()
