@@ -28,21 +28,19 @@ vim.api.nvim_create_user_command('UPN', "call search('[A-Z][A-Z]', 'esW')", {})
 
 vim.g.mapleader = ' '
 
-vim.opt.fileformat = 'unix'
-
 vim.opt.langremap = false
 
-vim.opt.nu = true
+vim.opt.number = true
 --vim.opt.relativenumber = true -- supposedly faster (some nvim issue)
 
 if true then
-  vim.opt.tabstop = 4
-  vim.opt.softtabstop = 4
-  vim.opt.shiftwidth = 4
+    vim.opt.tabstop = 4
+    vim.opt.softtabstop = 4
+    vim.opt.shiftwidth = 4
 else
-  vim.opt.tabstop = 2
-  vim.opt.softtabstop = 2
-  vim.opt.shiftwidth = 2
+    vim.opt.tabstop = 2
+    vim.opt.softtabstop = 2
+    vim.opt.shiftwidth = 2
 end
 vim.opt.expandtab = true
 vim.opt.smartindent = true
@@ -68,6 +66,19 @@ vim.opt.cmdheight = 2 -- for remapping ; to open c_CTRL-f
 
 local group = vim.api.nvim_create_augroup('MainInigAutocmds', { clear = true })
 
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+    group = group,
+    callback = function()
+        -- why does tabstop work and this doesn't (buth buffer-local)
+        -- why I have to set it for every new buffer.
+        if vim.api.nvim_get_option_value('modifiable', { scope = 'local' }) then
+            -- somehow VERY important that buffer is modifiable
+            vim.opt.fileformat = 'unix'
+        end
+    end
+})
+
+-- why is this here, and fileformat is up there???????
 vim.api.nvim_create_autocmd("BufEnter", {
     group = group,
     callback = function()
@@ -76,6 +87,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
         vim.opt.cinoptions = 'L0(4m1'
     end
 })
+
 vim.api.nvim_create_autocmd("TextYankPost", {
     pattern = { '*' }, group = group,
     callback = function()
