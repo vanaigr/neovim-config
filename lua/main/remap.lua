@@ -336,15 +336,85 @@ end
 
 LoadModule('main.runBuf')
 
-if LoadModule('main.vim') then
-    -- some old vim remappings
-    -- TODO: redo with treesitter
-    --variable/property left hand size
-    m.n('d<leader>v', "<cmd>call ExecDelLines(0)<cr>")
-    m.n('y<leader>v', "<cmd>call SelectVariableValue(0)<cr>y`^")
-    m.x('<leader>v', "<esc><cmd>call SelectVariableValue(0)<cr>")
-    m.o('<leader>v', "<cmd>call SelectVariableValue(0)<cr>")
+local var_decl_regex = vim.regex([[\M\(=\@<!==\@!\|:\@<!::\@!\)]]) -- = or : but not == or ::
+local val_start_regex = vim.regex([[\S]])
+local skip_regex = vim.regex([[\M\((\|{\|[\|;\|,\)]])
+local paren, brace, bracket = ('('):byte(1), ('{'):byte(1), ('['):byte(1)
+local function select_variable_value(direction)
+    local start_lnum = vim.fn.line('.') - 1
+
+    local start_col = var_decl_regex:match_line(0, start_lnum)
+    if start_col then
+        local terrible_api = val_start_regex:match_line(0, start_lnum, start_col + 1)
+        if terrible_api then
+            start_col = start_col + 1 + terrible_api
+        end
+    end
+    if not start_col then
+        vim.notify("Could not find variable declaration", vim.log.levels.ERROR, {})
+        return
+    end
+
+    local cur_lnum, cur_col = start_lnum, start_col
+    local skip_cur = false
+    while true do
+        local prev_col = skip_cur and (cur_col + 1) or cur_col
+        local next_col_terrible_api = skip_regex:match_line(0, cur_lnum, prev_col)
+        if not next_col_terrible_api then
+            cur_col = #vim.fn.getline('.')
+            break
+        end
+        skip_cur = false
+        cur_col = math.max(prev_col + next_col_terrible_api, cur_col + 1) -- just in case
+
+        local byte = vim.fn.getline('.'):byte(1 + cur_col)
+        if byte == paren or byte == brace or byte == bracket then
+            vim.fn.cursor(1 + cur_lnum, 1 + cur_col)
+            vim.cmd('keepjumps silent! normal! %')
+
+            local new_pos = vim.fn.getpos('.')
+            local new_lnum = new_pos[2] - 1
+            local new_col = new_pos[3] - 1
+
+            if new_lnum > cur_lnum or (new_lnum == cur_lnum and new_col > cur_col) then
+                cur_lnum = new_lnum
+                cur_col = new_col
+            else
+                skip_cur = true
+            end
+        else
+            cur_col = cur_col
+            break
+        end
+    end
+    print(start_lnum, start_col, cur_lnum, cur_col)
+
+    if vim.fn.mode():sub(1, 1) ~= 'v' then vim.cmd('norm! v') end
+    if vim.api.nvim_get_option_value('selection', {}) == 'exclusive' then
+        cur_col = cur_col + 1
+    end
+    vim.api.nvim_win_set_cursor(0, { 1 + start_lnum, start_col })
+    vim.cmd('norm! o')
+    vim.api.nvim_win_set_cursor(0, { 1 + cur_lnum, cur_col })
+
+    return true
 end
+
+m.n('d<leader>v', function()
+    local start_lnum = vim.fn.line('.') - 1
+    if not select_variable_value() then return end
+    local register = vim.api.nvim_get_vvar('register')
+    vim.cmd('silent! norm! "'..register..'d')
+    vim.api.nvim_buf_set_lines(0, start_lnum, start_lnum+1, false, {})
+end)
+m.n('y<leader>v', function()
+    local pos = vim.api.nvim_win_get_cursor(0)
+    if not select_variable_value() then return end
+    local register = vim.api.nvim_get_vvar('register')
+    vim.cmd('norm! "'..register..'y')
+    vim.api.nvim_win_set_cursor(0, pos)
+end)
+m.ox('<leader>v', function() select_variable_value() end)
 
 
 -- alt is now shift
