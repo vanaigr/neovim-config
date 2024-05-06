@@ -19,3 +19,19 @@ require('main')
 --vim.api.nvim_set_decoration_provider(ns, {
 --    on_start = function() print(redraw); redraw = redraw + 1 end
 --})
+
+--local counter = 0
+--local ns = vim.api.nvim_create_namespace('jdlsfkjaeilfaska:SLNCwldnqiewqoperqeowuroeocnoicei')
+--vim.api.nvim_set_decoration_provider(ns, {
+--    on_win = function()
+--        return true
+--    end,
+--    on_line = function(_, _, _, line)
+--        counter = counter + 1
+--        print('  line: '..line)
+--    end,
+--    on_end = function()
+--        print('end', counter)
+--    end
+--})
+--vim.api.nvim_buf_set_extmark(0, vim.api.nvim_create_namespace('abclfkdj'), 0, 0, { virt_text = { { 'a' }} })

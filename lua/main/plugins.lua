@@ -10,6 +10,7 @@ require('lazy').setup({
     { 'mg979/vim-visual-multi', event = 'User load-multicursor' }, -- multicursor
 
     { 'vanaigr/mark-signs.nvim' },
+    { 'chentoast/marks.nvim', enabled = false },
 
     -- better than neogit...
     { 'tpope/vim-fugitive', command = 'Git', event = 'User load-fugitive' }, -- git
