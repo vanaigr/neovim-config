@@ -6,6 +6,9 @@ local m = require('mapping')
 m.c('<cr>', '')
 m.cin('<bs>', '')
 m.ci('_', '')
+m.ic('<A-u>', '')
+
+m.ci('<A-w>', '<bs>')
 
 --this is <A-space> but remapped to this bc of Windows shortcut nonsence...
 -- as if it is not enough that windows key is not remappable
@@ -220,8 +223,8 @@ m.n('y<leader>l', "_vg_y`^")
 m.o('<leader>l', "<cmd>normal! _vg_l<cr>")
 m.x('<leader>l', "<esc>_vg_")
 
-m.ic('<A-u>', '<bs>')
-m.n('<A-u>', 'i<bs><esc>`^')
+--m.ic('<A-u>', '<bs>')
+--m.n('<A-u>', 'i<bs><esc>`^')
 
 m.n('<A-y>', 'yy')
 m.n('<A-d>', '"_dd')

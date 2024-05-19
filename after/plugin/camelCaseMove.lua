@@ -16,5 +16,5 @@ m.o('<leader>e', '<Plug>CamelCaseMotion_e')
 m.i('<A-bs>', '<C-o>d<Plug>CamelCaseMotion_b')
 --m.c('<A-bs>', '<C-o>d<Plug>CamelCaseMotion_b')
 
-m.i('<A-w>', '<C-o>"_d<Plug>CamelCaseMotion_b')
+m.i('<A-r>', '<C-o>"_d<Plug>CamelCaseMotion_b')
 --m.c('<A-w>', '<C-o>"_d<Plug>CamelCaseMotion_b')
