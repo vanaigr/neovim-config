@@ -14,7 +14,7 @@ function M.fixMarkerCoords(sl, sc, el, ec) -- pray that this will work
     sc = sc - 1
     ec = ec - 1
 
-    local lastCharLen = vim.fn.len(vim.fn.strpart(vim.fn.getline(el+1), ec, 1, false))
+    local lastCharLen = vim.fn.len(vim.fn.strpart(vim.fn.getline(el+1), ec, 1, true))
     ec = ec + lastCharLen
 
     return { sl, sc, el, ec }

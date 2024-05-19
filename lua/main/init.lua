@@ -46,6 +46,7 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.wrap = true
 vim.opt.smarttab = true
+vim.opt.inccommand = 'nosplit'
 
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
