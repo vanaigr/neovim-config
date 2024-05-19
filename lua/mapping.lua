@@ -29,7 +29,7 @@ local function write(force)
 
     local f = io.open(stats_fp, 'r+b')
     if f then
-        local prev_stats_s = f:read('a')
+        local prev_stats_s = f:read('*a')
         if prev_stats_s ~= '' then
             local ok
             ok, prev_stats = pcall(function()
@@ -65,7 +65,7 @@ local function write(force)
     end
     map.__stats = {}
 
-    f:seek("set")
+    f:seek("set", 0)
     f:write(vim.json.encode(prev_stats))
     f:close()
 end
