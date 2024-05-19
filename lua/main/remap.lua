@@ -126,7 +126,9 @@ local function setup_cmd()
     local cmdOpt = { scope = 'local' }
     local height = vim.api.nvim_get_option_value('cmdheight', cmdOpt)
     local newHeight = math.max(height-2, 0)
-    vim.api.nvim_set_option_value('cmdheight', newHeight, cmdOpt)
+
+    local bs = vim.api.nvim_get_option_value('backspace', {})
+    local new_bs = 'indent,start'
 
     vim.api.nvim_create_autocmd('CmdwinLeave', {
         group = commandGoup, once = true,
@@ -134,8 +136,15 @@ local function setup_cmd()
             if vim.api.nvim_get_option_value('cmdheight', cmdOpt) == newHeight then
                 vim.api.nvim_set_option_value('cmdheight', height, cmdOpt)
             end
+            if vim.api.nvim_get_option_value('backspace', {}) == new_bs then
+                vim.api.nvim_set_option_value('backspace', bs, {})
+            end
         end,
     })
+
+    vim.api.nvim_set_option_value('cmdheight', newHeight, cmdOpt)
+    vim.api.nvim_set_option_value('backspace', new_bs, {})
+
 
     vim.api.nvim_exec_autocmds('User', { pattern = 'SetupCommandCMP' })
 
