@@ -147,6 +147,8 @@ local function setup_cmd()
 
     local mapOpts = { buffer = bufId }
 
+    m.i('<A-q>', '<Esc><cmd>q<cr>', mapOpts)
+    m.n('<A-e>', '', mapOpts)
     m.n(';', function() vim.api.nvim_feedkeys(':', 'n', false) end, mapOpts)
     m.n('<cr>', '<cr>', mapOpts) -- default cr behavior
     m.n('<A-o>', '<Enter>', mapOpts)
@@ -159,10 +161,10 @@ local function command_mode()
     vim.api.nvim_create_autocmd('CmdwinEnter', { group = commandGoup, once = true, callback = setup_cmd })
     return 'q:'
 end
-local cmd_opts = { expr = true }
+local cmd_opts = { expr = true, remap = false }
 
 m.nx('<A-e>', command_mode, cmd_opts)
-m.i('<A-e>', function() return '<Esc>' .. command_mode() end, cmd_opts)
+--m.i('<A-e>', function() return '<Esc>' .. command_mode() end, cmd_opts)
 
 
 -- scroll
