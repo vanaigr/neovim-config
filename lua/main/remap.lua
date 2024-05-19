@@ -257,12 +257,13 @@ m.n('gp', function() -- select last changed area
 end)
 
 local function linewise_paste(register)
-    local nonempty = vim.fn.getline('.'):match('%S')
-    if nonempty then
-        vim.cmd('put '..register)
-    else
-        vim.cmd('put! '..register)
-    end
+    --local nonempty = vim.fn.getline('.'):match('%S')
+    --if nonempty then
+    --    vim.cmd('put '..register)
+    --else
+    --    vim.cmd('normal! V"' .. register .. 'p')
+    --end
+    vim.cmd('put '..register)
     vim.cmd([=[keepjumps normal! `]l]=])
 end
 local function charwise_paste(register)
@@ -279,6 +280,17 @@ m.x('<leader>p', function() vim.cmd([=[keepjumps normal! "+gp]=]) end)
 
 m.n('p', function() linewise_paste(vim.api.nvim_get_vvar('register')) end)
 m.n('<A-p>', function() charwise_paste(vim.api.nvim_get_vvar('register')) end)
+
+m.x('p', function() -- preserve register
+    local register = vim.api.nvim_get_vvar('register')
+    local regtype = vim.fn.getregtype(register)
+    local regContent = vim.fn.getreg(register)
+
+    vim.cmd([=[normal! "]=]..register..'p`]l')
+
+    vim.fn.setreg(register, regContent, regtype)
+end)
+m.x('<A-p>', 'p') -- override register
 
 m.x('v', function()
     local mode = vim.fn.mode():sub(1,1)
