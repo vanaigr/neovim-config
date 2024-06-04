@@ -61,6 +61,8 @@ local function setup()
 
                     ['<esc>'] = { '', type = 'command' },
                     ['<A-q>'] = actions.close,
+
+                    ['<leader>q'] = actions.send_to_qflist + actions.open_qflist,
                 },
             }
         },
