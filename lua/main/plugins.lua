@@ -9,6 +9,8 @@ require('lazy').setup({
     },
     { 'mg979/vim-visual-multi', event = 'User load-multicursor' }, -- multicursor
 
+    { 'vanaigr/motion.nvim' },
+
     { 'vanaigr/mark-signs.nvim' },
     { 'chentoast/marks.nvim', enabled = false },
 
