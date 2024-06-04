@@ -22,7 +22,7 @@ require('rose-pine').setup{
     highlight_groups = {
         --CursorLine = { bg = 'foam', blend = 10 },
         CursorLine = { bg = 'highlight_low' },
-        Visual = { reverse = true, standout = true, bold = true },
+        --Visual = { reverse = true, standout = true, bold = true },
 
         YankHighlight = { bg = 'pine', fg="#20202e", blend = 80 },
         ClipYankHighlight = { bg = 'iris', fg="#20202e", blend = 80 },
