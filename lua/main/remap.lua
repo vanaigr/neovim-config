@@ -7,12 +7,13 @@ m.c('<cr>', '')
 m.cin('<bs>', '')
 m.ci('_', '')
 m.ic('<A-u>', '')
+m.n('V', '')
 
 m.ci('<A-w>', '<bs>')
 
 --this is <A-space> but remapped to this bc of Windows shortcut nonsence...
 -- as if it is not enough that windows key is not remappable
-m.ci('<F22>', '_')
+m.ci('<F23>', '_')
 
 
 m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
