@@ -1,5 +1,10 @@
 local s = require("spider")
-s.setup { skipInsignificantPunctuation = true, subwordMovement = false }
+
+s.setup {
+    skipInsignificantPunctuation = true,
+    subwordMovement = false,
+    consistentOperatorPending = true,
+}
 
 local m = require('mapping')
 
