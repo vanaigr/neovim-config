@@ -11,9 +11,7 @@ m.n('V', '')
 
 m.ci('<A-w>', '<bs>')
 
---this is <A-space> but remapped to this bc of Windows shortcut nonsence...
--- as if it is not enough that windows key is not remappable
-m.ci('<F23>', '_')
+m.ci('<A-space>', '_')
 
 
 m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
@@ -43,7 +41,7 @@ m.n('_', 'g^')
 
 m.n('r', 'gr')
 m.n('a', 'A')
-m.n('A', 'a')
+m.n('A', 'I')
 m.n('x', '"_x')
 
 -- add indentation when entering insert mode
@@ -187,6 +185,7 @@ local function scroll(m1)
 
         local distance = math.floor(vim.fn.winheight(0) * 0.25)
         vim.api.nvim_feedkeys(distance .. m1, 'nx', false)
+        local target_lnum = vim.api.nvim_win_get_cursor(0)[1]
 
         local seen = { [start_row] = true }
         while true do
@@ -197,6 +196,19 @@ local function scroll(m1)
                 vim.api.nvim_feedkeys(ctrlY, 'nx', false)
             else
                 vim.api.nvim_feedkeys(ctrlE, 'nx', false)
+            end
+            local cur_lnum = vim.api.nvim_win_get_cursor(0)[1]
+            if target_lnum ~= cur_lnum then
+                local diff = target_lnum - cur_lnum
+                local dir
+                if diff < 0 then
+                    diff = -diff
+                    dir = 'gk'
+                else
+                    dir = 'gj'
+                end
+                vim.api.nvim_feedkeys(distance .. dir, 'nx', false)
+                return
             end
         end
     end
@@ -216,8 +228,8 @@ m.nx('<A-l>', 'g_l')
 m.nx('j', 'gj')
 m.nx('k', 'gk')
 
-m.nxo('J', '5j')
-m.nxo('K', '5k')
+m.nxo('J', '5gj')
+m.nxo('K', '5gk')
 
 m.n('gj', 'J')
 
@@ -286,7 +298,13 @@ end
 
 m.n('<leader>p', function() linewise_paste('+') end)
 m.n('<leader><A-p>', function() charwise_paste('+') end)
-m.x('<leader>p', function() vim.cmd([=[keepjumps normal! "+gp]=]) end)
+m.x('<leader>p', function()
+    local register = '"'
+    local regtype = vim.fn.getregtype(register)
+    local regContent = vim.fn.getreg(register)
+    vim.cmd([=[keepjumps normal! "+gp]=])
+    vim.fn.setreg(register, regContent, regtype)
+end)
 
 m.n('p', function() linewise_paste(vim.api.nvim_get_vvar('register')) end)
 m.n('<A-p>', function() charwise_paste(vim.api.nvim_get_vvar('register')) end)
@@ -301,6 +319,8 @@ m.x('p', function() -- preserve register
     vim.fn.setreg(register, regContent, regtype)
 end)
 m.x('<A-p>', 'p') -- override register
+
+m.i('<A-p>', '<esc>`^<A-p>i', { remap = true })
 
 m.x('v', function()
     local mode = vim.fn.mode():sub(1,1)
@@ -317,7 +337,7 @@ m.x('<A-f>', function() keepSelection('norm! =') end)
 
 
 local function adjustFontSize(amount)
-    if not vim.fn.has('gui_running') then return end
+    if vim.fn.has('gui_running') == 0 then return end
 
     local orig_font = vim.api.nvim_get_option_value('guifont', {})
     local parts = vim.split(orig_font, ':h')
@@ -443,6 +463,9 @@ m.n('y<leader>v', function()
 end)
 m.ox('<leader>v', function() select_variable_value() end)
 
+m.x('<A-/>', '""y/<C-r>"<cr>')
+
+
 
 -- alt is now shift
 
@@ -471,6 +494,6 @@ m.n('<leader>tt', function()
 end)
 
 m.n('<leader>nn', function()
-    local path = vim.fn.stdpath('data') .. '/nodes.txt'
+    local path = vim.fn.stdpath('data') .. '/notes.txt'
     vim.cmd.tabe(path)
 end)
