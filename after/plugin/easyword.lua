@@ -40,6 +40,7 @@ if true then return end
 
 local isSetup = false
 local norm
+local target_display
 
 local labels = { -- qwerty
     's', 'j', 'k', 'd', 'l', 'f', 'c', 'n', 'i', 'e', 'w', 'r', 'o',
@@ -101,6 +102,15 @@ local function setup(easyword)
         return ' '
     end
 
+    local A = string.byte('A', 1)
+    local Z = string.byte('Z', 1)
+    target_display = function(char)
+        if char == '\n' then return ' ' end
+        local b = string.byte(char, 1)
+        if #char == 1 and b >= A and b <= Z then return char end
+        return norm(char)
+    end
+
     easyword.apply_default_highlight()
 end
 
@@ -116,6 +126,7 @@ local function jump(recover_key)
     char_normalize = norm,
     recover_key = recover_key,
     key_groups = key_hands,
+    target_display = target_display,
     cancel_key = {
         [vim.api.nvim_replace_termcodes('<Esc>', true, false, true)] = true,
         [vim.api.nvim_replace_termcodes('<A-i>', true, false, true)] = true,
@@ -127,6 +138,27 @@ end
 local m = require('mapping')
 m.n('s', function() jump('s') end)
 m.xo('x', function() jump('x') end)
+m.n('\\', function()
+    local recover_key = 's'
+  local easyword = require('easyword')
+  if not isSetup then
+      isSetup = true
+      setup(easyword)
+  end
+
+  easyword.__test({
+    labels = labels,
+    char_normalize = norm,
+    recover_key = recover_key,
+    key_groups = key_hands,
+    target_display = target_display,
+    cancel_key = {
+        [vim.api.nvim_replace_termcodes('<Esc>', true, false, true)] = true,
+        [vim.api.nvim_replace_termcodes('<A-i>', true, false, true)] = true,
+        [vim.api.nvim_replace_termcodes('<A-e>', true, false, true)] = true,
+    },
+  })
+end)
 
 local group = vim.api.nvim_create_augroup('EasywordHighlighting', { clear = true })
 vim.api.nvim_create_autocmd('ColorScheme', {

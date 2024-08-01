@@ -114,11 +114,26 @@ m.n('<leader>fo', function()
   setup()
   builtin.find_files{
     cwd = vim.fn.stdpath('config'),
-    no_ignore = false,
     hidden = false,
     results_title = 'config files',
   }
 end)
+
+local function fn(num, dir, desc)
+    m.n('<leader>f'..num, function()
+      setup()
+      builtin.find_files{
+        cwd = dir,
+        no_ignore = true,
+        hidden = true,
+        results_title = desc,
+      }
+    end)
+end
+fn(1, '~/.config', 'User config files')
+fn(2, '~/CCC', 'User CCC')
+fn(3, '~/.local/share/nvim/lazy', 'User nvim lazy')
+
 m.n('<leader>fO', function()
   setup()
   builtin.oldfiles{ results_title = 'old files', }
