@@ -25,8 +25,8 @@ require('rose-pine').setup{
         --Visual = { reverse = true, standout = true, bold = true },
 
         YankHighlight = { bg = 'pine', fg="#20202e", blend = 80 },
-        ClipYankHighlight = { bg = 'iris', fg="#20202e", blend = 80 },
-        RegYankHighlight = { bg = 'love', fg="#20202e", blend = 80 },
+        ClipYankHighlight = { bg = 'love', fg="#20202e", blend = 80 },
+        RegYankHighlight = { bg = 'iris', fg="#20202e", blend = 80 },
 
         Pmenu = { bg = 'overlay' },
         PmenuSel = { reverse = true },
