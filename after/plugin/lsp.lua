@@ -47,19 +47,31 @@ local mason_path = vim.fn.stdpath('data') .. '/mason/bin'
 
 -- Do this manually since Mason is slow
 local lspconfig = require('lspconfig')
-lspconfig.lua_ls.setup{
-    cmd = { mason_path .. '/lua-language-server' },
-    capabilities = capabilities,
-    settings = {
-        Lua = {
-            workspace = {
-                library = vim.api.nvim_get_runtime_file('', true),
-                checkThirdParty = false, -- LoOk At Me I aM aNnoYiNg Af!!!!!!11!!!1!1!
-            },
+
+local function conf(name, f)
+    local ok, res = pcall(f)
+    if not ok then
+      vim.notify(name..' LSP ERROR: '..res, vim.log.levels.ERROR, {})
+  end
+end
+
+conf('lua', function()
+    lspconfig.lua_ls.setup{
+        cmd = { mason_path .. '/lua-language-server' },
+        capabilities = capabilities,
+        settings = {
+            Lua = {
+                workspace = {
+                    library = vim.api.nvim_get_runtime_file('', true),
+                    checkThirdParty = false, -- LoOk At Me I aM aNnoYiNg Af!!!!!!11!!!1!1!
+                },
+            }
         }
     }
-}
-lspconfig.clangd.setup{
-    cmd = { mason_path .. '/clangd' },
-    capabilities = capabilities,
-}
+end)
+conf('clang', function()
+    lspconfig.clangd.setup{
+        cmd = { mason_path .. '/clangd' },
+        capabilities = capabilities,
+    }
+end)

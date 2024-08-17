@@ -41,6 +41,12 @@ require('lazy').setup({
     { 'hrsh7th/cmp-nvim-lsp' },
 
     {
+        "pmizio/typescript-tools.nvim",
+        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+        opts = {},
+    },
+
+    {
         'nvim-telescope/telescope.nvim',
         dependencies = { 'nvim-lua/plenary.nvim', },
         event = 'User load-telescope',
