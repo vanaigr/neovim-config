@@ -47,6 +47,7 @@ local function setup()
                     ['<A-j>'] = actions.move_selection_next,
 
                     ['<A-l>'] = actions.select_tab,
+                    ['<right>'] = actions.select_tab,
                     ['<A-o>'] = actions.select_default,
 
                     ['<A-i>'] = { '<esc>', type = 'command' },

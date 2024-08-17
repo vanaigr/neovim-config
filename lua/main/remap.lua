@@ -3,8 +3,6 @@ local vim = vim -- fix lsp warning
 local m = require('mapping')
 
 -- like in the good old days with arrow keys
-m.c('<cr>', '')
-m.cin('<bs>', '')
 m.ci('_', '')
 m.ic('<A-u>', '')
 m.n('V', '')
@@ -12,7 +10,6 @@ m.n('V', '')
 m.ci('<A-w>', '<bs>')
 
 m.ci('<A-space>', '_')
-
 
 m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
 m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
@@ -224,6 +221,8 @@ m.nx('<Down>', scroll('gj'))
 
 m.nx('<A-h>', '_')
 m.nx('<A-l>', 'g_l')
+m.nx('<left>', '_')
+m.nx('<right>', 'g_l')
 
 m.nx('j', 'gj')
 m.nx('k', 'gk')

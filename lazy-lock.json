@@ -5,7 +5,7 @@
   "cmp-cmdline": { "branch": "main", "commit": "d250c63aa13ead745e3a40f61fdd3470efde3923" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "39e2eda76828d88b773cc27a3f61d2ad782c922d" },
   "cmp-nvim-lua": { "branch": "main", "commit": "f12408bdb54c39c23e67cab726264c10db33ada8" },
-  "easyword.nvim": { "branch": "main", "commit": "a701724d6a1cdfd96ace7c7a08206c9176ec2c5a" },
+  "easyword.nvim": { "branch": "main", "commit": "55a119a3b7bf2024a0baa35059e378947b74334f" },
   "lazy.nvim": { "branch": "main", "commit": "b0ba3f9399bf48c86abaa4db1a40bd0b681d5018" },
   "lualine.nvim": { "branch": "master", "commit": "0a5a66803c7407767b799067986b4dc3036e1983" },
   "mark-signs.nvim": { "branch": "main", "commit": "8de1efa5730953c4d0993c35491383c6d46fe628" },
