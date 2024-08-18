@@ -1,5 +1,10 @@
 local vim = vim -- fix lsp warning
 
+-- show highest diagnostic on the line
+vim.diagnostic.config{ severity_sort = true }
+-- there's also a different way, not sure what's the benefit
+-- https://neovim.io/doc/user/diagnostic.html
+
 -- see lsp-zero
 
 local m = require('mapping')
