@@ -23,6 +23,7 @@ m.i('<A-i>', '<esc>`^')
 m.c('<A-i>', '<C-c>')
 
 m.n('<A-w>', '<C-w>')
+m.n('<bs>', '<C-w>') -- for system-wide remapped A-w
 
 m.n('<A-s>', '<cmd>w<cr>')
 m.n('<A-q>', '<cmd>q<cr>')
@@ -51,7 +52,6 @@ m.n('i', function() -- https://stackoverflow.com/a/3020022/18704284
 end, { expr = true })
 
 m.n('<space>', '')
-m.n('<bs>', 'i<bs><esc>`^')
 m.n('<enter>', 'i<enter><esc>`^')
 
 m.n('<A-o>', 'o<Esc>')

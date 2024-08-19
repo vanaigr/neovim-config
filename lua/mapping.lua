@@ -21,6 +21,8 @@ for i, main_key in ipairs(main) do
 end
 
 local function write(force)
+    if true then return end
+
     -- technically there can be new keymaps that weren't used
     -- which wouln't be written
     if not force and not map.__added then return end

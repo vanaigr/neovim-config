@@ -57,7 +57,7 @@ vim.opt.termguicolors = true
 
 vim.opt.virtualedit = 'onemore,block'
 vim.opt.selection = 'exclusive'
-vim.opt.mouse = '' -- don't move cursor when focusing nvim-qt window
+-- vim.opt.mouse = '' -- don't move cursor when focusing nvim-qt window
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
