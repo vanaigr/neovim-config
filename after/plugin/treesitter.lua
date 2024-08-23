@@ -1,7 +1,9 @@
 local vim = vim -- fix lsp warning
 
 require'nvim-treesitter.configs'.setup{
-    ensure_installed = {},
+    -- warning from lua-language-server for not having these fields which are optional (but config type says are required)
+    modules = {}, ignore_install = {}, ensure_installed = {},
+
     sync_install = false,
     auto_install = true,
     highlight = {
@@ -15,7 +17,10 @@ require'nvim-treesitter.configs'.setup{
         end,
         additional_vim_regex_highlighting = false,
     },
-    --indent = { enable = true },
+    -- note: pressing cc inside <style> inside .html moves the screen
+    -- Check runtime/indent/html.vim func s:CSSIndent()  at  if below_end_brace
+    -- It moves the cursor offscreen!
+    indent = { enable = true },
     -- would be broken soon ...
     incremental_selection = {
         enable = true,
