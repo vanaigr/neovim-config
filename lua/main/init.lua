@@ -131,5 +131,5 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     end,
 })
 
-LoadModule('main.remap')
 LoadModule('main.plugins')
+LoadModule('main.remap')
