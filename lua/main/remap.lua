@@ -377,18 +377,25 @@ end
 
 LoadModule('main.runBuf')
 
+local motion = require('motion')
+
 local var_decl_regex = vim.regex([[\M\(=\@<!==\@!\|:\@<!::\@!\)]]) -- = or : but not == or ::
 local val_start_regex = vim.regex([[\S]])
 local skip_regex = vim.regex([[\M\((\|{\|[\|;\|,\)]])
 local paren, brace, bracket = ('('):byte(1), ('{'):byte(1), ('['):byte(1)
-local function select_variable_value(direction)
-    local start_lnum = vim.fn.line('.') - 1
+local function select_variable_value()
+    local initial_pos = vim.api.nvim_win_get_cursor(0)
+    initial_pos[1] = initial_pos[1] - 1
 
+    -- 0-indexed
+    local start_lnum = initial_pos[1]
+
+    -- 0-indexed
     local start_col = var_decl_regex:match_line(0, start_lnum)
     if start_col then
-        local terrible_api = val_start_regex:match_line(0, start_lnum, start_col + 1)
-        if terrible_api then
-            start_col = start_col + 1 + terrible_api
+        local col_off = val_start_regex:match_line(0, start_lnum, start_col+1)
+        if col_off then
+            start_col = start_col+1 + col_off
         end
     end
     if not start_col then
@@ -396,49 +403,55 @@ local function select_variable_value(direction)
         return
     end
 
-    local cur_lnum, cur_col = start_lnum, start_col
-    local skip_cur = false
+    local cur_lnum = start_lnum
+    local cur_col = start_col
     while true do
-        local prev_col = skip_cur and (cur_col + 1) or cur_col
-        local next_col_terrible_api = skip_regex:match_line(0, cur_lnum, prev_col)
-        if not next_col_terrible_api then
-            cur_col = #vim.fn.getline('.')
+        local next_col_off = skip_regex:match_line(0, cur_lnum, cur_col)
+        if not next_col_off then
+            cur_col = #vim.fn.getline(1 + cur_lnum)
             break
         end
-        skip_cur = false
-        cur_col = math.max(prev_col + next_col_terrible_api, cur_col + 1) -- just in case
+        cur_col = cur_col + next_col_off -- just in case
 
-        local byte = vim.fn.getline('.'):byte(1 + cur_col)
+        local byte = vim.fn.getline(1 + cur_lnum):byte(1 + cur_col)
         if byte == paren or byte == brace or byte == bracket then
-            vim.fn.cursor(1 + cur_lnum, 1 + cur_col)
+            vim.api.nvim_win_set_cursor(0, { 1 + cur_lnum, cur_col })
             vim.cmd('keepjumps silent! normal! %')
 
-            local new_pos = vim.fn.getpos('.')
-            local new_lnum = new_pos[2] - 1
-            local new_col = new_pos[3] - 1
+            local new_pos = vim.api.nvim_win_get_cursor(0)
+            local new_lnum = new_pos[1] - 1
+            local new_col = new_pos[2]
 
             if new_lnum > cur_lnum or (new_lnum == cur_lnum and new_col > cur_col) then
                 cur_lnum = new_lnum
-                cur_col = new_col
+                cur_col = new_col + 1
             else
-                skip_cur = true
+                cur_col = cur_col + 1
             end
         else
-            cur_col = cur_col
             break
         end
     end
-    print(start_lnum, start_col, cur_lnum, cur_col)
 
-    if vim.fn.mode():sub(1, 1) ~= 'v' then vim.cmd('norm! v') end
-    if vim.api.nvim_get_option_value('selection', {}) == 'exclusive' then
-        cur_col = cur_col + 1
+    local p1 = { 1 + start_lnum, start_col }
+    local p2 = { 1 + cur_lnum, cur_col }
+
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == 'v' or mode == 'V' or mode == '' then
+        if mode ~= 'v' then vim.cmd('norm! v') end
+        if motion.range_to_visual(p1, p2) then
+            motion.util.visual_start(p1, p2, 'v')
+            return true
+        end
+    else
+        if motion.textobj_set_endpoints(p1, p2) then
+            return true
+        end
     end
-    vim.api.nvim_win_set_cursor(0, { 1 + start_lnum, start_col })
-    vim.cmd('norm! o')
-    vim.api.nvim_win_set_cursor(0, { 1 + cur_lnum, cur_col })
 
-    return true
+    -- return cursor to initial position
+    vim.api.nvim_win_set_cursor(0, { 1 + initial_pos[1], initial_pos[2] })
+    return false
 end
 
 m.n('d<leader>v', function()
