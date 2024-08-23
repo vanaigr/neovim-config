@@ -2,11 +2,6 @@ local vim = vim -- fix lsp warning
 
 local m = require('mapping')
 
--- like in the good old days with arrow keys
-m.ci('_', '')
-m.ic('<A-u>', '')
-m.n('V', '')
-
 m.ci('<A-w>', '<bs>')
 
 m.ci('<A-space>', '_')
