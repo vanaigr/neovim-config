@@ -1,9 +1,13 @@
 local vim = vim -- fix lsp warning
 
+local path = vim.fn.stdpath("data")
+vim.opt.runtimepath:append(path)
+
 require'nvim-treesitter.configs'.setup{
     -- warning from lua-language-server for not having these fields which are optional (but config type says are required)
     modules = {}, ignore_install = {}, ensure_installed = {},
 
+    parser_install_dir = path,
     sync_install = false,
     auto_install = true,
     highlight = {

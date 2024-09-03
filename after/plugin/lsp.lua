@@ -29,8 +29,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         m.n('[d', function() vim.diagnostic.goto_prev() end, options)
         m.n(']d', function() vim.diagnostic.goto_next() end, options)
 
-        m.n('gd', function() vim.lsp.buf.definition() end, options)
-        m.n('gD', function() vim.lsp.buf.declaration() end, options)
+        m.n('gd', function() vim.cmd('tab split'); vim.lsp.buf.definition() end, options)
+        m.n('gD', function() vim.cmd('tab split'); vim.lsp.buf.declaration() end, options)
     end
 })
 

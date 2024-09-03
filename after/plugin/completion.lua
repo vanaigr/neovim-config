@@ -14,7 +14,7 @@ local format = {
     format = function(entry, item)
         item.menu = menus[entry.source.name]
         return item
-  end
+    end
 }
 
 local mapping = {
@@ -38,6 +38,11 @@ local cmd_mapping = {
 local snippetKind = cmp.lsp.CompletionItemKind.Snippet
 
 cmp.setup{
+    snippet = {
+        expand = function(args)
+            print('should not pe triggered')
+        end
+    },
     sources = cmp.config.sources{
         { name = 'nvim_lua', max_item_count = 5 },
         {
