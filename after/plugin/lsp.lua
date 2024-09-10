@@ -101,3 +101,8 @@ require("typescript-tools").setup {
     }
   },
 }
+
+conf('eslint', function()
+    lspconfig.eslint.setup{
+    }
+end)
