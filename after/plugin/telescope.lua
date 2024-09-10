@@ -152,12 +152,12 @@ m.n('<leader>fw', function()
   builtin.lsp_workspace_symbols{ results_title = 'symbols', }
 end)
 m.n('<leader>fs', function()
-  setup()
-  builtin.live_grep{
-      cwd = getProjectDir(),
-      path_display = fix_path_display,
-      results_title = 'grep',
-  }
+    setup()
+    builtin.live_grep{
+        cwd = getProjectDir(),
+        path_display = fix_path_display,
+        results_title = 'grep',
+    }
 end)
 m.x('<leader>fs', function()
     setup()
@@ -178,6 +178,36 @@ m.x('<leader>fs', function()
         results_title = 'grep',
         -- additional args to show all ignored files + vcs ignore
         -- todo add .git to exclude
+    }
+end)
+
+m.n('<leader>fS', function()
+    setup()
+    builtin.live_grep{
+        cwd = getProjectDir(),
+        path_display = fix_path_display,
+        results_title = 'grep',
+        additional_args = { '--hidden', '--ignore-vcs' },
+    }
+end)
+m.x('<leader>fS', function()
+    setup()
+    local p1 = vim.fn.getpos('v')
+    local p2 = vim.fn.getpos('.')
+    local text = table.concat(vim.api.nvim_buf_get_text(
+        0,
+        p1[2] - 1,
+        p1[3] - 1,
+        p2[2] - 1,
+        p2[3] - 1,
+        {}
+    ), '\n') -- does telescope accept \n ?
+    builtin.live_grep{
+        cwd = getProjectDir(),
+        default_text = text,
+        path_display = fix_path_display,
+        results_title = 'grep',
+        additional_args = { '--hidden', '--ignore-vcs' },
     }
 end)
 
