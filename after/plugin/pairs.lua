@@ -56,19 +56,23 @@ local function findAround(pos)
     end
 end
 
-vim.keymap.set('i', '<cr>', function()
-    local pos = vim.api.nvim_win_get_cursor(0)
-    if findAround(pos) then
-        local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
-        for _, mark in ipairs(marks) do
-            vim.api.nvim_buf_del_extmark(0, ns, mark[1])
-            break
+local function mapCr(key)
+    vim.keymap.set('i', key, function()
+        local pos = vim.api.nvim_win_get_cursor(0)
+        if findAround(pos) then
+            local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
+            for _, mark in ipairs(marks) do
+                vim.api.nvim_buf_del_extmark(0, ns, mark[1])
+                break
+            end
+            return '<cr><cr><up><C-f>'
         end
-        return '<cr><cr><up><C-f>'
-    end
 
-    return '<cr>'
-end, { remap = false, expr = true })
+        return '<cr>'
+    end, { remap = false, expr = true })
+end
+mapCr('<cr>')
+mapCr('<S-cr>')
 
 vim.keymap.set('i', '<bs>', function()
     local pos = vim.api.nvim_win_get_cursor(0)
