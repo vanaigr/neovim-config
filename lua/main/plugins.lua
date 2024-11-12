@@ -1,6 +1,8 @@
 local vim = vim -- fix lsp warning
 
 require('lazy').setup({
+    { 'brenoprata10/nvim-highlight-colors' },
+
     { 'rose-pine/neovim', name = 'rose-pine' },
     {
         'Wansmer/treesj',
