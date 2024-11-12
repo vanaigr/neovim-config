@@ -199,8 +199,8 @@ local function scroll(m1)
                 else
                     dir = 'gj'
                 end
-                vim.api.nvim_feedkeys(distance .. dir, 'nx', false)
-                return
+                vim.api.nvim_feedkeys(diff .. dir, 'nx', false)
+                break
             end
         end
     end
