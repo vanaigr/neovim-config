@@ -61,8 +61,8 @@ local lspconfig = require('lspconfig')
 local function conf(name, f)
     local ok, res = pcall(f)
     if not ok then
-      vim.notify(name..' LSP ERROR: '..res, vim.log.levels.ERROR, {})
-  end
+        vim.notify(name..' LSP ERROR: '..res, vim.log.levels.WARN, {})
+    end
 end
 
 conf('lua', function()
@@ -114,12 +114,5 @@ conf('css', function()
 end)
 
 conf('eslint', function()
-    lspconfig.eslint.setup{
-    }
-end)
-
-conf('zls', function()
-    lspconfig.zls.setup{
-        cmd = { mason_path .. '/zls' },
-    }
+    -- lspconfig.eslint.setup{ }
 end)
