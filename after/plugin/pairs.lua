@@ -65,7 +65,7 @@ local function mapCr(key)
                 vim.api.nvim_buf_del_extmark(0, ns, mark[1])
                 break
             end
-            return '<cr><cr><up><C-f>'
+            return '<cr><cr><up><esc>"_cc'
         end
 
         return '<cr>'
