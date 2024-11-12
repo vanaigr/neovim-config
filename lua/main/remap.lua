@@ -49,9 +49,9 @@ end, { expr = true })
 m.n('<space>', '')
 m.n('<enter>', 'i<enter><esc>`^')
 
-m.n('<A-o>', 'o<Esc>')
-m.i('<A-o>', '<Esc>`^o')
-m.c('<A-o>', '<CR>')
+m.n('<A-m>', 'o<Esc>')
+m.i('<A-m>', '<Esc>`^o')
+m.c('<A-m>', '<CR>')
 
 m.n('<A-n>', '<cmd>noh<cr>')
 
@@ -151,8 +151,8 @@ local function setup_cmd()
     m.n('<A-e>', '', mapOpts)
     m.n(';', function() vim.api.nvim_feedkeys(':', 'n', false) end, mapOpts)
     m.n('<cr>', '<cr>', mapOpts) -- default cr behavior
-    m.n('<A-o>', '<Enter>', mapOpts)
-    m.i('<A-o>', '<Esc><Enter>', mapOpts)
+    m.n('<A-m>', '<Enter>', mapOpts)
+    m.i('<A-m>', '<Esc><Enter>', mapOpts)
 
     vim.cmd.startinsert()
 end
