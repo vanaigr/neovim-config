@@ -2,9 +2,9 @@ vim.opt.signcolumn = 'yes:1'
 
 local ms = require('mark-signs')
 
-ms.mark_builtin_options({ priority = 10, sign_hl = 'Comment' })
-ms.mark_lower_options  ({ priority = 11, sign_hl = 'Normal', number_hl = 'CursorLineNr' })
-ms.mark_upper_options  ({ priority = 12, sign_hl = 'Normal', number_hl = 'CursorLineNr' })
+ms.mark_builtin_options({ priority = 100, sign_hl = 'Comment' })
+ms.mark_lower_options  ({ priority = 101, sign_hl = 'Normal', number_hl = 'CursorLineNr' })
+ms.mark_upper_options  ({ priority = 102, sign_hl = 'Normal', number_hl = 'CursorLineNr' })
 ms.mark_options('.', { hidden = true })
 ms.mark_options('"', { hidden = true })
 

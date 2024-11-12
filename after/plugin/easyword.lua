@@ -52,8 +52,8 @@ local labels = { -- qwerty
 local left = vim.fn.split([==[12345!@#$%qwertQWERTasdfgASDFGzxcvZXCV`~]==], '\\zs')
 local right = vim.fn.split([==[7890-=&*()_+uiop[]UIOP{}hjkl;'HJKL:"nm,./NM<>?\|]==], '\\zs')
 local key_hands = {}
-for _, key in ipairs(left) do key_hands[key] = 0 end
-for _, key in ipairs(right) do key_hands[key] = 1 end
+-- for _, key in ipairs(left) do key_hands[key] = 0 end
+-- for _, key in ipairs(right) do key_hands[key] = 1 end
 
 local function setup(easyword)
     local normList = {}
@@ -131,6 +131,7 @@ local function jump(recover_key)
         [vim.api.nvim_replace_termcodes('<Esc>', true, false, true)] = true,
         [vim.api.nvim_replace_termcodes('<A-i>', true, false, true)] = true,
         [vim.api.nvim_replace_termcodes('<A-e>', true, false, true)] = true,
+        [vim.api.nvim_replace_termcodes('<A-q>', true, false, true)] = true,
     },
   })
 end

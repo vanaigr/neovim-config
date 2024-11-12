@@ -53,7 +53,7 @@ vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
 
---vim.opt.scrolloff = 4
+vim.opt.scrolloff = 4
 
 vim.opt.virtualedit = 'onemore,block'
 vim.opt.selection = 'exclusive'

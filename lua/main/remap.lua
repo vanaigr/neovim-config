@@ -175,7 +175,7 @@ local function scroll(m1)
     return function()
         local start_row = vim.fn.winline()
 
-        local distance = math.floor(vim.fn.winheight(0) * 0.25)
+        local distance = math.floor(vim.fn.winheight(0) * 0.4)
         vim.api.nvim_feedkeys(distance .. m1, 'nx', false)
         local target_lnum = vim.api.nvim_win_get_cursor(0)[1]
 
@@ -247,6 +247,11 @@ m.x('<leader>l', "<esc>_vg_")
 m.n('<A-y>', 'yy')
 m.n('<A-d>', '"_dd')
 m.x('<A-d>', '"_d')
+
+m.n('<leader>d', '"_d')
+m.x('<leader>d', '"_d')
+m.n('<leader>c', '"_c')
+m.x('<leader>c', '"_c')
 
 m.o('gv', '<cmd>normal! `<v`><cr>')
 

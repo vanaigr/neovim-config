@@ -31,7 +31,7 @@ require('lazy').setup({
     { 'echasnovski/mini.nvim' },
 
     { 'vanaigr/easyword.nvim' },
-    { "chrisgrieser/nvim-spider" },
+    { 'chrisgrieser/nvim-spider' },
     { 'simonmclean/triptych.nvim' },
 
     { 'ggandor/leap.nvim', enabled = false, },
@@ -50,7 +50,8 @@ require('lazy').setup({
     },
 
     {
-        'nvim-telescope/telescope.nvim',
+        'vanaigr/telescope.nvim',
+        branch='help-tags-perf',
         dependencies = { 'nvim-lua/plenary.nvim', },
         event = 'User load-telescope',
     },

@@ -31,6 +31,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         m.n('gd', function() vim.cmd('tab split'); vim.lsp.buf.definition() end, options)
         m.n('gD', function() vim.cmd('tab split'); vim.lsp.buf.declaration() end, options)
+
+        m.n('gi', function() vim.cmd('tab split'); vim.lsp.buf.implementation() end, options)
     end
 })
 
@@ -44,6 +46,9 @@ if not ok then capabilities = nil end
 -- one char to the left and me resetting it back
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
     vim.lsp.handlers.signature_help, { close_events = { 'CursorMoved' } }
+)
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+    vim.lsp.handlers.hover, { close_events = { 'CursorMoved' } }
 )
 -- TODO: add for hover and float
 
@@ -81,23 +86,40 @@ conf('clang', function()
     }
 end)
 
-require("typescript-tools").setup {
-  settings = {
-    separate_diagnostic_server = false,
-    publish_diagnostic_on = "insert_leave",
-    expose_as_code_action = { "add_missing_imports" },
-    tsserver_max_memory = "auto",
-    tsserver_locale = "en",
-    complete_function_calls = false,
-    include_completions_with_insert_text = true,
-    jsx_close_tag = {
-        enable = false,
-        filetypes = { "javascriptreact", "typescriptreact" },
+conf('typescript-tools', function()
+    local api = require("typescript-tools.api")
+
+    require("typescript-tools").setup{
+        settings = {
+            separate_diagnostic_server = false,
+            publish_diagnostic_on = "insert_leave",
+            expose_as_code_action = { "add_missing_imports" },
+            tsserver_max_memory = "auto",
+            tsserver_locale = "en",
+            complete_function_calls = false,
+            include_completions_with_insert_text = true,
+            jsx_close_tag = {
+                enable = false,
+                filetypes = { "javascriptreact", "typescriptreact" },
+            },
+        },
+        handlers = {
+            ["textDocument/publishDiagnostics"] = api.filter_diagnostics{ 7016, 80001 },
+        },
     }
-  },
-}
+end)
+
+conf('css', function()
+    lspconfig.cssls.setup{}
+end)
 
 conf('eslint', function()
     lspconfig.eslint.setup{
+    }
+end)
+
+conf('zls', function()
+    lspconfig.zls.setup{
+        cmd = { mason_path .. '/zls' },
     }
 end)

@@ -11,7 +11,7 @@ local function setup(fLoad)
     p.setup{
       use_default_keymaps = false,
       check_syntax_error = false,
-      max_join_length = 500, -- if called erroneously
+      max_join_length = 5000, -- if called erroneously
       cursor_behavior = 'hold',
       notify = true,
       dot_repeat = false,
