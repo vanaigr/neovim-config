@@ -30,6 +30,7 @@ require('lazy').setup({
 
     { 'vanaigr/easyword.nvim' },
     { "chrisgrieser/nvim-spider" },
+    { 'simonmclean/triptych.nvim' },
 
     { 'ggandor/leap.nvim', enabled = false, },
     { 'Sleepful/leap-by-word.nvim', enabled = false, },
