@@ -2,13 +2,6 @@ local group = vim.api.nvim_create_augroup("my_autopairs", { clear = true })
 local ns = vim.api.nvim_create_namespace('my_autopairs')
 local buffers = {}
 
-vim.api.nvim_create_autocmd('InsertEnter', {
-    group = group,
-    callback = function()
-        print('insert enter')
-    end
-})
-
 vim.api.nvim_set_hl(0, 'AutopairsCurrent', { reverse = true, bold = true })
 
 local autopairs = {
@@ -74,19 +67,23 @@ end
 mapCr('<cr>')
 mapCr('<S-cr>')
 
-vim.keymap.set('i', '<bs>', function()
-    local pos = vim.api.nvim_win_get_cursor(0)
-    local res = findAround(pos)
-    if res then
-        local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
-        if #marks ~= 0 then
-            local count = vim.fn.strcharlen(res[2])
-            return string.rep('<right>', count) .. string.rep('<bs>', count + 1)
+local function mapBs(key)
+    vim.keymap.set('i', key, function()
+        local pos = vim.api.nvim_win_get_cursor(0)
+        local res = findAround(pos)
+        if res then
+            local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
+            if #marks ~= 0 then
+                local count = vim.fn.strcharlen(res[2])
+                return string.rep('<right>', count) .. string.rep('<bs>', count + 1)
+            end
         end
-    end
 
-    return '<bs>'
-end, { remap = false, expr = true })
+        return '<bs>'
+    end, { remap = false, expr = true })
+end
+mapBs('<bs>')
+mapBs('<A-w>')
 
 vim.api.nvim_create_autocmd('InsertCharPre', {
     group = group,
@@ -119,8 +116,8 @@ vim.api.nvim_create_autocmd('InsertCharPre', {
                 local ok, res = pcall(vim.api.nvim_buf_get_text, 0, pos[1] - 1, pos[2], pos[1] - 1, pos[2] + 1, {})
                 if ok then
                     res = res[1]
-                    local chars = ' \t,;)}]'
-                    proceed = chars:find(res) ~= nil
+                    local chars = ' \t,;()(}[]'
+                    proceed = chars:find(res, 0, true) ~= nil
                 end
 
                 if proceed then
