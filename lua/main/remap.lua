@@ -6,15 +6,31 @@ m.ci('<A-w>', '<bs>')
 
 m.ci('<A-space>', '_')
 
-m.i('<S-F1>', '<Esc>`^') -- I set up F1 somewhere and now it does Shift+F1 insead of opening help
-m.c('<S-F1>', '<Esc>')   -- but I don't know where ...
 m.n('Q', '<cmd>mes clear<cr>')
 
-m.i('<esc>', '<esc>`^') -- prevent cursor from moving when exiting insert mode
-m.i('<C-c>', '<C-c>`^')
+-- i HAVE to do this, so that it executes before any other autocmd
+local esc_pos
+vim.api.nvim_create_autocmd('ModeChanged', {
+    callback = function()
+        if esc_pos ~= nil then
+            vim.api.nvim_win_set_cursor(0, esc_pos)
+            esc_pos = nil
+        end
+    end,
+})
+
+local function make_esc(key)
+    m.i(key, function()
+        esc_pos = vim.api.nvim_win_get_cursor(0)
+        return key
+    end, { remap = false, expr = true })
+end
+
+make_esc('<esc>') -- prevent cursor from moving when exiting insert mode
+make_esc('<C-c>')
+make_esc('<A-i>')
 
 m.nx('<A-i>', '<esc>')
-m.i('<A-i>', '<esc>`^')
 m.c('<A-i>', '<C-c>')
 
 m.n('<A-w>', '<C-w>')
@@ -509,3 +525,37 @@ m.n('<leader>nn', function()
     local path = vim.fn.stdpath('data') .. '/notes.txt'
     vim.cmd.tabe(path)
 end)
+
+
+local leaderi_group = vim.api.nvim_create_augroup('leaderi_group', { clear = true })
+local leaderi_ns = vim.api.nvim_create_namespace('leaderi_group')
+m.n('<leader>i', function()
+    local ns = leaderi_ns
+    local group = leaderi_group
+
+    local start_pos = vim.api.nvim_win_get_cursor(0)
+    vim.cmd('norm! j')
+    local next_pos = vim.api.nvim_win_get_cursor(0)
+    local next_id = vim.api.nvim_buf_set_extmark(0, ns, next_pos[1] - 1, next_pos[2], {})
+    P(start_pos)
+    P(next_pos)
+
+    -- TODO: restore window?
+    vim.api.nvim_win_set_cursor(0, start_pos)
+
+    vim.api.nvim_create_autocmd('ModeChanged', {
+        pattern = 'i:n',
+        group = group,
+        once = true,
+        callback = function()
+            local pos = vim.api.nvim_buf_get_extmark_by_id(0, ns, next_id, {})
+            vim.api.nvim_buf_clear_namespace(0, ns, pos[1], pos[2] + 1)
+            pos[1] = pos[1] + 1
+            P(pos)
+            vim.api.nvim_win_set_cursor(0, pos)
+        end
+    })
+
+    vim.api.nvim_feedkeys('i', 'nx!', false)
+end)
+
