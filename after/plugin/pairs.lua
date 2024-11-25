@@ -51,14 +51,16 @@ end
 
 local function mapCr(key)
     vim.keymap.set('i', key, function()
-        local pos = vim.api.nvim_win_get_cursor(0)
-        if findAround(pos) then
-            local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
-            for _, mark in ipairs(marks) do
-                vim.api.nvim_buf_del_extmark(0, ns, mark[1])
-                break
+        if vim.api.nvim_get_mode().mode == 'i' then
+            local pos = vim.api.nvim_win_get_cursor(0)
+            if findAround(pos) then
+                local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
+                for _, mark in ipairs(marks) do
+                    vim.api.nvim_buf_del_extmark(0, ns, mark[1])
+                    break
+                end
+                return '<cr><cr><up><esc>"_cc'
             end
-            return '<cr><cr><up><esc>"_cc'
         end
 
         return '<cr>'
@@ -69,13 +71,15 @@ mapCr('<S-cr>')
 
 local function mapBs(key)
     vim.keymap.set('i', key, function()
-        local pos = vim.api.nvim_win_get_cursor(0)
-        local res = findAround(pos)
-        if res then
-            local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
-            if #marks ~= 0 then
-                local count = vim.fn.strcharlen(res[2])
-                return string.rep('<right>', count) .. string.rep('<bs>', count + 1)
+        if vim.api.nvim_get_mode().mode == 'i' then
+            local pos = vim.api.nvim_win_get_cursor(0)
+            local res = findAround(pos)
+            if res then
+                local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
+                if #marks ~= 0 then
+                    local count = vim.fn.strcharlen(res[2])
+                    return string.rep('<right>', count) .. string.rep('<bs>', count + 1)
+                end
             end
         end
 
@@ -88,6 +92,8 @@ mapBs('<A-w>')
 vim.api.nvim_create_autocmd('InsertCharPre', {
     group = group,
     callback = function()
+        if vim.api.nvim_get_mode().mode ~= 'i' then return end
+
         local pos = vim.api.nvim_win_get_cursor(0)
         local c = vim.v.char
 
