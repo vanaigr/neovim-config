@@ -116,3 +116,9 @@ end)
 conf('eslint', function()
     -- lspconfig.eslint.setup{ }
 end)
+
+conf('zig', function()
+    lspconfig.zls.setup{
+        cmd = { mason_path .. '/zls' },
+    }
+end)
