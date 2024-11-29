@@ -559,3 +559,10 @@ m.n('<leader>i', function()
     vim.api.nvim_feedkeys('i', 'nx!', false)
 end)
 
+
+m.n('*', function()
+    vim.fn.setreg('/', vim.fn.expand('<cword>'), 'v')
+    if vim.api.nvim_get_option('hlsearch') then
+        vim.cmd('set nohlsearch hlsearch')
+    end
+end)
