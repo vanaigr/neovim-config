@@ -211,5 +211,46 @@ m.x('<leader>fS', function()
     }
 end)
 
+vim.api.nvim_create_user_command('Apt', function()
+--m.n('<leader>qq', function()
+    local handle = io.popen('apt-cache pkgnames')
+    if not handle then
+        vim.notify('ERROR: could not run apt-cache', vim.log.levels.ERROR, {})
+        return
+    end
+
+    local out = handle:read('*a')
+    local results = vim.split(out, '\n', { plain = true })
+
+    local finder = require('telescope.finders').new_table{
+        results = results,
+        entry_maker = function(e)
+            return { value = e, display = e, ordinal = e }
+        end,
+    }
+    local opts = {}
+    require('telescope.pickers').new(opts, {
+        finder = finder,
+        prompt_title = 'apt packages',
+        sorter = require('telescope.config').values.generic_sorter(opts),
+        attach_mappings = function(prompt_bufnr)
+            local actions = require('telescope.actions')
+
+            local function select()
+                local action_state = require('telescope.actions.state')
+                local selection = action_state.get_selected_entry()
+                if selection == nil then return end
+                vim.fn.setreg('+', selection.value, 'c')
+                actions.close(prompt_bufnr)
+            end
+
+            actions.select_default:replace(select)
+            actions.select_tab:replace(select)
+
+            return true
+        end
+    }):find()
+end, {})
+
 --require('telescope.builtin').find_files{ default_text = {} }
 --require('telescope.builtin').find_files{ results_title = {1} }
