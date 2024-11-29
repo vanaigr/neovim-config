@@ -197,7 +197,10 @@ end
 function map.__qnoremap(mode, lhs, rhs, opts)
     -- I am not sure what exactly silend does, but it breaks 'c'
     -- mappings rendering: https://github.com/vim/vim/issues/6832
-    local options = { noremap = true } -- , silent = true
+    local options = {
+        noremap = true,
+        desc = debug.traceback()
+    } -- , silent = true
     if opts then options = vim.tbl_extend('keep', opts, options) end
 
 
