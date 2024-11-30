@@ -561,7 +561,7 @@ end)
 
 
 m.n('*', function()
-    vim.fn.setreg('/', vim.fn.expand('<cword>'), 'v')
+    vim.fn.setreg('/', '\\<' .. vim.fn.expand('<cword>') .. '\\>', 'v')
     if vim.api.nvim_get_option('hlsearch') then
         vim.cmd('set nohlsearch hlsearch')
     end
