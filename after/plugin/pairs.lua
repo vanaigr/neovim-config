@@ -81,54 +81,86 @@ end
 mapBs('<bs>')
 mapBs('<A-w>')
 
-local ii = 0
-local function mapPair(index)
+local function closing(index)
     local open, close = unpack(autopairs[index])
-    local o_len = #open
     local c_len = #close
     local c_count = vim.fn.strcharlen(close)
 
-    vim.keymap.set('i', close, function()
-        local pos = vim.api.nvim_win_get_cursor(0)
-                    ii = ii + 1
+    local pos = vim.api.nvim_win_get_cursor(0)
 
-        local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
-        for _, mark in ipairs(marks) do
-            local ok, res = pcall(vim.api.nvim_buf_get_text, 0, mark[2], mark[3], mark[2], mark[3] + c_len, {})
-            if ok then
-                res = table.concat(res, '')
-                if res == close then
-                    vim.api.nvim_buf_del_extmark(0, ns, mark[1])
-                    vim.api.nvim_feedkeys(string.rep(vim.api.nvim_replace_termcodes('<right>', true, false, true), c_count), 'n', false)
-                    return
-                end
-            end
-        end
-        vim.api.nvim_feedkeys(close, 'n', false)
-    end)
-
-    vim.keymap.set('i', open, function()
-        local pos = vim.api.nvim_win_get_cursor(0)
-
-        local ok, res = pcall(vim.api.nvim_buf_get_text, 0, pos[1] - 1, pos[2], pos[1] - 1, pos[2] + 1, {})
+    local marks = vim.api.nvim_buf_get_extmarks(vim.api.nvim_get_current_buf(), ns, { pos[1] - 1, pos[2] }, { pos[1] - 1, pos[2] }, {})
+    for _, mark in ipairs(marks) do
+        local ok, res = pcall(vim.api.nvim_buf_get_text, 0, mark[2], mark[3], mark[2], mark[3] + c_len, {})
         if ok then
-            res = res[1]
-            local chars = ' \t,;()(}[]'
-            if chars:find(res, 0, true) == nil then
-                vim.api.nvim_feedkeys(open, 'n', false)
-                return
+            res = table.concat(res, '')
+            if res == close then
+                vim.api.nvim_buf_del_extmark(0, ns, mark[1])
+                vim.api.nvim_feedkeys(string.rep(vim.api.nvim_replace_termcodes('<right>', true, false, true), c_count), 'n', false)
+                return true
             end
         end
+    end
 
-        vim.api.nvim_buf_set_text(0, pos[1] - 1, pos[2], pos[1] - 1, pos[2], { open .. close })
-        vim.api.nvim_win_set_cursor(0, { pos[1], pos[2] + o_len })
+    return false
+end
 
-        buffers[vim.api.nvim_get_current_buf()] = true
-        vim.api.nvim_buf_set_extmark(0, ns, pos[1] - 1, pos[2] + o_len, {
-            end_col = pos[2] + o_len + c_len,
-            hl_group = 'AutopairsCurrent'
-        })
-   end)
+local function opening(index)
+    local open, close = unpack(autopairs[index])
+    local o_len = #open
+    local c_len = #close
+
+    local pos = vim.api.nvim_win_get_cursor(0)
+
+    local ok, res = pcall(vim.api.nvim_buf_get_text, 0, pos[1] - 1, pos[2], pos[1] - 1, pos[2] + 1, {})
+    if ok then
+        res = res[1]
+        local chars = ' \t,;()(}[]'
+        if chars:find(res, 0, true) == nil then
+            return false
+        end
+    end
+
+    vim.api.nvim_buf_set_text(0, pos[1] - 1, pos[2], pos[1] - 1, pos[2], { open .. close })
+    vim.api.nvim_win_set_cursor(0, { pos[1], pos[2] + o_len })
+
+    buffers[vim.api.nvim_get_current_buf()] = true
+    vim.api.nvim_buf_set_extmark(0, ns, pos[1] - 1, pos[2] + o_len, {
+        end_col = pos[2] + o_len + c_len,
+        hl_group = 'AutopairsCurrent'
+    })
+
+    return true
+end
+
+local function mapPair(index)
+    local open, close = unpack(autopairs[index])
+
+    if open == close then
+        vim.keymap.set('i', open, function()
+            local did = closing(index)
+            if not did then
+                did = opening(index)
+            end
+
+            if not did then
+                vim.api.nvim_feedkeys(open, 'n', false)
+            end
+        end)
+    else
+        vim.keymap.set('i', close, function()
+            local did = closing(index)
+            if not did then
+                vim.api.nvim_feedkeys(close, 'n', false)
+            end
+        end)
+
+        vim.keymap.set('i', open, function()
+            local did = opening(index)
+            if not did then
+                vim.api.nvim_feedkeys(open, 'n', false)
+            end
+       end)
+    end
 end
 
 for i in ipairs(autopairs) do
