@@ -19,16 +19,16 @@ vim.api.nvim_create_autocmd('ModeChanged', {
     end,
 })
 
-local function make_esc(key)
+local function make_esc(key, retKey)
     m.i(key, function()
         esc_pos = vim.api.nvim_win_get_cursor(0)
-        return key
+        return retKey
     end, { remap = false, expr = true })
 end
 
-make_esc('<esc>') -- prevent cursor from moving when exiting insert mode
-make_esc('<C-c>')
-make_esc('<A-i>')
+make_esc('<esc>', '<esc>') -- prevent cursor from moving when exiting insert mode
+make_esc('<C-c>', '<C-c>')
+make_esc('<A-i>', '<Esc>')
 
 m.nx('<A-i>', '<esc>')
 m.c('<A-i>', '<C-c>')
