@@ -29,9 +29,12 @@ end
 make_esc('<esc>', '<esc>') -- prevent cursor from moving when exiting insert mode
 make_esc('<C-c>', '<C-c>')
 make_esc('<A-i>', '<Esc>')
+make_esc('<A-u>', '<Esc>')
 
 m.nx('<A-i>', '<esc>')
 m.c('<A-i>', '<C-c>')
+m.nx('<A-u>', '<esc>')
+m.c('<A-u>', '<C-c>')
 
 m.n('<A-w>', '<C-w>')
 m.n('<bs>', '<C-w>') -- for system-wide remapped A-w
@@ -63,11 +66,9 @@ m.n('i', function() -- https://stackoverflow.com/a/3020022/18704284
 end, { expr = true })
 
 m.n('<space>', '')
-m.n('<enter>', 'i<enter><esc>`^')
 
-m.n('<A-m>', 'o<Esc>')
-m.i('<A-m>', '<Esc>`^o')
-m.c('<A-m>', '<CR>')
+m.i('<A-m>', '<cr>')
+m.c('<A-m>', '<cr>')
 
 m.n('<A-n>', '<cmd>noh<cr>')
 
@@ -113,9 +114,6 @@ m.nx(')', '<C-y>') -- move screen but not cursor
 m.nx('(', '<C-e>')
 m.nx('<A-0>', '<C-y>')
 m.nx('<A-9>', '<C-e>')
-
-m.nx('{', '_') -- move to start/end of line without leading/trailing spaces
-m.nx('}', 'g_l')
 
 m.t('<C-q>', '<C-\\><C-n>') -- go to normal mode in terminal
 
@@ -251,23 +249,20 @@ m.o('_', function() vim.cmd'keepjumps silent! normal! _' end)
 m.nx('<leader>y', "\"+y")
 m.nx('<leader>d', "\"+d")
 
+-- haha Y is not Y but y$, because Y is yy RTFM
+-- https://github.com/neovim/neovim/issues/416
+m.nx('<leader>Y', "\"+y$")
+m.nx('<leader>D', "\"+d$")
+
 -- line without indentation and newline
 m.n('d<leader>l', "_vg_d\"_dd")
 m.n('y<leader>l', "_vg_y`^")
 m.o('<leader>l', "<cmd>normal! _vg_l<cr>")
 m.x('<leader>l', "<esc>_vg_")
 
---m.ic('<A-u>', '<bs>')
---m.n('<A-u>', 'i<bs><esc>`^')
-
 m.n('<A-y>', 'yy')
 m.n('<A-d>', '"_dd')
 m.x('<A-d>', '"_d')
-
-m.n('<leader>d', '"_d')
-m.x('<leader>d', '"_d')
-m.n('<leader>c', '"_c')
-m.x('<leader>c', '"_c')
 
 m.o('gv', '<cmd>normal! `<v`><cr>')
 
