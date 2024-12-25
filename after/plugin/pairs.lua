@@ -114,7 +114,7 @@ local function opening(index)
     local ok, res = pcall(vim.api.nvim_buf_get_text, 0, pos[1] - 1, pos[2], pos[1] - 1, pos[2] + 1, {})
     if ok then
         res = res[1]
-        local chars = ' \t,;()(}[]'
+        local chars = ' \t,;(){}[]'
         if chars:find(res, 0, true) == nil then
             return false
         end
@@ -132,11 +132,13 @@ local function opening(index)
     return true
 end
 
-local function mapPair(index)
+local m = require('mapping')
+
+local function mapPair(index, kOpen, kClose)
     local open, close = unpack(autopairs[index])
 
     if open == close then
-        vim.keymap.set('i', open, function()
+        m.i(open, function()
             local did = closing(index)
             if not did then
                 did = opening(index)
@@ -147,14 +149,14 @@ local function mapPair(index)
             end
         end)
     else
-        vim.keymap.set('i', close, function()
+        m.i(kClose, function()
             local did = closing(index)
             if not did then
                 vim.api.nvim_feedkeys(close, 'n', false)
             end
         end)
 
-        vim.keymap.set('i', open, function()
+        m.i(kOpen, function()
             local did = opening(index)
             if not did then
                 vim.api.nvim_feedkeys(open, 'n', false)
@@ -164,8 +166,14 @@ local function mapPair(index)
 end
 
 for i in ipairs(autopairs) do
-    mapPair(i)
+    local open, close = unpack(autopairs[i])
+    mapPair(i, open, close)
 end
+
+mapPair(1, '<A-9>', '<A-0>')
+mapPair(2, '<A-[>', '<A-]>')
+-- hod does THIS happen?
+mapPair(2, '<S-{>', '<S-}>')
 
 vim.api.nvim_create_autocmd('InsertLeavePre', {
     group = group,
