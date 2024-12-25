@@ -293,21 +293,19 @@ m.n('gp', function() -- select last changed area
     vim.api.nvim_win_set_cursor(0, { e[1], e[2] })
 end)
 
+-- TODO: rewrite with vim.api.nvim_put() / nvim_paste()
 local function linewise_paste(register)
-    --local nonempty = vim.fn.getline('.'):match('%S')
-    --if nonempty then
-    --    vim.cmd('put '..register)
-    --else
-    --    vim.cmd('normal! V"' .. register .. 'p')
-    --end
-    vim.cmd('put '..register)
+    -- yes, a loop. How else would I do that?
+    for i = 1, vim.v.count1 do
+        vim.cmd('put '..register)
+    end
     vim.cmd([=[keepjumps normal! `]l]=])
 end
 local function charwise_paste(register)
     local regInfo = vim.fn.getreginfo(register)
     local regValue = vim.fn.getreg(register)
     vim.fn.setreg(register, regValue, 'v')
-    vim.cmd('normal! "'..register .. 'gP')
+    vim.cmd('normal! '..vim.v.count1..'"'..register .. 'gP')
     vim.fn.setreg(register, regInfo) -- may not work, but I don't know
 end
 
@@ -329,13 +327,12 @@ m.x('p', function() -- preserve register
     local regtype = vim.fn.getregtype(register)
     local regContent = vim.fn.getreg(register)
 
-    vim.cmd([=[normal! "]=]..register..'p`]l')
+    vim.cmd('normal! '..vim.v.count1..'"'..register..'p`]l')
 
     vim.fn.setreg(register, regContent, regtype)
 end)
-m.x('<A-p>', 'p') -- override register
 
-m.i('<A-p>', '<esc>`^<A-p>i', { remap = true })
+m.i('<A-p>', '<C-o><A-p>', { remap = true })
 
 m.x('v', function()
     local mode = vim.fn.mode():sub(1,1)
