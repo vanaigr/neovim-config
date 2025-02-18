@@ -6,7 +6,8 @@ m.ci('<A-w>', '<bs>')
 
 m.ci('<A-space>', '_')
 
-m.n('Q', '<cmd>mes clear<cr>')
+m.n('q', '')
+m.n('Q', 'q')
 
 -- i HAVE to do this, so that it executes before any other autocmd
 local esc_pos
