@@ -12,9 +12,7 @@ require('lazy').setup({
     { 'mg979/vim-visual-multi', event = 'User load-multicursor' }, -- multicursor
 
     { 'vanaigr/motion.nvim' },
-
     { 'vanaigr/mark-signs.nvim' },
-    { 'chentoast/marks.nvim', enabled = false },
 
     -- better than neogit...
     { 'tpope/vim-fugitive', command = 'Git', event = 'User load-fugitive' }, -- git
@@ -34,8 +32,7 @@ require('lazy').setup({
     { 'chrisgrieser/nvim-spider' },
     { 'simonmclean/triptych.nvim' },
 
-    { 'ggandor/leap.nvim', enabled = false, },
-    { 'Sleepful/leap-by-word.nvim', enabled = false, },
+    { 'FabijanZulj/blame.nvim' },
 
     { 'hrsh7th/nvim-cmp' },
     { 'hrsh7th/cmp-buffer' }, -- autocomplete without lsp
