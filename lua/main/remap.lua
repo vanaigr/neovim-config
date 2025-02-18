@@ -289,8 +289,18 @@ m.n('gp', function() -- select last changed area
     vim.api.nvim_win_set_cursor(0, { e[1], e[2] })
 end)
 
+local function check_nonsense(register)
+    if vim.v.count1 > 1000 then
+        error('[my] Pasting too much!')
+    end
+    if #vim.fn.getreg(register) > 100000 then
+        error('[my] Paste too big!')
+    end
+end
+
 -- TODO: rewrite with vim.api.nvim_put() / nvim_paste()
 local function linewise_paste(register)
+    check_nonsense(register)
     -- yes, a loop. How else would I do that?
     for i = 1, vim.v.count1 do
         vim.cmd('put '..register)
@@ -298,35 +308,31 @@ local function linewise_paste(register)
     vim.cmd([=[keepjumps normal! `]l]=])
 end
 local function charwise_paste(register)
+    check_nonsense(register)
     local regInfo = vim.fn.getreginfo(register)
     local regValue = vim.fn.getreg(register)
     vim.fn.setreg(register, regValue, 'v')
     vim.cmd('normal! '..vim.v.count1..'"'..register .. 'gP')
     vim.fn.setreg(register, regInfo) -- may not work, but I don't know
 end
+local function visual_paste(register)
+    check_nonsense(register)
+    -- visual replaces that register
+    local preserved = '"'
+    local regtype = vim.fn.getregtype(preserved)
+    local regContent = vim.fn.getreg(preserved)
+    vim.cmd('keepjumps normal! ' .. vim.v.count1 .. '"' .. register .. 'gp')
+    vim.fn.setreg(preserved, regContent, regtype)
+end
 
 m.n('<leader>p', function() linewise_paste('+') end)
 m.n('<leader><A-p>', function() charwise_paste('+') end)
-m.x('<leader>p', function()
-    local register = '"'
-    local regtype = vim.fn.getregtype(register)
-    local regContent = vim.fn.getreg(register)
-    vim.cmd([=[keepjumps normal! "+gp]=])
-    vim.fn.setreg(register, regContent, regtype)
-end)
+m.x('<leader>p', function() visual_paste('+') end)
+m.x('<leader><A-p>', function() visual_paste('+') end)
 
 m.n('p', function() linewise_paste(vim.api.nvim_get_vvar('register')) end)
 m.n('<A-p>', function() charwise_paste(vim.api.nvim_get_vvar('register')) end)
-
-m.x('p', function() -- preserve register
-    local register = vim.api.nvim_get_vvar('register')
-    local regtype = vim.fn.getregtype(register)
-    local regContent = vim.fn.getreg(register)
-
-    vim.cmd('normal! '..vim.v.count1..'"'..register..'p`]l')
-
-    vim.fn.setreg(register, regContent, regtype)
-end)
+m.x('p', function() visual_paste(vim.api.nvim_get_vvar('register')) end)
 
 m.i('<A-p>', '<C-o><A-p>', { remap = true })
 
