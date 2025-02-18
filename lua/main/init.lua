@@ -113,9 +113,13 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 -- remove trailing whitespace
 local cursorNs = vim.api.nvim_create_namespace("Cursor@init.lua")
+vim.g.my_autoformat = true
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     group = group, pattern = { "*" },
     callback = function(ev)
+        if not vim.g.my_autoformat then
+            return
+        end
         local bufId = ev.buf
         vim.api.nvim_buf_call(bufId, function()
             local lastCursor = vim.api.nvim_win_get_cursor(0)
