@@ -47,10 +47,10 @@ cmp.setup{
         { name = 'nvim_lua', max_item_count = 5 },
         {
             name = 'nvim_lsp',
-            max_item_count = 5,
+            max_item_count = 8,
             entry_filter = function(entry) return entry:get_kind() ~= snippetKind end,
         },
-        { name = 'buffer', max_item_count = 5 },
+        { name = 'buffer', max_item_count = 8 },
     },
     mapping = mapping,
     formatting = format,

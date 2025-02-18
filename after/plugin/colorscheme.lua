@@ -3,6 +3,7 @@ local vim = vim -- fix lsp warning
 vim.opt.cursorline = true
 
 local grn = '#8bc798'
+local pnk = '#ff76b5'
 
 require('rose-pine').setup{
 	variant = 'main',
@@ -31,12 +32,15 @@ require('rose-pine').setup{
         Pmenu = { bg = 'overlay' },
         PmenuSel = { reverse = true },
 
+        -- ['Normal'] = { bg = '#151027' },
         ['@parameter'] = { fg = 'iris' }, -- why was this removed?
         -- Use :Inspect<cr> with cursor on stuff under question
-        ['@lsp.mod.global'] = { fg = grn },
-        ['@lsp.typemod.variable.globalScope'] = { fg = grn },
+        ['@lsp.mod.global'] = { fg = pnk },
+        ['@lsp.typemod.variable.globalScope'] = { fg = pnk },
         ['@lsp.typemod.variable.fileScope'] = { fg = grn },
         ['DiagnosticUnnecessary'] = { fg = '#a99595' },
+
+        ['@character.printf'] = { fg = 'foam' },
     }
 }
 

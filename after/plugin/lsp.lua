@@ -120,3 +120,9 @@ end)
 conf('rust', function()
     lspconfig.rust_analyzer.setup{}
 end)
+
+conf('cmake', function()
+    lspconfig.cmake.setup {
+        cmd = { mason_path .. '/cmake-language-server' },
+    }
+end)

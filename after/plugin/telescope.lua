@@ -1,22 +1,60 @@
 local vim = vim
 
 -- and this is multiple hundred lines across several files in Neogit...
-local function git_root(dir)
+---@return string?
+local function git_root(path)
     local stdout
+
+    if vim.fn.isdirectory(path) == 0 then
+        path = vim.fs.dirname(path)
+    end
 
     local job = vim.fn.jobstart(
         { 'git', 'rev-parse', '--show-toplevel' },
         {
             clear_env = true,
-            cwd = dir,
+            cwd = path,
             on_stdout = function(_, lines, _) stdout = lines end,
             stdout_buffered = true,
         }
     )
 
     local status = unpack(vim.fn.jobwait({ job }, 500))
-    if status ~= 0 or #stdout < 1 then return end
+    if status ~= 0 or #stdout < 1 then
+        return
+    end
     return stdout[1]
+end
+
+local search_root_fname = '.search-root'
+
+local function search_root(path, stop)
+    local res = vim.fs.find(search_root_fname, {
+        upward = true,
+        path = path,
+        stop = stop,
+        type = 'file',
+        limit = 1,
+    })
+    if #res > 0 then
+        return res[1]:sub(1, #res[1] - #search_root_fname)
+    end
+end
+
+---@return string?
+local function project_root(dir)
+    local git_ok, git_res = pcall(git_root, dir)
+    local root_ok, root_res = pcall(search_root, dir, git_ok and git_res or nil)
+
+    git_ok = git_ok and (not not git_res)
+    root_ok = root_ok and (not not root_res)
+
+
+    if root_ok then
+        return root_res
+    elseif git_ok then
+        return git_res
+    end
 end
 
 local function buffer_dir()
@@ -24,11 +62,12 @@ local function buffer_dir()
 end
 
 local function getProjectDir()
-  local buf_dir = buffer_dir()
-  local root = git_root(buf_dir)
-  print(buf_dir, root)
-  if root then return root
-  else return buf_dir end
+    local root = project_root(vim.fn.expand("%:p"))
+    if root then
+        return root
+    else
+        return buffer_dir()
+    end
 end
 
 local m = require('mapping')
@@ -57,8 +96,6 @@ local function setup()
                     ['<A-k>'] = actions.move_selection_previous,
                     ['<A-j>'] = actions.move_selection_next,
 
-                    ['<A-l>'] = actions.select_tab,
-                    ['<right>'] = actions.select_tab,
                     ['<A-o>'] = actions.select_default,
 
                     ['<esc>'] = { '', type = 'command' },
@@ -96,6 +133,16 @@ m.n('<leader>ff', function()
   setup()
   builtin.find_files{
     cwd = getProjectDir(),
+    path_display = fix_path_display,
+    --no_ignore = false,
+    --hidden = false,
+    results_title = 'project files',
+  }
+end)
+m.n('<leader>Ff', function()
+  setup()
+  builtin.find_files{
+    cwd = buffer_dir(),
     path_display = fix_path_display,
     --no_ignore = false,
     --hidden = false,
@@ -152,6 +199,21 @@ m.n('<leader>fw', function()
   setup()
   builtin.lsp_workspace_symbols{ results_title = 'symbols', }
 end)
+
+local function getSelectionText()
+    setup()
+    local p1 = vim.fn.getpos('v')
+    local p2 = vim.fn.getpos('.')
+    return table.concat(vim.api.nvim_buf_get_text(
+        0,
+        p1[2] - 1,
+        p1[3] - 1,
+        p2[2] - 1,
+        p2[3] - 1,
+        {}
+    ), '\n') -- does telescope accept \n ?
+end
+
 m.n('<leader>fs', function()
     setup()
     builtin.live_grep{
@@ -160,10 +222,28 @@ m.n('<leader>fs', function()
         results_title = 'grep',
     }
 end)
+m.x('<leader>fs', function()
+    setup()
+    builtin.live_grep{
+        cwd = getProjectDir(),
+        default_text = getSelectionText(),
+        path_display = fix_path_display,
+        results_title = 'grep',
+    }
+end)
 m.n('<leader>Fs', function()
     setup()
     builtin.live_grep{
         cwd = buffer_dir(),
+        path_display = fix_path_display,
+        results_title = 'grep',
+    }
+end)
+m.x('<leader>Fs', function()
+    setup()
+    builtin.live_grep{
+        cwd = buffer_dir(),
+        default_text = getSelectionText(),
         path_display = fix_path_display,
         results_title = 'grep',
     }
@@ -179,20 +259,9 @@ m.n('<leader>fS', function()
     }
 end)
 m.x('<leader>fS', function()
-    setup()
-    local p1 = vim.fn.getpos('v')
-    local p2 = vim.fn.getpos('.')
-    local text = table.concat(vim.api.nvim_buf_get_text(
-        0,
-        p1[2] - 1,
-        p1[3] - 1,
-        p2[2] - 1,
-        p2[3] - 1,
-        {}
-    ), '\n') -- does telescope accept \n ?
     builtin.live_grep{
         cwd = getProjectDir(),
-        default_text = text,
+        default_text = getSelectionText(),
         path_display = fix_path_display,
         results_title = 'grep',
         additional_args = { '--hidden', '--ignore-vcs' },

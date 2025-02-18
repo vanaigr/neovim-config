@@ -141,24 +141,24 @@ m.n('s', function() jump('s') end)
 m.xo('x', function() jump('x') end)
 m.n('\\', function()
     local recover_key = 's'
-  local easyword = require('easyword')
-  if not isSetup then
-      isSetup = true
-      setup(easyword)
-  end
+    local easyword = require('easyword')
+    if not isSetup then
+        isSetup = true
+        setup(easyword)
+    end
 
-  easyword.__test({
-    labels = labels,
-    char_normalize = norm,
-    recover_key = recover_key,
-    key_groups = key_hands,
-    target_display = target_display,
-    cancel_key = {
-        [vim.api.nvim_replace_termcodes('<Esc>', true, false, true)] = true,
-        [vim.api.nvim_replace_termcodes('<A-i>', true, false, true)] = true,
-        [vim.api.nvim_replace_termcodes('<A-e>', true, false, true)] = true,
-    },
-  })
+    easyword.__test({
+        labels = labels,
+        char_normalize = norm,
+        recover_key = recover_key,
+        key_groups = key_hands,
+        target_display = target_display,
+        cancel_key = {
+            [vim.api.nvim_replace_termcodes('<Esc>', true, false, true)] = true,
+            [vim.api.nvim_replace_termcodes('<A-i>', true, false, true)] = true,
+            [vim.api.nvim_replace_termcodes('<A-e>', true, false, true)] = true,
+        },
+    })
 end)
 
 local group = vim.api.nvim_create_augroup('EasywordHighlighting', { clear = true })

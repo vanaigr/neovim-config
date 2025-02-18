@@ -31,7 +31,7 @@ vim.g.mapleader = ' '
 vim.opt.langremap = false
 
 vim.opt.number = true
---vim.opt.relativenumber = true -- supposedly faster (some nvim issue)
+vim.opt.relativenumber = true -- supposedly faster (some nvim issue)
 
 if true then
     vim.opt.tabstop = 4
@@ -64,6 +64,8 @@ vim.opt.smartcase = true
 
 vim.opt.cmdheight = 2 -- for remapping ; to open c_CTRL-f
 --vim.opt.breakindent = true -- breakindent will forever be slow :(
+
+vim.opt.undofile = true
 
 local group = vim.api.nvim_create_augroup('MainInigAutocmds', { clear = true })
 

@@ -114,7 +114,7 @@ local function opening(index)
     local ok, res = pcall(vim.api.nvim_buf_get_text, 0, pos[1] - 1, pos[2], pos[1] - 1, pos[2] + 1, {})
     if ok then
         res = res[1]
-        local chars = ' \t,;(){}[]'
+        local chars = ' \t,;(){}[]>'
         if chars:find(res, 0, true) == nil then
             return false
         end
