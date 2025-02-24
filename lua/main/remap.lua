@@ -9,6 +9,10 @@ m.ci('<A-space>', '_')
 m.n('q', '')
 m.n('Q', 'q')
 
+local _ = [===[
+this breaks neovim. It just starts randomly moving the cursor
+sometimes. And also breaks multicursor
+
 -- i HAVE to do this, so that it executes before any other autocmd
 local esc_pos
 vim.api.nvim_create_autocmd('ModeChanged', {
@@ -25,6 +29,11 @@ local function make_esc(key, retKey)
         esc_pos = vim.api.nvim_win_get_cursor(0)
         return retKey
     end, { remap = false, expr = true })
+end
+]===]
+
+local function make_esc(key, retKey)
+    m.i(key, retKey .. '`]')
 end
 
 make_esc('<esc>', '<esc>') -- prevent cursor from moving when exiting insert mode
