@@ -33,7 +33,7 @@ end
 ]===]
 
 local function make_esc(key, retKey)
-    m.i(key, retKey .. '`]')
+    m.i(key, retKey .. '`^')
 end
 
 make_esc('<esc>', '<esc>') -- prevent cursor from moving when exiting insert mode
