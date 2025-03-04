@@ -98,6 +98,7 @@ conf('typescript-tools', function()
             tsserver_locale = "en",
             complete_function_calls = false,
             include_completions_with_insert_text = true,
+            code_lens = "all",
             jsx_close_tag = {
                 enable = false,
                 filetypes = { "javascriptreact", "typescriptreact" },
