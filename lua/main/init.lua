@@ -18,6 +18,16 @@ function P(v)
     return v
 end
 
+_G.my_keys = {}
+vim.on_key(function(key)
+    local pos = vim.fn.getcurpos()
+    table.insert(_G.my_keys, { key = key, position = pos })
+end)
+vim.keymap.set('n', ']', function()
+    _G.my_keys2 = _G.my_keys
+    _G.my_keys = {}
+    print("DONE")
+end)
 
 vim.api.nvim_create_user_command('OpenConfig', function()
     vim.cmd('tabe ' .. vim.fn.stdpath('config'))
