@@ -59,6 +59,10 @@ local mason_path = vim.fn.stdpath('data') .. '/mason/bin'
 local lspconfig = require('lspconfig')
 
 local function conf(name, f)
+    if not name then
+        vim.notify('SKIPPING: ' .. f, vim.log.levels.WARN, {})
+        return
+    end
     local ok, res = pcall(f)
     if not ok then
         vim.notify(name..' LSP ERROR: '..res, vim.log.levels.WARN, {})
