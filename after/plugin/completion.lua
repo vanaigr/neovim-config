@@ -12,6 +12,7 @@ local menus = {
 local format = {
     fields = { 'abbr', 'kind', 'menu' },
     format = function(entry, item)
+        item = require("tailwind-tools.cmp").lspkind_format(entry, item)
         item.menu = menus[entry.source.name]
         return item
     end

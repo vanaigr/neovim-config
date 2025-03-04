@@ -126,3 +126,9 @@ conf('cmake', function()
         cmd = { mason_path .. '/cmake-language-server' },
     }
 end)
+
+conf('tailwind', function()
+    lspconfig.tailwindcss.setup {
+        cmd = { mason_path .. '/tailwindcss-language-server' },
+    }
+end)

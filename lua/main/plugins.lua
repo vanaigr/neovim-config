@@ -41,6 +41,18 @@ require('lazy').setup({
     { 'hrsh7th/cmp-nvim-lsp' },
 
     {
+        "luckasRanarison/tailwind-tools.nvim",
+        name = "tailwind-tools",
+        build = ":UpdateRemotePlugins",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            -- optional
+            "nvim-telescope/telescope.nvim",
+            "neovim/nvim-lspconfig",
+        },
+    },
+
+    {
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
         opts = {},
