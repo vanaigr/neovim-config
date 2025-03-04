@@ -20,6 +20,7 @@
   "nvim-spider": { "branch": "main", "commit": "b17d85c086d963852b7e3f543e0cd187b5112bc5" },
   "nvim-surround": { "branch": "main", "commit": "f1f0699a1d49f28e607ffa4361f1bbe757ac5ebc" },
   "nvim-treesitter": { "branch": "master", "commit": "4770d9a1a77b0cc2b723c646c3dbe43a9133e5db" },
+  "omnisharp-extended-lsp.nvim": { "branch": "main", "commit": "ec1a2431f8872f650a85ed71c24f0715df2e49c2" },
   "plenary.nvim": { "branch": "master", "commit": "a3e3bc82a3f95c5ed0d7201546d5d2c19b20d683" },
   "rainbow-delimiters.nvim": { "branch": "master", "commit": "0f314613125fdd7c85faaee3c87051611d883253" },
   "rose-pine": { "branch": "main", "commit": "87aa437172357ad8f916942bca249ceadc6c68b1" },

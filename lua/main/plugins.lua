@@ -40,6 +40,8 @@ require('lazy').setup({
     { 'hrsh7th/cmp-nvim-lua' },
     { 'hrsh7th/cmp-nvim-lsp' },
 
+    { 'Hoffs/omnisharp-extended-lsp.nvim' },
+
     {
         "luckasRanarison/tailwind-tools.nvim",
         name = "tailwind-tools",

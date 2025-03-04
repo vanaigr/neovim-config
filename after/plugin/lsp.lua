@@ -133,3 +133,13 @@ conf('tailwind', function()
         cmd = { mason_path .. '/tailwindcss-language-server' },
     }
 end)
+
+conf('csharp', function()
+    -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2577
+    lspconfig.omnisharp.setup {
+        cmd = { mason_path .. '/omnisharp' },
+        handlers = {
+            ['textDocument/definition'] = require('omnisharp_extended').handler,
+        }
+    }
+end)
