@@ -9,6 +9,17 @@ vim.diagnostic.config{ severity_sort = true }
 
 local m = require('mapping')
 
+local lualine_warned = false
+local function lualine()
+    local lualine_ok, err = pcall(function()
+        require('lualine').refresh()
+    end)
+    if not lualine_ok and not lualine_warned then
+        lualine_warned = true
+        vim.notify_once('[MY] Lualine LSP notification error: ' .. vim.inspect(err), vim.log.levels.WARN)
+    end
+end
+
 local g = vim.api.nvim_create_augroup('LSPGroup', { clear = true })
 vim.api.nvim_create_autocmd('LspAttach', {
     group = g,
@@ -33,6 +44,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
         m.n('gD', function() vim.cmd('tab split'); vim.lsp.buf.declaration() end, options)
 
         m.n('gi', function() vim.cmd('tab split'); vim.lsp.buf.implementation() end, options)
+
+        lualine()
+    end
+})
+
+vim.api.nvim_create_autocmd('LspDetach', {
+    group = g,
+    callback = function(event)
+        lualine()
     end
 })
 

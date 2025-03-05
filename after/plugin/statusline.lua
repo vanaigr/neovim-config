@@ -12,6 +12,14 @@ local colors = {
   background2  = p.overlay,
 }
 
+local function active_lsps()
+    local result = ''
+    for _, client in pairs(vim.lsp.buf_get_clients()) do
+        result = (result ~= '' and (result .. ' | ') or result) .. client.name
+    end
+    return result
+end
+
 local colorScheme = {
   normal = {
     a = { fg = colors.textDark, bg = colors.normalBg, gui = 'bold' },
@@ -60,19 +68,19 @@ require('lualine').setup{
     }
   },
   sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff'},
-    lualine_c = { {'diagnostics', symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'}} },
+    lualine_a = { 'mode' },
+    lualine_b = { { 'filename', path = 2 }, 'diff' },
+    lualine_c = { { 'diagnostics', symbols = { error = 'E', warn = 'W', info = 'I', hint = 'H' } } },
     lualine_x = {},
-    lualine_y = {'filename'},
+    lualine_y = { active_lsps, 'searchcount' },
     lualine_z = {'location', 'progress'}
   },
   inactive_sections = {
     lualine_a = {},
     lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
+    lualine_c = {},
+    lualine_x = {},
     lualine_y = {},
     lualine_z = {}
-  }
+  },
 }
