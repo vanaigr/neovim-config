@@ -63,7 +63,7 @@ require('lazy').setup({
 
     {
         'vanaigr/telescope.nvim',
-        branch='help-tags-perf',
+        branch='help-tags-perf-11',
         dependencies = { 'nvim-lua/plenary.nvim', },
         event = 'User load-telescope',
     },
