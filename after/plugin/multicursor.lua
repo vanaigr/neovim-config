@@ -54,6 +54,12 @@ mc.addKeymapLayer(function(layerSet)
     end)
 end)
 
+mc.onModeChanged(function(cursor, oldMode, newMode)
+    if oldMode and string.find("iR", oldMode) and newMode == "n" then
+        cursor:feedkeys("`^")
+    end
+end)
+
 -- Customize how cursors look.
 local hl = vim.api.nvim_set_hl
 hl(0, "MultiCursorCursor", { link = "Cursor" })
