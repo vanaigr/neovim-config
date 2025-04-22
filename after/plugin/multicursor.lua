@@ -1,6 +1,14 @@
 local mc = require("multicursor-nvim")
 mc.setup()
 
+--[[
+if _G.this_is then
+    vim.keymap.set('n', 'a', function() mc.lineAddCursor(1) end)
+    vim.cmd('norm aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+end
+_G.this_is = true
+]]
+
 local set = vim.keymap.set
 
 -- Add or skip cursor above/below the main cursor.
