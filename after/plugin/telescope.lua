@@ -93,8 +93,26 @@ local function setup()
                     ['<A-q>'] = actions.close,
                 },
                 n = {
-                    ['<A-k>'] = actions.move_selection_previous,
-                    ['<A-j>'] = actions.move_selection_next,
+                    ['<A-k>'] = function(...)
+                        for i = 1, 10 do
+                            actions.move_selection_previous(...)
+                        end
+                    end,
+                    ['<A-j>'] = function(...)
+                        for i = 1, 10 do
+                            actions.move_selection_next(...)
+                        end
+                    end,
+                    ['<up>'] = function(...)
+                        for i = 1, 10 do
+                            actions.move_selection_previous(...)
+                        end
+                    end,
+                    ['<down>'] = function(...)
+                        for i = 1, 10 do
+                            actions.move_selection_next(...)
+                        end
+                    end,
 
                     ['<A-o>'] = actions.select_default,
 
