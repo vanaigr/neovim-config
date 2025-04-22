@@ -23,7 +23,7 @@ require('lazy').setup({
     { 'numToStr/Comment.nvim', event = 'User load-comment' },
     { 'nvim-treesitter/nvim-treesitter' },
     { 'bkad/CamelCaseMotion' },
-    { 'petertriho/nvim-scrollbar' },
+    { 'dstein64/nvim-scrollview' },
     { 'nvim-lualine/lualine.nvim' },
     { 'HiPhish/rainbow-delimiters.nvim' },
     { 'echasnovski/mini.nvim' },

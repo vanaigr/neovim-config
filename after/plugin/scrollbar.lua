@@ -1,3 +1,4 @@
+if false then
 require("scrollbar").setup{
     max_lines = 10000,
     handle = {
@@ -24,3 +25,34 @@ require("scrollbar").setup{
         ale = false,
     },
 }
+end
+
+require('scrollview').setup({
+    excluded_filetypes = {},
+    current_only = false,
+    base = 'right',
+    column = 1,
+    signs_overflow = 'right',
+    signs_on_startup = {
+        --'changelist',
+        'conflicts',
+        --'cursor',
+        'diagnostics',
+        --'folds',
+        --'indent',
+        --'latestchange',
+        --'keywords',
+        'loclist',
+        --'marks'
+        'quickfix',
+        'search'
+        --'spell',
+        --'textwidth',
+        --'trail',
+    },
+    --include_end_region = true,
+    visibility = 'always',
+    diagnostics_severities = {
+        vim.diagnostic.severity.ERROR
+    }
+})
