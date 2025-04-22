@@ -14,7 +14,8 @@ local colors = {
 
 local function active_lsps()
     local result = ''
-    for _, client in pairs(vim.lsp.buf_get_clients()) do
+    local clients = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
+    for _, client in pairs(clients) do
         result = (result ~= '' and (result .. ' | ') or result) .. client.name
     end
     return result
