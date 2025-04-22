@@ -9,7 +9,6 @@ require('lazy').setup({
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         event = 'User load-treesj'
     },
-    { enabled = false, 'mg979/vim-visual-multi', event = 'User load-multicursor' }, -- multicursor
     { 'jake-stewart/multicursor.nvim' },
 
     { 'vanaigr/motion.nvim' },
