@@ -23,6 +23,7 @@ set({"n", "x"}, "q", function() mc.matchSkipCursor(1) end)
 --set({"n", "x"}, "<leader>N", function() mc.matchAddCursor(-1) end)
 --set({"n", "x"}, "<leader>S", function() mc.matchSkipCursor(-1) end)
 
+
 -- Add and remove cursors with control + left click.
 --set("n", "<c-leftmouse>", mc.handleMouse)
 --set("n", "<c-leftdrag>", mc.handleMouseDrag)
@@ -34,6 +35,25 @@ set({"n", "x"}, "<c-q>", function()
         mc.enableCursors()
     else
         mc.disableCursors()
+    end
+end)
+
+set('x', '<leader>n', function()
+    local l1 = vim.fn.line('.')
+    local l2 = vim.fn.line('v')
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, true, true), 'nx', false)
+
+    if l1 > l2 then
+        local tmp = l1
+        l1 = l2
+        l2 = tmp
+    end
+
+    --print('!', vim.inspect(vim.api.nvim_get_mode()))
+    vim.api.nvim_win_set_cursor(0, { l1, 0 })
+    vim.api.nvim_feedkeys('_', 'nx', false)
+    for _ = l1, l2 - 1 do
+        mc.addCursor('j_', { remap = false })
     end
 end)
 
