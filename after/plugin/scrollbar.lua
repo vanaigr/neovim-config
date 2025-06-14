@@ -32,7 +32,9 @@ require('scrollview').setup({
     current_only = false,
     base = 'right',
     column = 1,
-    signs_overflow = 'right',
+    --signs_overflow = 'right',
+    signs_scrollbar_overlap = 'over',
+    signs_max_per_row = 1,
     signs_on_startup = {
         --'changelist',
         'conflicts',
