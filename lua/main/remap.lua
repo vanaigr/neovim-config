@@ -249,8 +249,23 @@ m.nx('<A-l>', eol)
 m.nx('<left>', '_')
 m.nx('<right>', eol)
 
-m.nx('j', 'gj')
-m.nx('k', 'gk')
+m.nx('j', function()
+    if vim.v.count == 0 and vim.v.count1 == 1 then
+        return 'gj'
+    else
+        print('j Executed with count', vim.v.count)
+        return 'j'
+    end
+end, { expr = true })
+
+m.nx('k', function()
+    if vim.v.count == 0 and vim.v.count1 == 1 then
+        return 'gk'
+    else
+        print('k Executed with count', vim.v.count)
+        return 'k'
+    end
+end, { expr = true })
 
 m.nxo('J', '5gj')
 m.nxo('K', '5gk')
