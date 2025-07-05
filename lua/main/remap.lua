@@ -237,11 +237,17 @@ m.nx('<A-j>', scroll('gj'))
 m.nx('<Up>', scroll('gk'))
 m.nx('<Down>', scroll('gj'))
 
+local function eol()
+    vim.api.nvim_feedkeys('g_', 'nx', false)
+    local pos = vim.api.nvim_win_get_cursor(0)
+    pos[2] = pos[2] + 1
+    vim.api.nvim_win_set_cursor(0, pos)
+end
 
 m.nx('<A-h>', '_')
-m.nx('<A-l>', 'g_l')
+m.nx('<A-l>', eol)
 m.nx('<left>', '_')
-m.nx('<right>', 'g_l')
+m.nx('<right>', eol)
 
 m.nx('j', 'gj')
 m.nx('k', 'gk')
