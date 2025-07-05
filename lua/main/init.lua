@@ -149,3 +149,5 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 LoadModule('main.plugins')
 LoadModule('main.remap')
+
+vim.g._ts_force_sync_parsing = true
