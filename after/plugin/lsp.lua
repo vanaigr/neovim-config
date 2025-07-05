@@ -2,6 +2,8 @@ local vim = vim -- fix lsp warning
 
 -- show highest diagnostic on the line
 vim.diagnostic.config{ severity_sort = true }
+local low_perf = _G.my_config.low_perf
+
 -- there's also a different way, not sure what's the benefit
 -- https://neovim.io/doc/user/diagnostic.html
 
@@ -78,9 +80,9 @@ local mason_path = vim.fn.stdpath('data') .. '/mason/bin'
 -- Do this manually since Mason is slow
 local lspconfig = require('lspconfig')
 
-local function conf(name, f)
-    if not name then
-        vim.notify('SKIPPING: ' .. f, vim.log.levels.WARN, {})
+local function conf(name, f, skip)
+    if skip then
+        --vim.notify('SKIPPING: ' .. f, vim.log.levels.WARN, {})
         return
     end
     local ok, res = pcall(f)
@@ -121,8 +123,9 @@ conf('typescript-tools', function()
             tsserver_max_memory = "auto",
             tsserver_locale = "en",
             complete_function_calls = false,
-            include_completions_with_insert_text = true,
-            code_lens = "all",
+            --include_completions_with_insert_text = true,
+            -- perf issue
+            -- code_lens = "all",
             jsx_close_tag = {
                 enable = false,
                 filetypes = { "javascriptreact", "typescriptreact" },
@@ -134,17 +137,11 @@ conf('typescript-tools', function()
     }
 end)
 
-conf('css', function()
-    lspconfig.cssls.setup{}
-end)
+-- NEVER complete : . Especially if you are trash and
+-- complete it even when it already exists
+-- conf('css', function() lspconfig.cssls.setup{} end)
 
-conf('eslint', function()
-    -- lspconfig.eslint.setup{ }
-end)
-
-conf('rust', function()
-    lspconfig.rust_analyzer.setup{}
-end)
+-- conf('rust', function() lspconfig.rust_analyzer.setup{} end)
 
 conf('cmake', function()
     lspconfig.cmake.setup {
@@ -156,14 +153,11 @@ conf('tailwind', function()
     lspconfig.tailwindcss.setup {
         cmd = { mason_path .. '/tailwindcss-language-server' },
     }
-end)
+end, low_perf)
 
 conf('csharp', function()
     -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2577
     lspconfig.omnisharp.setup {
         cmd = { mason_path .. '/omnisharp' },
-        handlers = {
-            ['textDocument/definition'] = require('omnisharp_extended').handler,
-        }
     }
 end)

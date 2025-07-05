@@ -9,10 +9,14 @@ local menus = {
     ['cmdline'] = 'cmd',
 }
 
+local low_perf = _G.my_config.low_perf
+
 local format = {
     fields = { 'abbr', 'kind', 'menu' },
     format = function(entry, item)
-        item = require("tailwind-tools.cmp").lspkind_format(entry, item)
+        if not low_perf then
+            item = require("tailwind-tools.cmp").lspkind_format(entry, item)
+        end
         item.menu = menus[entry.source.name]
         return item
     end
