@@ -343,7 +343,9 @@ local function charwise_paste(register)
     local regValue = vim.fn.getreg(register)
     vim.fn.setreg(register, regValue, 'v')
     vim.cmd('normal! '..vim.v.count1..'"'..register .. 'gP')
-    vim.fn.setreg(register, regInfo) -- may not work, but I don't know
+    if register ~= '+' then
+        vim.fn.setreg(register, regInfo) -- may not work, but I don't know
+    end
 end
 local function visual_paste(register)
     check_nonsense(register)
@@ -352,7 +354,9 @@ local function visual_paste(register)
     local regtype = vim.fn.getregtype(preserved)
     local regContent = vim.fn.getreg(preserved)
     vim.cmd('keepjumps normal! ' .. vim.v.count1 .. '"' .. register .. 'gp')
-    vim.fn.setreg(preserved, regContent, regtype)
+    if register ~= '+' then
+        vim.fn.setreg(preserved, regContent, regtype)
+    end
 end
 
 m.n('<leader>p', function() linewise_paste('+') end)
