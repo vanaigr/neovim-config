@@ -74,7 +74,7 @@ require('lualine').setup{
     lualine_c = { { 'diagnostics', symbols = { error = 'E', warn = 'W', info = 'I', hint = 'H' } } },
     lualine_x = {},
     lualine_y = { active_lsps, 'searchcount' },
-    lualine_z = {'location', 'progress'}
+    lualine_z = { 'location' }
   },
   inactive_sections = {
     lualine_a = {},
