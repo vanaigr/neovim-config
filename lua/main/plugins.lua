@@ -11,6 +11,7 @@ require('lazy').setup({
         dependencies = { 'nvim-lua/plenary.nvim', },
         event = 'User load-telescope',
     },
+    { 'vanaigr/incselection.nvim' },
 
     { 'vanaigr/motion.nvim' },
     { 'vanaigr/mark-signs.nvim' },

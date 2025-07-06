@@ -25,14 +25,4 @@ require'nvim-treesitter.configs'.setup{
     -- Check runtime/indent/html.vim func s:CSSIndent()  at  if below_end_brace
     -- It moves the cursor offscreen!
     indent = { enable = true },
-    -- would be broken soon ...
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "'",
-          node_incremental = "'",
-          scope_incremental = "<Nop>",
-          node_decremental = "<A-'>",
-        },
-    },
 }
