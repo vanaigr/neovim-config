@@ -9,6 +9,99 @@ end
 _G.this_is = true
 ]]
 
+--[[
+test
+t
+test t
+test
+t
+
+]]
+
+--[[local function matchAddCursor(direction)
+    mc.action(function(ctx)
+        for _ = 1, vim.v.count1 do
+            local mainCursor = ctx:mainCursor()
+            if not mainCursor:hasSelection() then
+                mainCursor:feedkeys('viw')
+            end
+
+            if mainCursor:atVisualStart() then
+                mainCursor:feedkeys('o')
+            end
+            local search = table.concat(mainCursor:getVisualLines(), "\n")
+
+            local cur = mainCursor:getPos()
+            cur[1] = cur[1] - 1
+            cur[2] = cur[2] - 1
+            local begin_line = cur[1]
+
+            mc.addCursor(function(cursor)
+                while true do
+                    local line
+                    if cur[1] == begin_line then
+                        line = vim.api.nvim_buf_get_text(
+                            0, cur[1], cur[2], cur[1], 2147483647, {}
+                        )[1]
+                    else
+                        line = vim.api.nvim_buf_get_lines(0, cur[1], cur[1] + 1, false)
+                    end
+
+                    string.find(line)
+                end
+            end)
+
+            local cursorChar
+            local cursorWord
+            local searchWord
+            if not mainCursor:hasSelection() then
+                local c = mainCursor:col()
+                cursorChar = string.sub(mainCursor:getLine(), c, c)
+                cursorWord = mainCursor:getCursorWord()
+                if cursorChar ~= ""
+                    and isKeyword(cursorChar)
+                    and string.find(cursorWord, cursorChar, 1, true)
+                then
+                    searchWord = true
+                    mainCursor:feedkeys('"_yiw')
+                end
+            end
+            addCursor(ctx, function(cursor)
+                local regex
+                local hasSelection = cursor:hasSelection()
+                if hasSelection then
+                    regex = "\\C\\V" .. escapeRegex(
+                        table.concat(cursor:getVisualLines(), "\n"))
+                    if vim.o.selection == "exclusive"  then
+                        regex = regex .. "\\v.{-}\\n"
+                    end
+                    if cursor:mode() == "V" or cursor:mode() == "S" then
+                        cursor:feedkeys(cursor:atVisualStart() and "0" or "o0")
+                    elseif not cursor:atVisualStart() then
+                        cursor:feedkeys("o")
+                    end
+                else
+                    if cursorChar == "" then
+                        regex = "\\v^$"
+                    elseif searchWord then
+                        regex = "\\v<\\C\\V" .. escapeRegex(cursorWord) .. "\\v>"
+                    else
+                        regex = "\\C\\V" .. escapeRegex(cursorChar)
+                    end
+                end
+                cursor:perform(function()
+                    print('fjdsfdjljfdsl', regex, vim.inspect(vim.api.nvim_win_get_cursor(0)))
+                    vim.fn.search(regex, (direction == -1 and "b" or ""))
+                    print('  fjdsfdjljfdsl', vim.inspect(vim.api.nvim_win_get_cursor(0)))
+                end)
+                if hasSelection then
+                    cursor:feedkeys(TERM_CODES.ESC)
+                end
+            end)
+        end
+    end)
+end]]
+
 local set = vim.keymap.set
 
 -- Add or skip cursor above/below the main cursor.
@@ -89,5 +182,3 @@ hl(0, "MultiCursorMatchPreview", { link = "Search" })
 hl(0, "MultiCursorDisabledCursor", { link = "Visual" })
 hl(0, "MultiCursorDisabledVisual", { link = "Visual" })
 hl(0, "MultiCursorDisabledSign", { link = "SignColumn"})
-
-if true then return end

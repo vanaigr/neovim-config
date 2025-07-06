@@ -1,9 +1,12 @@
 local vim = vim -- fix lsp warning
 
--- show highest diagnostic on the line
-vim.diagnostic.config{ severity_sort = true }
 local low_perf = _G.my_config.low_perf
 
+vim.diagnostic.config{
+    -- show highest diagnostic on the line
+    severity_sort = true,
+    virtual_text = true,
+}
 -- there's also a different way, not sure what's the benefit
 -- https://neovim.io/doc/user/diagnostic.html
 
@@ -29,23 +32,49 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local options = { buffer = event.buf }
 
         m.n('<A-;>a', function() vim.lsp.buf.code_action() end, options)
-        m.n('<A-;>h', function() vim.lsp.buf.hover() end, options)
-        m.n('<A-;>s', function() vim.lsp.buf.signature_help() end, options)
+
+        -- still going to close after exiting insert mode bc of vim putting cursor
+        -- one char to the left and me resetting it back
+        m.n('<A-;>h', function() vim.lsp.buf.hover({ close_events = { 'CursorMoved' } }) end, options)
+        m.n('<A-;>s', function() vim.lsp.buf.signature_help({ close_events = { 'CursorMoved' } }) end, options)
+
         m.n('<A-;>v', function() vim.lsp.buf.rename() end, options)
-        m.n('<A-;>r', function() vim.lsp.buf.references() end, options)
+        m.n('<A-;>r', function()
+            require('omnisharp_extended').lsp_references()
+        end, options)
         m.n('<A-;>d', function() vim.diagnostic.open_float() end, options)
 
         m.i('<A-;>h', function() vim.lsp.buf.hover() end, options)
         m.i('<A-;>s', function() vim.lsp.buf.signature_help() end, options)
         m.i('<A-;>d', function() vim.diagnostic.open_float() end, options)
 
-        m.n('[d', function() vim.diagnostic.goto_prev() end, options)
-        m.n(']d', function() vim.diagnostic.goto_next() end, options)
+        m.n('[d', function()
+            vim.diagnostic.jump({
+                count = -1,
+                float = true,
+                severity = vim.diagnostic.severity.E,
+            })
+        end, options)
+        m.n(']d', function()
+            vim.diagnostic.jump({
+                count = 1,
+                float = true,
+                severity = vim.diagnostic.severity.E,
+            })
+        end, options)
 
-        m.n('gd', function() vim.cmd('tab split'); vim.lsp.buf.definition() end, options)
+        m.n('gd', function()
+            vim.cmd('tab split')
+            -- require('omnisharp_extended').lsp_definition()
+            vim.lsp.buf.definition()
+        end, options)
         m.n('gD', function() vim.cmd('tab split'); vim.lsp.buf.declaration() end, options)
 
-        m.n('gi', function() vim.cmd('tab split'); vim.lsp.buf.implementation() end, options)
+        m.n('gi', function()
+            vim.cmd('tab split')
+            --require('omnisharp_extended').lsp_implementation()
+            vim.lsp.buf.implementation()
+        end, options)
 
         lualine()
     end
@@ -63,16 +92,6 @@ local ok, capabilities = pcall(function()
     return require('cmp_nvim_lsp').default_capabilities{ snippet_support = false }
 end)
 if not ok then capabilities = nil end
-
--- still going to close after exiting insert mode bc of vim putting cursor
--- one char to the left and me resetting it back
-vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
-    vim.lsp.handlers.signature_help, { close_events = { 'CursorMoved' } }
-)
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
-    vim.lsp.handlers.hover, { close_events = { 'CursorMoved' } }
-)
--- TODO: add for hover and float
 
 -- use mason path for lsps
 local mason_path = vim.fn.stdpath('data') .. '/mason/bin'
