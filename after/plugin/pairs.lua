@@ -81,7 +81,19 @@ end
 mapBs('<bs>')
 mapBs('<A-w>')
 
+
+local ok, mc = pcall(require, 'multicursor-nvim')
+if not ok then mc = nil end
+
+local function skip()
+    if mc then
+        return mc.hasCursors()
+    end
+end
+
 local function closing(index)
+    if skip() then return end
+
     local open, close = unpack(autopairs[index])
     local c_len = #close
     local c_count = vim.fn.strcharlen(close)
@@ -105,6 +117,8 @@ local function closing(index)
 end
 
 local function opening(index)
+    if skip() then return end
+
     local open, close = unpack(autopairs[index])
     local o_len = #open
     local c_len = #close
