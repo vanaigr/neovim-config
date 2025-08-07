@@ -597,7 +597,25 @@ end)
 
 m.n('*', function()
     vim.fn.setreg('/', '\\<' .. vim.fn.expand('<cword>') .. '\\>', 'v')
-    if vim.api.nvim_get_option('hlsearch') then
+    if vim.api.nvim_get_option_value('hlsearch', {}) then
         vim.cmd('set nohlsearch hlsearch')
     end
 end)
+
+m.n('<leader><leader>u', function()
+    local buf = vim.api.nvim_get_current_buf()
+
+    local ok, variable = pcall(vim.api.nvim_buf_get_var, buf, 'MyUndoCheckpoint')
+    if ok then
+        --print('reset', variable)
+        vim.api.nvim_buf_del_var(buf, 'MyUndoCheckpoint')
+        vim.cmd('undo ' .. variable)
+        print('Reset undo position')
+    else
+        local pos = vim.fn.undotree().seq_cur
+        vim.api.nvim_buf_set_var(buf, 'MyUndoCheckpoint', pos)
+        print('Remembered undo position')
+        --print('set', pos)
+    end
+end)
+
