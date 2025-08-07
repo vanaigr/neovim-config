@@ -44,6 +44,17 @@ require('lazy').setup({
     { 'neovim/nvim-lspconfig' },
     { 'Hoffs/omnisharp-extended-lsp.nvim' },
 
+    --[[
+        'jackMort/ChatGPT.nvim' - very buggy. <C-W> just crashes it, and all other floating windows die.
+        If I close the window while it is doing it's thing, also dies.
+        Reinventing the wheel (poorly) with floating windows. Why do I need tab if there's <C-w>?
+        Why do I need to close it when I want to look at my code. And why are there these huge margins,
+        (given that you can't access the window underneath).
+        Would've been better to just open a new tab.
+    ]]
+
+    { 'Robitx/gp.nvim' },
+
     {
         -- also buggy
         'HiPhish/rainbow-delimiters.nvim',
