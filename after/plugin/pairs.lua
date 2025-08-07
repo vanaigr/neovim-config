@@ -185,8 +185,10 @@ for i in ipairs(autopairs) do
 end
 
 mapPair(1, '<A-9>', '<A-0>')
+mapPair(1, '<M-9>', '<M-0>')
 mapPair(2, '<A-[>', '<A-]>')
--- hod does THIS happen?
+-- how does THIS happen?
+mapPair(2, '<S-{>', '<S-}>')
 mapPair(2, '<S-{>', '<S-}>')
 
 vim.api.nvim_create_autocmd('InsertLeavePre', {
