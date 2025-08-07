@@ -151,7 +151,7 @@ conf('typescript-tools', function()
             },
         },
         handlers = {
-            ["textDocument/publishDiagnostics"] = api.filter_diagnostics{ 7016, 80001 },
+            ["textDocument/publishDiagnostics"] = api.filter_diagnostics{ 7016, 80001, 6133 },
         },
     }
 end)
