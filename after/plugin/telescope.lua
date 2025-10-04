@@ -63,7 +63,7 @@ end
 
 local function getProjectDir()
     local root = project_root(vim.fn.expand("%:p"))
-    if root then
+    if root and root ~= '' then
         return root
     else
         return buffer_dir()
