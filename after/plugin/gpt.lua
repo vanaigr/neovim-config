@@ -5,10 +5,13 @@ local template = [====[
 {{optional_headers}}
 <C-g> sends. <C-c> cancels
 
+---
 {{user_prefix}}
 ]====]
 
 local m = require('mapping')
+
+local chat_system_prompt = 'Answer as concisely as possible'
 
 require("gp").setup{
     openai_api_key = _G.my_config.openai_api_key,
@@ -19,16 +22,32 @@ require("gp").setup{
  	chat_shortcut_delete = { modes = {}, shortcut = "" },
  	chat_shortcut_stop = { modes = {}, shortcut = "" },
  	chat_shortcut_new = { modes = {}, shortcut = "" },
+
+    agents = {
+		{
+			provider = "openai",
+			name = "ChatGPT4o-mini",
+			chat = true,
+			command = false,
+			model = { model = "gpt-4o-mini", temperature = 1, top_p = 1 },
+			system_prompt = chat_system_prompt,
+		},
+		{
+			name = "ChatGPT4o",
+			chat = true,
+			command = false,
+			model = { model = "gpt-4o", temperature = 1, top_p = 1 },
+			system_prompt = chat_system_prompt,
+		},
+    }
 }
 
 vim.api.nvim_create_autocmd("User", {
     pattern = "GpChatPrepare",
     callback = function(event)
         local opts = { buffer = event.data.buf }
-        m.n('<C-g>', function() vim.cmd('GpChatRespond') end, opts)
-        m.i('<C-g>', function() vim.cmd('GpChatRespond') end, opts)
-
-        m.n('<C-c>', function() vim.cmd('GpChatStop') end, opts)
+        m.n('<leader>i', function() vim.cmd('GpChatRespond') end, opts)
+        m.n('<a-c>', function() vim.cmd('GpChatStop') end, opts)
     end,
 })
 
