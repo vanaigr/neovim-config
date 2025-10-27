@@ -40,7 +40,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         m.n('<A-;>v', function() vim.lsp.buf.rename() end, options)
         m.n('<A-;>r', function()
-            require('omnisharp_extended').lsp_references()
+            --require('omnisharp_extended').lsp_references()
+            vim.lsp.buf.references()
         end, options)
         m.n('<A-;>d', function() vim.diagnostic.open_float() end, options)
 
@@ -131,6 +132,13 @@ conf('clang', function()
     }
 end)
 
+require("lspconfig.configs").vtsls = require("vtsls").lspconfig
+conf('typescript', function()
+    lspconfig.vtsls.setup({
+    })
+end)
+
+--[[
 conf('typescript-tools', function()
     local api = require("typescript-tools.api")
 
@@ -151,16 +159,26 @@ conf('typescript-tools', function()
             },
         },
         handlers = {
-            ["textDocument/publishDiagnostics"] = api.filter_diagnostics{ 7016, 80001, 6133 },
+            ["textDocument/publishDiagnostics"] = api.filter_diagnostics{
+                7016,
+                80001,
+                6133,
+                --80006,
+            },
         },
     }
 end)
+]]
 
 -- NEVER complete : . Especially if you are trash and
 -- complete it even when it already exists
 -- conf('css', function() lspconfig.cssls.setup{} end)
 
--- conf('rust', function() lspconfig.rust_analyzer.setup{} end)
+conf('rust', function()
+    lspconfig.rust_analyzer.setup {
+        cmd = { mason_path .. '/rust-analyzer' },
+    }
+end)
 
 conf('cmake', function()
     lspconfig.cmake.setup {

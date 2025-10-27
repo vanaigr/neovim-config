@@ -53,7 +53,7 @@ require('lazy').setup({
         Would've been better to just open a new tab.
     ]]
 
-    { 'Robitx/gp.nvim' },
+    { 'https://github.com/vanaigr/gp.nvim.git' },
 
     {
         -- also buggy
@@ -72,11 +72,12 @@ require('lazy').setup({
             "neovim/nvim-lspconfig",
         },
     },
-    {
+    { 'yioneko/nvim-vtsls' },
+    --[[{
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
         opts = {},
-    },
+    },]]
     { -- super slow (half the startup time)
         'williamboman/mason.nvim',
         cmd = {
