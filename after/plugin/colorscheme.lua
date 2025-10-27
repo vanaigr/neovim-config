@@ -39,6 +39,8 @@ require('rose-pine').setup{
         ['@lsp.mod.global'] = { fg = pnk },
         ['@lsp.typemod.variable.globalScope'] = { fg = pnk },
         ['@lsp.typemod.variable.fileScope'] = { fg = grn },
+        -- #f6c177
+        ['@constant.builtin'] = { fg = '#f6c0a7' },
         ['DiagnosticUnnecessary'] = { fg = '#a99595' },
 
         ['@character.printf'] = { fg = 'foam' },
