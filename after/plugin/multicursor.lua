@@ -1,107 +1,6 @@
 local mc = require("multicursor-nvim")
+
 mc.setup()
-
---[[
-if _G.this_is then
-    vim.keymap.set('n', 'a', function() mc.lineAddCursor(1) end)
-    vim.cmd('norm aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-end
-_G.this_is = true
-]]
-
---[[
-test
-t
-test t
-test
-t
-
-]]
-
---[[local function matchAddCursor(direction)
-    mc.action(function(ctx)
-        for _ = 1, vim.v.count1 do
-            local mainCursor = ctx:mainCursor()
-            if not mainCursor:hasSelection() then
-                mainCursor:feedkeys('viw')
-            end
-
-            if mainCursor:atVisualStart() then
-                mainCursor:feedkeys('o')
-            end
-            local search = table.concat(mainCursor:getVisualLines(), "\n")
-
-            local cur = mainCursor:getPos()
-            cur[1] = cur[1] - 1
-            cur[2] = cur[2] - 1
-            local begin_line = cur[1]
-
-            mc.addCursor(function(cursor)
-                while true do
-                    local line
-                    if cur[1] == begin_line then
-                        line = vim.api.nvim_buf_get_text(
-                            0, cur[1], cur[2], cur[1], 2147483647, {}
-                        )[1]
-                    else
-                        line = vim.api.nvim_buf_get_lines(0, cur[1], cur[1] + 1, false)
-                    end
-
-                    string.find(line)
-                end
-            end)
-
-            local cursorChar
-            local cursorWord
-            local searchWord
-            if not mainCursor:hasSelection() then
-                local c = mainCursor:col()
-                cursorChar = string.sub(mainCursor:getLine(), c, c)
-                cursorWord = mainCursor:getCursorWord()
-                if cursorChar ~= ""
-                    and isKeyword(cursorChar)
-                    and string.find(cursorWord, cursorChar, 1, true)
-                then
-                    searchWord = true
-                    mainCursor:feedkeys('"_yiw')
-                end
-            end
-            addCursor(ctx, function(cursor)
-                local regex
-                local hasSelection = cursor:hasSelection()
-                if hasSelection then
-                    regex = "\\C\\V" .. escapeRegex(
-                        table.concat(cursor:getVisualLines(), "\n"))
-                    if vim.o.selection == "exclusive"  then
-                        regex = regex .. "\\v.{-}\\n"
-                    end
-                    if cursor:mode() == "V" or cursor:mode() == "S" then
-                        cursor:feedkeys(cursor:atVisualStart() and "0" or "o0")
-                    elseif not cursor:atVisualStart() then
-                        cursor:feedkeys("o")
-                    end
-                else
-                    if cursorChar == "" then
-                        regex = "\\v^$"
-                    elseif searchWord then
-                        regex = "\\v<\\C\\V" .. escapeRegex(cursorWord) .. "\\v>"
-                    else
-                        regex = "\\C\\V" .. escapeRegex(cursorChar)
-                    end
-                end
-                cursor:perform(function()
-                    print('fjdsfdjljfdsl', regex, vim.inspect(vim.api.nvim_win_get_cursor(0)))
-                    vim.fn.search(regex, (direction == -1 and "b" or ""))
-                    print('  fjdsfdjljfdsl', vim.inspect(vim.api.nvim_win_get_cursor(0)))
-                end)
-                if hasSelection then
-                    cursor:feedkeys(TERM_CODES.ESC)
-                end
-            end)
-        end
-    end)
-end]]
-
 local set = vim.keymap.set
 
 -- Add or skip cursor above/below the main cursor.
@@ -132,22 +31,34 @@ set({"n", "x"}, "<c-q>", function()
 end)
 
 set('x', '<leader>n', function()
-    local l1 = vim.fn.line('.')
-    local l2 = vim.fn.line('v')
+    local start = vim.fn.line('.') - 1
+    local finish = vim.fn.line('v') - 1
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, true, true), 'nx', false)
 
-    if l1 > l2 then
-        local tmp = l1
-        l1 = l2
-        l2 = tmp
+    if start == finish then
+        return
     end
 
-    --print('!', vim.inspect(vim.api.nvim_get_mode()))
-    vim.api.nvim_win_set_cursor(0, { l1, 0 })
-    vim.api.nvim_feedkeys('_', 'nx', false)
-    for _ = l1, l2 - 1 do
-        mc.addCursor('j_', { remap = false })
-    end
+    local count = math.abs(finish - start)
+    local dir = finish < start and -1 or 1
+
+    mc.action(function(ctx)
+        local moved = false
+        local cursor = ctx:mainCursor()
+
+        for i = count, 0, -1 do
+            local lineI = start + i * dir
+            local line = vim.api.nvim_buf_get_lines(0, lineI, lineI + 1, false)[1]
+            local textStart = line:find('%S')
+            if textStart ~= nil then
+                if moved then
+                    cursor:clone()
+                end
+                moved = true
+                cursor:setPos({ 1 + lineI, textStart })
+            end
+        end
+    end)
 end)
 
 -- Mappings defined in a keymap layer only apply when there are
